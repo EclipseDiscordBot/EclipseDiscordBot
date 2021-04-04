@@ -6,3 +6,5 @@
 - [! ||Satyamedh||#0001](https://discord.com/users/605364556465963018)
 - [DrKnown go pew pew#3850](https://discord.com/users/727446716491628585)
 
+# Discord
+![Discord](https://discord.c99.nl/widget/theme-3/694839986763202580.png)
