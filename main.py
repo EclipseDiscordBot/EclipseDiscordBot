@@ -8,11 +8,6 @@ client = commands.Bot(command_prefix="e!")
 client.launch_time = datetime.datetime.utcnow()
 
 
-@client.command()
-async def ping(ctx):
-    await ctx.message.reply(f"Pong! {round(client.latency * 1000)} ms")
-
-
 @client.event
 async def on_ready():
     c = 0
