@@ -8,3 +8,5 @@
 
 # Discord
 ![Discord](https://discord.c99.nl/widget/theme-3/694839986763202580.png)
+
+# Quick note: THERE IS NO API KEYS HERE GO AWAY PPL WHO WANT EM!
