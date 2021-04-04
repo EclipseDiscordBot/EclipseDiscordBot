@@ -3,7 +3,9 @@ from discord.ext import commands
 import pickle
 import datetime
 
-client = commands.Bot(command_prefix="e!")
+intents = discord.Intents.all()
+
+client = commands.Bot(command_prefix="e!", intents=intents)
 client.launch_time = datetime.datetime.utcnow()
 
 cogs = ['cogs.basic',
