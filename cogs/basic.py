@@ -1,4 +1,3 @@
-from discord import Embed
 import discord
 import asyncio
 from discord.ext import commands
@@ -6,8 +5,8 @@ from discord.ext import commands
 
 class Basic(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
+    def __init__(self, client: commands.Bot):
+        self.client = client
 
     @commands.command(name="ping", aliases=['pong'], brief='Gives the bot\'s latency')
     async def ping(self, ctx):
@@ -15,5 +14,5 @@ class Basic(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(Basic(bot))
+def setup(client):
+    bot.add_cog(Basic(client))
