@@ -20,7 +20,10 @@ class Moderation(commands.Cog):
                               description=f"Banned {member} from {ctx.guild.name} with reason ```{reason}```",
                               footer=ctx.message.created_at)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        await member.send(f"You were banned from {ctx.guild} for: {reason}")
+        try:
+            await member.send(f"You were banned from {ctx.guild} for: {reason}")
+        except Exception:
+            await ctx.send("Couldnt send ban notification to the user. banning anyway")
         await member.ban(reason=f"Action by {ctx.author} Reason: ```{reason}```")
         await ctx.send(embed=embed)
 
@@ -36,7 +39,10 @@ class Moderation(commands.Cog):
                                                                    f"reason ```{reason}```",
                               footer=ctx.message.created_at)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        await member.send(f"You were kicked from {ctx.guild} for: ```{reason}```")
+        try:
+            await member.send(f"You were kicked from {ctx.guild} for: {reason}")
+        except Exception:
+            await ctx.send("Couldnt send kick notification to the user. kicking anyway")
         await member.kick(reason=f"Action by {ctx.author} Reason: {reason}")
         await ctx.send(embed=embed)
 
