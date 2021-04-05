@@ -10,6 +10,7 @@ client.launch_time = datetime.datetime.utcnow()
 
 cogs = ['cogs.basic',
         'cogs.mod',
+        'cogs.error_handler',
         'jishaku']
 
 
