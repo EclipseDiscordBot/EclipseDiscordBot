@@ -1,4 +1,3 @@
-from discord import Embed
 import discord
 import asyncio
 from discord.ext import commands
@@ -6,8 +5,8 @@ from discord.ext import commands
 
 class Moderation(commands.Cog):
 
-    def __init__(self, client: commands.client):
-        self.client = client
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
 
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
@@ -39,5 +38,5 @@ class Moderation(commands.Cog):
 
 
 
-def setup(client):
-    client.add_cog(Moderation(client))
+def setup(bot):
+    bot.add_cog(Moderation(bot))
