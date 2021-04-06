@@ -20,13 +20,13 @@ class Utility(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def lock(self, ctx):
         await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
-        await ctx.send(f"{ctx.channel.mention} is now locked for every roles")
+        await ctx.send(f"{ctx.channel.mention} is now locked for everyone.")
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
     async def unlock(self, ctx):
         await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
-        await ctx.send(f"{ctx.channel.mention} is now unlocked for every roles")
+        await ctx.send(f"{ctx.channel.mention} is now unlocked for everyone.")
 
 
 def setup(bot):
