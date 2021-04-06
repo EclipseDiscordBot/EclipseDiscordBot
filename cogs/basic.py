@@ -12,6 +12,11 @@ class Basic(commands.Cog):
     async def ping(self, ctx):
         await ctx.message.reply(f"Pong! {round(self.bot.latency * 1000)} ms")
 
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def restart(self, ctx):
+        await ctx.send("Restarting...")
+        await ctx.bot.logout()
 
 
 def setup(bot):
