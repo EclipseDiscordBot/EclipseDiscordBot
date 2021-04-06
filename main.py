@@ -7,6 +7,7 @@ intents = discord.Intents.all()
 
 client = commands.Bot(command_prefix="e!", intents=intents)
 client.launch_time = datetime.datetime.utcnow()
+client.color = discord.Color.from_rgb(68,11,212)
 
 cogs = ['cogs.basic',
         'cogs.mod',
