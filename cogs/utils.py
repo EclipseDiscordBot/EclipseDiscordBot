@@ -6,7 +6,7 @@ class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(brief="Nukes the channel the command is run in")
     @commands.has_permissions(manage_channels=True)
     async def nuke(self, ctx):
         await ctx.send(f"Purging {ctx.channel.mention}...")
@@ -16,13 +16,13 @@ class Utility(commands.Cog):
         await new_channel.edit(position=pos)
         await new_channel.send("Nuked this channel!")
 
-    @commands.command()
+    @commands.command(brief="Locks the channel so only admins can send messages")
     @commands.has_permissions(manage_messages=True)
     async def lock(self, ctx):
         await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
         await ctx.send(f"{ctx.channel.mention} is now locked for everyone.")
 
-    @commands.command()
+    @commands.command(brief="unlocks the channel so anybody with the default role can send messages")
     @commands.has_permissions(manage_messages=True)
     async def unlock(self, ctx):
         await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
