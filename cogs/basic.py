@@ -1,4 +1,5 @@
 import discord
+import os
 import asyncio
 from discord.ext import commands
 
@@ -16,7 +17,10 @@ class Basic(commands.Cog):
     @commands.is_owner()
     async def restart(self, ctx):
         await ctx.send("Restarting...")
-        await ctx.bot.logout()
+        os.system("sh startupfile.sh")
+        await asyncio.sleep(2)
+        await ctx.send('will be bak up in a sec')
+        exit(0)
 
 
 def setup(bot):

@@ -14,7 +14,8 @@ class Moderation(commands.Cog):
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         if ctx.author.top_role < member.top_role:
             await ctx.send(
-                f"Your top role {ctx.author.top_role.name} is lower than {member}\'s top role {member.top_role.name} You cannot moderate them!")
+                f"Your top role {ctx.author.top_role.name} is lower than {member}\'s top role {member.top_role.name}"
+                f" You cannot moderate them!")
             return
         embed = discord.Embed(title="Ban Successful",
                               description=f"Banned {member} from {ctx.guild.name} with reason ```{reason}```",
@@ -34,7 +35,8 @@ class Moderation(commands.Cog):
     async def kick(self, ctx, member: discord.Member, *, reason=None):
         if ctx.author.top_role < member.top_role:
             await ctx.send(
-                f"Your top role {ctx.author.top_role.name} is lower than {member}\'s top role {member.top_role.name} You cannot moderate them!")
+                f"Your top role {ctx.author.top_role.name} is lower than {member}\'s top role {member.top_role.name}"
+                f" You cannot moderate them!")
             return
         embed = discord.Embed(title="Kick Successful", description=f"Kicked {member} from {ctx.guild.name} with "
                                                                    f"reason ```{reason}```",
