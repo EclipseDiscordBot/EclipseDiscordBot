@@ -30,15 +30,13 @@ async def send_init_msg():
     await channel.send(
         f"Bot ready; started on {bot.launch_time} and logged in as {bot.user} Can see {len(bot.users)} members and {len(bot.guilds)} guilds Ping is {round(bot.latency * 1000)} ms")
 
+
+ 
 @bot.command()
 @commands.is_owner()
 async def restart(ctx):
-        await ctx.send("Restarting...")
-        await bot.logout()
-        os.system("bash -f startupfile.sh")
-        os._exit(os.EX_OK)
-        
-        
+    await ctx.send("Restarting...")
+    await ctx.bot.logout()
         
         
         
