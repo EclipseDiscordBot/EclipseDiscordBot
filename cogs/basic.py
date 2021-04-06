@@ -22,12 +22,6 @@ class Basic(commands.Cog):
         await asyncio.sleep(2)
         exit(0)
 
-    @commands.command(brief="Chooses a random object from specified options", aliases=["pick", "choose"])
-    async def choice(self, ctx, *, options: str):
-        options = options.split(' ')
-        choice = random.choice(options)
-        await ctx.send(f"I choose..... {choice}")
-
 
 def setup(bot):
     bot.add_cog(Basic(bot))
