@@ -12,10 +12,13 @@ class ErrorHandler(commands.Cog):
     async def on_command_error(self, ctx, error: Exception):
         if isinstance(error, discord.ext.commands.CommandNotFound):
             return
-        e = discord.Embed(title=f"Sorry! the bot has run into an Error `{error}`", description="It has been reported to the "
-                                                                                    "devs! *if you're a dev PRs are "
-                                                                                    "open("
-                                                                                    "https://github.com/EclipseDiscordBot/EclipseDiscordBot)")
+        e = discord.Embed(title=f"Sorry! the bot has run into an Error `{error}`",
+                          description="It has been reported to the "
+                                      "devs! *if you're a dev PRs are "
+                                      "open("
+                                      "https://github.com"
+                                      "/EclipseDiscordBot"
+                                      "/EclipseDiscordBot)")
         await ctx.send(embed=e)
 
     @commands.is_owner()
