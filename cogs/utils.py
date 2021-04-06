@@ -27,3 +27,7 @@ class utils(commands.Cog):
   async def unlock(self,ctx):
     await ctx.channel.set_permissions(ctx.guild.default_role, send_messages = False)
     await ctx.send(f"{ctx.channel.mention} is now unlocked for everyone role")
+
+  
+def setup(bot):
+  bot.add_cog(utils(bot))
