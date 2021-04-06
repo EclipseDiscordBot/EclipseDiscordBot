@@ -24,7 +24,7 @@ class Moderation(commands.Cog):
         try:
             await member.send(f"You were banned from {ctx.guild} for: {reason}")
         except Exception:
-            await ctx.send("Couldnt send ban notification to the user. banning anyway")
+            pass
         await member.ban(reason=f"Action by {ctx.author} Reason: ```{reason}```")
         await ctx.send(embed=embed)
 
@@ -43,7 +43,7 @@ class Moderation(commands.Cog):
         try:
             await member.send(f"You were kicked from {ctx.guild} for: {reason}")
         except Exception:
-            await ctx.send("Couldnt send kick notification to the user. kicking anyway")
+            pass
         await member.kick(reason=f"Action by {ctx.author} Reason: {reason}")
         await ctx.send(embed=embed)
 
