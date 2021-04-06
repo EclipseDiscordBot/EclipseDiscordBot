@@ -19,7 +19,6 @@ class Basic(commands.Cog):
         await ctx.send("Restarting...")
         os.system("sh startupfile.sh")
         await asyncio.sleep(2)
-        await ctx.send('will be bak up in a sec')
         exit(0)
 
 
