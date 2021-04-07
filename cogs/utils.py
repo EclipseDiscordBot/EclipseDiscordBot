@@ -6,27 +6,14 @@ class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(brief="Nukes the channel the command is run in")
-    @commands.has_permissions(manage_channels=True)
-    async def nuke(self, ctx):
-        await ctx.send(f"Purging {ctx.channel.mention}...")
-        pos = ctx.channel.position
-        new_channel = await ctx.channel.clone(reason=f"Nuked by {ctx.author}")
-        await ctx.channel.delete(reason=f"Nuked by {ctx.author}")
-        await new_channel.edit(position=pos)
-        await new_channel.send("Nuked this channel!")
-
-    @commands.command(brief="Locks the channel so only admins can send messages")
-    @commands.has_permissions(manage_messages=True)
-    async def lock(self, ctx):
-        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
-        await ctx.send(f"{ctx.channel.mention} is now locked for everyone.")
-
-    @commands.command(brief="unlocks the channel so anybody with the default role can send messages")
-    @commands.has_permissions(manage_messages=True)
-    async def unlock(self, ctx):
-        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
-        await ctx.send(f"{ctx.channel.mention} is now unlocked for everyone.")
+    @commands.command()
+    async def avatar(self,ctx,member:discord.Member=None):
+        if member is None:
+            member = ctx.author
+        embed = discord.Embed(title = " ", description = " ", color = 0x2F3136)
+        embed.set_image(url = member.avatar_url)
+        await ctx.message.reply(embed = embed)
+        
 
 
 def setup(bot):
