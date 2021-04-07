@@ -49,7 +49,8 @@ class Moderation(commands.Cog):
         await member.kick(reason=f"Action by {ctx.author} Reason: {reason}")
         await ctx.send(embed=embed)
 
-    @commands.command(brief="Nukes the channel the command is run in")
+    @commands.command(name = "nuke", brief="Clones the channel, deletes the old one and rearranges the cloned channel")
+    @commands.guild_only()
     @commands.has_permissions(manage_channels=True)
     async def nuke(self, ctx):
         await ctx.send(f"Purging {ctx.channel.mention}...")
@@ -59,17 +60,27 @@ class Moderation(commands.Cog):
         await new_channel.edit(position=pos)
         await new_channel.send("Nuked this channel!")
 
-    @commands.command(brief="Locks the channel so only admins can send messages")
+    @commands.command(name = "lock", brief="Locks the channel so only admins can send messages")
+    @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
-    async def lock(self, ctx):
-        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
-        await ctx.send(f"{ctx.channel.mention} is now locked for everyone.")
+    async def lock(self, ctx, channel:discord.TextChannel=None):
+        if channel is None:
+            channel = ctx.channel
+        await channel.set_permissions(ctx.guild.default_role, send_messages=False)
+        await channel.send(f"{channel.mention} is now locked for everyone.")
+        if channel != ctx.channel:
+            await ctx.send(f"{channel.mention} is now locked for everyone.")
 
-    @commands.command(brief="unlocks the channel so anybody with the default role can send messages")
+    @commands.command(name = "unlock", brief="unlocks the channel so anybody with the default role can send messages")
     @commands.has_permissions(manage_messages=True)
-    async def unlock(self, ctx):
-        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
-        await ctx.send(f"{ctx.channel.mention} is now unlocked for everyone.")
+    @commands.guild_only()
+    async def unlock(self, ctx, channel:discord.TextChannel=None):
+        if channel is None:
+            channel = ctx.channel
+        await channel.set_permissions(ctx.guild.default_role, send_messages=False)
+        await channel.send(f"{channel.mention} is now unlocked for everyone.")
+        if channel != ctx.channel:
+            await ctx.send(f"{channel.mention} is now unlocked for everyone.")
 
 
 def setup(bot):
