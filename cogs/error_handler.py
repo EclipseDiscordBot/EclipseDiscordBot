@@ -82,7 +82,7 @@ class ErrorHandler(commands.Cog):
                     str_perms += f"{perm}, "
                     dsc = f"You are missing these permissions to run `{ctx.command}`: {str_perms}"
                     embed = discord.Embed(title=title, description=dsc, color=discord.Color.from_rgb(255, 0, 0))
-                    await ctx.send(embed=embed)
+                    await ctx.reply(embed=embed)
 
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)

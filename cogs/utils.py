@@ -12,7 +12,7 @@ class Utility(commands.Cog):
             member = ctx.author
         embed = discord.Embed(title=" ", description=" ", color=0x2F3136)
         embed.set_image(url=member.avatar_url)
-        await ctx.message.reply(embed=embed)
+        await ctx.reply(embed=embed)
 
 
 def setup(bot):

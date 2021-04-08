@@ -12,12 +12,12 @@ class Basic(commands.Cog):
 
     @commands.command(name="ping", aliases=['pong'], brief='Gives the bot\'s latency')
     async def ping(self, ctx):
-        await ctx.message.reply(f"Pong! {round(self.bot.latency * 1000)} ms")
+        await ctx.reply(f"Pong! {round(self.bot.latency * 1000)} ms")
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def restart(self, ctx):
-        await ctx.send("Restarting...")
+        await ctx.reply("Restarting...")
         os.system("sh startupfile.sh")
         await asyncio.sleep(2)
         exit(0)

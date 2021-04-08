@@ -14,7 +14,7 @@ class Fun(commands.Cog):
     async def choice(self, ctx, *, options: str):
         options = options.split(' ')
         choice = random.choice(options)
-        await ctx.send(f"I choose..... {choice}")
+        await ctx.reply(f"I choose..... {choice}")
 
     @commands.command(brief="PING SPAM", name="spamping")
     @commands.is_owner()
