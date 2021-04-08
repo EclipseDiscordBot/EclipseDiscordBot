@@ -1,6 +1,7 @@
 import discord
 import os
 import asyncio
+import constants.basic as basicC
 from discord.ext import commands
 
 
@@ -20,6 +21,10 @@ class Basic(commands.Cog):
         os.system("sh startupfile.sh")
         await asyncio.sleep(2)
         exit(0)
+
+    @commands.command(name="version", brief="Gives the bot's version")
+    async def version(self, ctx):
+        await ctx.reply(basicC.version)
 
 
 def setup(bot):
