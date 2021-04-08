@@ -18,6 +18,9 @@ class Fun(commands.Cog):
 
     @commands.command(brief="PING SPAM", name="spamping")
     @commands.is_owner()
-    async def spamping(self, ctx: discord.ext.commands.Context, times, member: discord.Member):
+    async def spamping(self, ctx: discord.ext.commands.Context, times: int, member: discord.Member):
         for i in range(times):
             await ctx.reply(member.mention)
+
+def setup(bot):
+    bot.add_cog(Fun(bot))
