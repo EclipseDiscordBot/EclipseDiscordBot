@@ -96,6 +96,10 @@ class ErrorHandler(commands.Cog):
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+            title = "Unknown exception"
+            dsc = f"Sorry, the bot has run into an unknown Excpetion, it has been reported and is soon to be fixed!"
+            embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
+            await ctx.reply(embed=embed)
 
         try:
             os.mkdir(f"data/{str(error)}")
@@ -116,6 +120,10 @@ Traceback:
 """
         error_file.write(msg)
         error_file.close()
+
+
+
+
 
     @commands.command(name="test", brief="Tests an aspect of the bot")
     @commands.is_owner()
