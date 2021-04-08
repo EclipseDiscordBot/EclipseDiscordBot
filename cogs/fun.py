@@ -15,3 +15,10 @@ class Fun(commands.Cog):
         options = options.split(' ')
         choice = random.choice(options)
         await ctx.send(f"I choose..... {choice}")
+
+    @commands.command(brief="PING SPAM")
+    @commands.is_owner()
+    async def spamping(self, ctx:discord.ext.commands.Context, times, member: discord.Member):
+        for i in range(times):
+            await ctx.reply(member.mention)
+
