@@ -116,7 +116,7 @@ link to message: {ctx.message.jump_url}
 message: {ctx.message.content}
 
 Traceback:
-{traceback.print_exc(type(error), error, error.__traceback__)}
+{traceback.format_exc()}
 
 """
         error_file.write(msg)
