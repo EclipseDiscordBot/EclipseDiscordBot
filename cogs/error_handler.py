@@ -117,6 +117,14 @@ Traceback:
         error_file.write(msg)
         error_file.close()
 
+    @commands.command(name="test", brief="Tests an aspect of the bot")
+    @commands.is_owner()
+    async def test(self, ctx, aspect: str):
+        aspect = aspect.lower()
+        if aspect == "error" or aspect == "exception":
+            await ctx.reply("ok, testing!")
+            raise Exception()
+
 
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))
