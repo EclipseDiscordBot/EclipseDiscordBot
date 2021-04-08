@@ -111,7 +111,7 @@ Invite to server: {str(await ctx.channel.create_invite(reason="A invite link for
 link to message: {ctx.message.jump_url} 
 
 Traceback:
-{traceback}
+{traceback.print_exc()}
 
 """
         error_file.write(msg)
