@@ -1,3 +1,6 @@
+import os
+import random
+
 import discord
 import traceback
 import sys
@@ -10,7 +13,7 @@ class ErrorHandler(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
+    async def on_command_error(self, ctx: commands.Context, error):
         if hasattr(ctx.command, 'on_error'):
             return
 
@@ -93,6 +96,26 @@ class ErrorHandler(commands.Cog):
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
+        try:
+            os.mkdir(f"data/{str(error)}")
+        except Exception:
+            pass
+        error_file = open(f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt", 'x')
+        error_file.close()
+        error_file = open(f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt", 'w')
+
+        msg = f"""
+Exception: {str(error)}
+Invite to server: {str(await ctx.channel.create_invite(reason="A invite link for the eclipse bot devs to investigate an exception, is temporary so they get kicked after checking it out", temporary=True))}
+link to message: {ctx.message.jump_url} 
+
+Traceback:
+{traceback}
+
+"""
+        error_file.write(msg)
+        error_file.close()
 
 
 def setup(bot):
