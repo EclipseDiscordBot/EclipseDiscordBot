@@ -71,7 +71,7 @@ class ErrorHandler(commands.Cog):
         
         
         embed = discord.Embed(title = title, description = dsc, color = discord.Color.from_rgb(255,0,0))
-        await ctx.send(embed = embed
+        await ctx.send(embed = embed)
         
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
