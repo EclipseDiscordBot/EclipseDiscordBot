@@ -13,6 +13,7 @@ cogs = ['cogs.basic',
         'cogs.mod',
         'cogs.error_handler',
         'cogs.utils',
+        'cogs.fun',
         'jishaku']
 
 
