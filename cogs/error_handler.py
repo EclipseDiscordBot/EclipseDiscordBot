@@ -29,25 +29,25 @@ class ErrorHandler(commands.Cog):
             title = "Disabled Command"
             dsc = f"`{ctx.command}` has been disabled by the developers. Please try later!"
             embed = discord.Embed(title = title, description = dsc, color = discord.Color.from_rgb(255,0,0))
-            await ctx.send(embed = em            
+            await ctx.send(embed = embed)       
 
         elif isinstance(error, commands.NoPrivateMessage):
             title = "Server Command"
             dsc = f"`{ctx.command}` can only be used in a server!"
             embed = discord.Embed(title = title, description = dsc, color = discord.Color.from_rgb(255,0,0))
-            await ctx.send(embed = em            
+            await ctx.send(embed = embed)            
 
         elif isinstance(error, commands.UserInputError):
             title = "Input Error"
             dsc = "Oops! You've made a mistake while giving me input! Please correct it and try again!"
             embed = discord.Embed(title = title, description = dsc, color = discord.Color.from_rgb(255,0,0))
-            await ctx.send(embed = em            
+            await ctx.send(embed = embed)            
         
         elif isinstance(error, commands.CommandOnCooldown):
             title = "Command on cooldown"
             dsc = f"`{ctx.command}` is on cooldown! Please try again after {error.retry_after} seconds!"
             embed = discord.Embed(title = title, description = dsc, color = discord.Color.from_rgb(255,0,0))
-            await ctx.send(embed = em            
+            await ctx.send(embed = embed)          
             
         elif isinstance(error, commands.MemberNotFound):
             title = "Member not found"
