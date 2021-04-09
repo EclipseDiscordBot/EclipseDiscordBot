@@ -9,7 +9,7 @@ from discord.ext import commands
 
 class ErrorHandler(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -103,7 +103,8 @@ class ErrorHandler(commands.Cog):
             os.mkdir(f"data/{str(error)}")
         except Exception:
             pass
-        error_file = open(f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt", 'w')
+        path = f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt"
+        error_file = open(path, 'w')
 
         stacktrace = traceback.format_tb(error.__traceback__)
 
@@ -119,6 +120,16 @@ Traceback:
 """
         error_file.write(msg)
         error_file.close()
+
+        e = discord.Embed(title="YO DEVS! THERES A BUG!", description="file in next msg!", colour=discord.Colour.random())
+        log_channel = self.bot.get_channel(829970903503994920)
+        log_msg = await log_channel.send(embed=e)
+        upload_file = discord.File(path)
+        log_msg.reply("<@&827817997565558784>", file=upload_file)
+
+
+
+
 
     @commands.command(name="test", brief="Tests an aspect of the bot")
     @commands.is_owner()
