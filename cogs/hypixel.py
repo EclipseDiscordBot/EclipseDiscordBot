@@ -88,10 +88,6 @@ class Hypixel(commands.Cog):
 
         self.currentAh = final_ah
 
-    @commands.command()
-    async def playerauction(self, ctx, player: str):
-        player_aucs = await self.hypixel.auction_from_player(player)
-        await ctx.reply(player_aucs)
 
 
 def setup(bot):
