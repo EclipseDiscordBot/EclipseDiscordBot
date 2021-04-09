@@ -103,8 +103,6 @@ class ErrorHandler(commands.Cog):
             os.mkdir(f"data/{str(error)}")
         except Exception:
             pass
-        error_file = open(f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt", 'x')
-        error_file.close()
         error_file = open(f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt", 'w')
 
         stacktrace = traceback.format_tb(error.__traceback__)
