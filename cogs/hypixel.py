@@ -3,7 +3,7 @@ from discord import Embed
 import asyncpixel
 import pickle
 from constants import bz_ids
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 
 class Hypixel(commands.Cog):
@@ -41,6 +41,15 @@ class Hypixel(commands.Cog):
         e.add_field(name="Sell Orders", value=item_quick_status.sell_orders, inline=True)
 
         await ctx.reply(embed=e)
+
+    @tasks.loop(seconds=30)
+    async def Bazaar_Loop(self):
+        bz = await self.hypixel.bazaar()
+        formattedbz = {}
+        for item in bz.bazaar_items:
+            formattedbz[item.product_id] = item
+
+        self.currentBazaar = formattedbz
 
 def setup(bot):
     bot.add_cog(Hypixel(bot))
