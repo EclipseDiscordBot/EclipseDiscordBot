@@ -145,12 +145,9 @@ Traceback:
         error_file.write(msg)
         error_file.close()
 
-        e = discord.Embed(title="YO DEVS! THERES A BUG!", description="file in next msg!",
-                          colour=discord.Colour.random())
         log_channel = self.bot.get_channel(830069392976773120)
-        log_msg = await log_channel.send(embed=e)
         upload_file = discord.File(path1)
-        await log_msg.reply(f"code: `{error_code}`", file=upload_file)
+        await log_channel.send(f"code: `{error_code}`", file=upload_file)
 
     @commands.command(name="test", brief="Tests an aspect of the bot")
     @commands.is_owner()
