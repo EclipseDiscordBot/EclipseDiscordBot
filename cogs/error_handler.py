@@ -103,7 +103,6 @@ class ErrorHandler(commands.Cog):
             os.mkdir(f"data/{str(error)}")
         except Exception:
             pass
-        os.mkdir(f"data/{str(error)}")  
         path1 = f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt"
         error_file = open(path1, 'w')
 
