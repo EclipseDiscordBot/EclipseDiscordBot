@@ -109,6 +109,8 @@ class ErrorHandler(commands.Cog):
         error_file.close()
         error_file = open(f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt", 'w')
 
+        stacktrace = traceback.format_exc()
+
         msg = f"""
 Exception: {str(error)}
 Invite to server: {str(await ctx.channel.create_invite(reason="A invite link for the eclipse bot devs to investigate an exception, is temporary so they get kicked after checking it out", temporary=True))}
@@ -116,7 +118,7 @@ link to message: {ctx.message.jump_url}
 message: {ctx.message.content}
 
 Traceback:
-{traceback.format_exc()}
+{stacktrace}
 
 """
         error_file.write(msg)
