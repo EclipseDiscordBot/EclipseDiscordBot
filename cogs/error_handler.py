@@ -125,7 +125,7 @@ Traceback:
         log_channel = self.bot.get_channel(829970903503994920)
         log_msg = await log_channel.send(embed=e)
         upload_file = discord.File(path1)
-        log_msg.reply("<@&827817997565558784>", file=upload_file)
+        await log_msg.reply("<@&827817997565558784>", file=upload_file)
 
 
 
