@@ -94,8 +94,6 @@ class ErrorHandler(commands.Cog):
                     await ctx.reply(embed=embed)
 
         else:
-            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
             title = "Unknown exception"
             dsc = f"Sorry, the bot has run into an unknown Exception, it has been reported and is soon to be fixed!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
