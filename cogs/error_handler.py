@@ -107,7 +107,7 @@ class ErrorHandler(commands.Cog):
         error_file.close()
         error_file = open(f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt", 'w')
 
-        stacktrace = traceback.format_exc()
+        stacktrace = traceback.format_tb(error.__traceback__)
 
         msg = f"""
 Exception: {str(error)}
@@ -128,7 +128,7 @@ Traceback:
         aspect = aspect.lower()
         if aspect == "error" or aspect == "exception":
             await ctx.reply("ok, testing!")
-            raise Exception()
+            raise Exception("TESTTTTTTT")
 
 
 def setup(bot):
