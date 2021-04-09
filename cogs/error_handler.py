@@ -95,38 +95,15 @@ class ErrorHandler(commands.Cog):
 
         else:
             title = "Unknown exception"
+            stacktrace = traceback.format_tb(error.__traceback__)
             dsc = f"Sorry, the bot has run into an unknown Exception, it has been reported and is soon to be fixed!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
             await ctx.reply(embed=embed)
+            dev_embed = discord.Embed(title = f"Unknown Exception found in command {ctx.command}", description = f"**Exception:**\n ```py\n{error}``` **Traceback:**\n ```py\n{stacktrace}```", color = discord.Color.from_rgb(0,255,255))
+            embed.add_field(name = "Context Details", value = f"**Guild:** {ctx.guild.name if ctx.guild else None} ({ctx.guild.id if ctx.guild else 0})\n**Author:** {ctx.author}\n**Message:** {ctx.message.content} ({ctx.message.id}"
+            ch = bot.get_channel(829970903503994920)
+            await ch.send(embed = embed
 
-        try:
-            os.mkdir(f"data/{str(error)}")
-        except Exception:
-            pass
-        error_file = open(f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt", 'w')
-
-        stacktrace = traceback.format_tb(error.__traceback__)
-
-        msg = f"""
-Exception: {str(error)}
-Invite to server: {str(await ctx.channel.create_invite(reason="A invite link for the eclipse bot devs to investigate an exception, is temporary so they get kicked after checking it out", temporary=True))}
-link to message: {ctx.message.jump_url} 
-message: {ctx.message.content}
-
-Traceback:
-{stacktrace}
-
-"""
-        error_file.write(msg)
-        error_file.close()
-
-    @commands.command(name="test", brief="Tests an aspect of the bot")
-    @commands.is_owner()
-    async def test(self, ctx, aspect: str):
-        aspect = aspect.lower()
-        if aspect == "error" or aspect == "exception":
-            await ctx.reply("ok, testing!")
-            raise Exception("TESTTTTTTT")
 
 
 def setup(bot):
