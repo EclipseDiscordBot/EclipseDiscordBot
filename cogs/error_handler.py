@@ -1,6 +1,6 @@
 import os
 import random
-
+import string
 import discord
 import traceback
 import sys
@@ -14,6 +14,7 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
+        error_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
         if hasattr(ctx.command, 'on_error'):
             return
 
@@ -97,6 +98,8 @@ class ErrorHandler(commands.Cog):
             title = "Unknown exception"
             dsc = f"Sorry, the bot has run into an unknown Exception, it has been reported and is soon to be fixed!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
+            embed.add_field(name="Think its needs to be fixed very quick?",
+                            value=f"if that's the case, dm a dev with this code: {error_code}")
             await ctx.reply(embed=embed)
 
         try:
@@ -118,6 +121,7 @@ Traceback:
 {stacktrace}
 
 """
+
         error_file.write(msg)
         error_file.close()
 
@@ -126,7 +130,7 @@ Traceback:
         log_channel = self.bot.get_channel(829970903503994920)
         log_msg = await log_channel.send(embed=e)
         upload_file = discord.File(path1)
-        await log_msg.reply("<@&827817997565558784>", file=upload_file)
+        await log_msg.reply(f"code: `{error_code}`", file=upload_file)
 
     @commands.command(name="test", brief="Tests an aspect of the bot")
     @commands.is_owner()
