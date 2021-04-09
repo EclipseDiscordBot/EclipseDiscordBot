@@ -14,6 +14,7 @@ cogs = ['cogs.basic',
         'cogs.error_handler',
         'cogs.utils',
         'cogs.fun',
+        'cogs.hypixel',
         'jishaku']
 
 
