@@ -1,3 +1,4 @@
+import aiohttp
 import discord
 from discord import Embed
 import asyncpixel
@@ -16,7 +17,29 @@ class Hypixel(commands.Cog):
         self.bz_id_item = bz_ids.id_name
         self.bz_item_id = bz_ids.name_id
 
-    @commands.command(name="bazaar", aliases=['bz'], brief="Gives information about a product in the Hypixel Skyblock bazaar")
+    @commands.command()
+    async def key(self, ctx, key):
+        key_data = await self.hypixel.key_data(key)
+        owner_uuid = key_data.owner
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'https://api.mojang.com/user/profiles/{owner_uuid}/names') as response:
+                json = await response.json()
+                owner_name = json[len(json) - 1]["name"]
+        limit = key_data.limit
+        queries_in_past_min = key_data.queries_in_past_min
+        total_queries = key_data.total_queries
+
+        e = Embed(title="Here's some info about this API key",
+                  description="**PLEASE NOTE IF THIS ISNT YOUR API KEY DESTROY IT IMMEDIATELY AND INFORM THE OWNER**")
+        e.add_field(name="Owner", value=owner_name, inline=False)
+        e.add_field(name="Global limit (queries / 2 minutes)", value=str(limit), inline=False)
+        e.add_field(name="No. of Queries in the past minute", value=str(queries_in_past_min), inline=False)
+        e.add_field(name="Total queries", value=str(total_queries), inline=False)
+
+        await ctx.reply(embed=e)
+
+    @commands.command(name="bazaar", aliases=['bz'],
+                      brief="Gives information about a product in the Hypixel Skyblock bazaar")
     async def bazaar(self, ctx, *, itemId=None):
         final_item_id = ""
         final_item_name = ""
@@ -50,6 +73,7 @@ class Hypixel(commands.Cog):
             formattedbz[item.product_id] = item
 
         self.currentBazaar = formattedbz
+
 
 def setup(bot):
     bot.add_cog(Hypixel(bot))
