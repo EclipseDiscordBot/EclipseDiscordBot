@@ -1,6 +1,6 @@
 echo "Initializing Bot now..."
 echo "Installing deps"
-pip install discord jishaku
+pip install -r requirements.txt
 echo "Pulling from GitHub..."
 git reset --hard HEAD
 git pull "https://github.com/EclipseDiscordBot/EclipseDiscordBot.git" --allow-unrelated-histories
