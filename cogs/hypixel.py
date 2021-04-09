@@ -13,7 +13,7 @@ class Hypixel(commands.Cog):
         self.hypixel = asyncpixel.Hypixel(pickle.load(open("credentials.pkl", 'rb'))['hypixel'])
         self.currentBazaar = None
         self.currentAh = None
-        self.Bazaar_Loop.start()
+        self.bazaar_loop.start()
         self.bz_id_item = bz_ids.id_name
         self.bz_item_id = bz_ids.name_id
 
@@ -66,13 +66,32 @@ class Hypixel(commands.Cog):
         await ctx.reply(embed=e)
 
     @tasks.loop(seconds=30)
-    async def Bazaar_Loop(self):
+    async def bazaar_loop(self):
         bz = await self.hypixel.bazaar()
         formattedbz = {}
         for item in bz.bazaar_items:
             formattedbz[item.product_id] = item
 
         self.currentBazaar = formattedbz
+
+    @tasks.loop(minutes=15)
+    async def auction_loop(self):
+        pages = []
+        final_ah = []
+        ah = await self.hypixel.auctions()
+        for page_no in range(ah.total_pages):
+            page = await self.hypixel.auctions(page_no)
+            pages.append(page)
+        for page in pages:
+            for auction in page:
+                final_ah.append(auction)
+
+        self.currentAh = final_ah
+
+    @commands.command()
+    async def playerauction(self, ctx, player: str):
+        player_aucs = await self.hypixel.auction_from_player(player)
+        await ctx.reply(player_aucs)
 
 
 def setup(bot):
