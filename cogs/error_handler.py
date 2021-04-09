@@ -14,7 +14,7 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
-        error_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+        error_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
         if hasattr(ctx.command, 'on_error'):
             return
 
