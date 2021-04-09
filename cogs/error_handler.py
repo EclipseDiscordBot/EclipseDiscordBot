@@ -127,7 +127,7 @@ Traceback:
 
         e = discord.Embed(title="YO DEVS! THERES A BUG!", description="file in next msg!",
                           colour=discord.Colour.random())
-        log_channel = self.bot.get_channel(829970903503994920)
+        log_channel = self.bot.get_channel(830069392976773120)
         log_msg = await log_channel.send(embed=e)
         upload_file = discord.File(path1)
         await log_msg.reply(f"code: `{error_code}`", file=upload_file)
