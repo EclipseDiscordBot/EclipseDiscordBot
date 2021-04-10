@@ -26,6 +26,10 @@ class Basic(commands.Cog):
     async def version(self, ctx):
         await ctx.reply(basicC.version)
 
+    @commands.command(name="invite", brief="Gives the bot's invite link!")
+    async def invite(self, ctx):
+        await ctx.reply(f"{basicC.invite} ,I'll be waiting!")
+
 
 def setup(bot):
     bot.add_cog(Basic(bot))
