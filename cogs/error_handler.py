@@ -148,13 +148,6 @@ Traceback:
         upload_file = discord.File(path1)
         await log_channel.send(f"code: `{error_code}`", file=upload_file)
 
-    @commands.command(name="test", brief="Tests an aspect of the bot")
-    @commands.is_owner()
-    async def test(self, ctx, aspect: str):
-        aspect = aspect.lower()
-        if aspect == "error" or aspect == "exception":
-            await ctx.reply("ok, testing!")
-            raise Exception("TESTTTTTTT")
 
 
 def setup(bot):
