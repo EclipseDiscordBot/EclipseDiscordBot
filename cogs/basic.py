@@ -19,7 +19,6 @@ class Basic(commands.Cog):
     async def restart(self, ctx):
         await ctx.reply("Restarting...")
         os.system("sh startupfile.sh")
-        await asyncio.sleep(2)
         exit(0)
 
     @commands.command(name="version", brief="Gives the bot's version")
