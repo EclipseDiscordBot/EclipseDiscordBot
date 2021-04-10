@@ -17,7 +17,8 @@ class Hypixel(commands.Cog):
         self.bz_id_item = bz_ids.id_name
         self.bz_item_id = bz_ids.name_id
 
-    @commands.command()
+    @commands.command(name="key", aliases=["hypixel_key", "hypixel_api_key"],
+                      brief="Gives information about a hypixel api key")
     async def key(self, ctx, key):
         key_data = await self.hypixel.key_data(key)
         owner_uuid = key_data.owner
@@ -29,7 +30,7 @@ class Hypixel(commands.Cog):
         queries_in_past_min = key_data.queries_in_past_min
         total_queries = key_data.total_queries
 
-        e = Embed(title="Here's some info about this API key",
+        e = Embed(title="Here's some info about your API key",
                   description="**PLEASE NOTE IF THIS ISNT YOUR API KEY DESTROY IT IMMEDIATELY AND INFORM THE OWNER**")
         e.add_field(name="Owner", value=owner_name, inline=False)
         e.add_field(name="Global limit (queries / 2 minutes)", value=str(limit), inline=False)
@@ -87,7 +88,6 @@ class Hypixel(commands.Cog):
                 final_ah.append(auction)
 
         self.currentAh = final_ah
-
 
 
 def setup(bot):
