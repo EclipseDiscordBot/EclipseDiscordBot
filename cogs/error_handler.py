@@ -133,7 +133,6 @@ class ErrorHandler(commands.Cog):
 
         msg = f"""
 Exception: {str(error)}
-Invite to server: {str(await ctx.channel.create_invite(reason="A invite link for the eclipse bot devs to investigate an exception, is temporary so they get kicked after checking it out", temporary=True))}
 link to message: {ctx.message.jump_url} 
 message: {ctx.message.content}
 
