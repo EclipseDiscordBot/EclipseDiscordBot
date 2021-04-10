@@ -67,7 +67,7 @@ class Moderation(commands.Cog):
         if channel is None:
             channel = ctx.channel
         await channel.set_permissions(ctx.guild.default_role, send_messages=False)
-        await channel.reply(f"{channel.mention} is now locked for everyone.")
+        await channel.send(f"{channel.mention} is now locked for everyone.")
         if channel != ctx.channel:
             await ctx.reply(f"{channel.mention} is now locked for everyone.")
 
@@ -78,7 +78,7 @@ class Moderation(commands.Cog):
         if channel is None:
             channel = ctx.channel
         await channel.set_permissions(ctx.guild.default_role, send_messages=False)
-        await channel.reply(f"{channel.mention} is now unlocked for everyone.")
+        await channel.send(f"{channel.mention} is now unlocked for everyone.")
         if channel != ctx.channel:
             await ctx.reply(f"{channel.mention} is now unlocked for everyone.")
 
