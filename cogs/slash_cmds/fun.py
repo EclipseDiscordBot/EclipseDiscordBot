@@ -16,3 +16,7 @@ class Fun(commands.Cog):
         options = options.split(' ')
         choice = random.choice(options)
         await ctx.send(f"I choose..... {choice}")
+
+
+def setup(bot):
+    bot.add_cog(Fun(bot))
