@@ -4,6 +4,7 @@ from discord import Embed
 import asyncpixel
 import pickle
 from constants import bz_ids
+from huge_functions.auction_calc import *
 from discord.ext import commands, tasks
 
 
@@ -13,6 +14,7 @@ class Hypixel(commands.Cog):
         self.hypixel = asyncpixel.Hypixel(pickle.load(open("credentials.pkl", 'rb'))['hypixel'])
         self.currentBazaar = None
         self.currentAh = None
+        self.AHDict = None
         self.bazaar_loop.start()
         self.bz_id_item = bz_ids.id_name
         self.bz_item_id = bz_ids.name_id
@@ -88,6 +90,7 @@ class Hypixel(commands.Cog):
                 final_ah.append(auction)
 
         self.currentAh = final_ah
+        self.AHDict = await calc_auc(self.hypixel, self.currentAh)
 
 
 def setup(bot):
