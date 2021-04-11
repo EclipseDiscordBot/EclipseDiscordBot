@@ -20,7 +20,6 @@ class Moderation(commands.Cog):
             return
         embed = discord.Embed(title="Ban Successful",
                               description=f"Banned {member} from {ctx.guild.name} with reason ```{reason}```",
-                              footer=ctx.message.created_at,
                               color=discord.Color.random())
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         try:
@@ -40,8 +39,7 @@ class Moderation(commands.Cog):
                 f" You cannot moderate them!")
             return
         embed = discord.Embed(title="Kick Successful", description=f"Kicked {member} from {ctx.guild.name} with "
-                                                                   f"reason ```{reason}```",
-                              footer=ctx.message.created_at, color=discord.Color.random())
+                                                                   f"reason ```{reason}```", color=discord.Color.random())
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         try:
             await member.send(f"You were kicked from {ctx.guild} for: {reason}")
