@@ -20,6 +20,7 @@ cogs = ['cogs.basic',
         'cogs.hypixel',
         'cogs.slash_cmds.fun',
         'cogs.slash_cmds.basic',
+        'cogs.slash_cmds.mod',
         'jishaku']
 
 
