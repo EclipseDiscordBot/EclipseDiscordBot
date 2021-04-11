@@ -4,3 +4,4 @@ asyncpixel
 matplotlib
 numpy
 pillow
+discord-py-slash-command

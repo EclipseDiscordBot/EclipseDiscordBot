@@ -2,10 +2,13 @@ import discord
 from discord.ext import commands
 import pickle
 import datetime
+from discord_slash import SlashCommand, SlashContext
+
 
 intents = discord.Intents.all()
 
 bot = commands.Bot(command_prefix="e!", intents=intents)
+slash = SlashCommand(bot)
 bot.launch_time = datetime.datetime.utcnow()
 bot.color = discord.Color.from_rgb(68, 11, 212)
 

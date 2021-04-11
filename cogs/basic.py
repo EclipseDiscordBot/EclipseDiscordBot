@@ -3,6 +3,7 @@ import os
 import asyncio
 import constants.basic as basicC
 from discord.ext import commands
+from discord_slash import cog_ext, SlashContext
 
 
 class Basic(commands.Cog):
@@ -32,6 +33,14 @@ class Basic(commands.Cog):
     @commands.command(name="test", brief="Tests an aspect of the bot")
     @commands.is_owner()
     async def test(self, ctx, aspect: str):
+        aspect = aspect.lower()
+        if aspect == "error" or aspect == "exception":
+            await ctx.reply("ok, testing!")
+            raise Exception("TESTTTTTTT")
+
+    @cog_ext.cog_slash(name="test")
+    @commands.is_owner()
+    async def _test(self, ctx, aspect: str):
         aspect = aspect.lower()
         if aspect == "error" or aspect == "exception":
             await ctx.reply("ok, testing!")
