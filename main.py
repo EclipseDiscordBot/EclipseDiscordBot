@@ -18,6 +18,8 @@ cogs = ['cogs.basic',
         'cogs.utils',
         'cogs.fun',
         'cogs.hypixel',
+        'cogs.slash_cmds.fun',
+        'cogs.slash_cmds.basic',
         'jishaku']
 
 

@@ -17,12 +17,6 @@ class Fun(commands.Cog):
         choice = random.choice(options)
         await ctx.reply(f"I choose..... {choice}")
 
-    @cog_ext.cog_slash(name="choose")
-    async def _choice(self, ctx: SlashContext, *, options: str):
-        options = options.split(' ')
-        choice = random.choice(options)
-        await ctx.send(f"I choose..... {choice}")
-
     @commands.command(brief="PING SPAM", name="spamping")
     @commands.is_owner()
     async def spamping(self, ctx: discord.ext.commands.Context, times: int, member: discord.Member):
