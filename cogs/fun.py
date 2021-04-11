@@ -3,6 +3,7 @@ import os
 import random
 import asyncio
 from discord.ext import commands
+from discord_slash import cog_ext, SlashContext
 
 
 class Fun(commands.Cog):
@@ -16,11 +17,18 @@ class Fun(commands.Cog):
         choice = random.choice(options)
         await ctx.reply(f"I choose..... {choice}")
 
+    @cog_ext.cog_slash(name="choose")
+    async def _choice(self, ctx: SlashContext, *, options: str):
+        options = options.split(' ')
+        choice = random.choice(options)
+        await ctx.send(f"I choose..... {choice}")
+
     @commands.command(brief="PING SPAM", name="spamping")
     @commands.is_owner()
     async def spamping(self, ctx: discord.ext.commands.Context, times: int, member: discord.Member):
         for i in range(times):
             await ctx.reply(member.mention)
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
