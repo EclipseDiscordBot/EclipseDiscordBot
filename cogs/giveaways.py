@@ -4,7 +4,7 @@ import datetime
 import humanize
 import re
 import asyncio
-
+import random
 
 class giveaways(commands.Cog):
   def __init__(self,bot):
