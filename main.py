@@ -21,6 +21,7 @@ cogs = ['cogs.basic',
         'cogs.slash_cmds.fun',
         'cogs.slash_cmds.basic',
         'cogs.slash_cmds.mod',
+        'cogs.giveaways',
         'jishaku']
 
 
