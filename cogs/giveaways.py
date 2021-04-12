@@ -34,7 +34,7 @@ class giveaways(commands.Cog):
     await gw_msg.add_reaction("🎉")
     while datetime.datetime.now() < end_time:
       await asyncio.sleep(duration.total_seconds()/10) # edits the embed only 10 times regardless of duration to prevent ratelimitation
-      remaining_time = humanize.precisedelta(end_time - datetime.datetime.now().total_seconds())
+      remaining_time = humanize.precisedelta((end_time - datetime.datetime.now()).total_seconds())
       new_embed = gw_msg.embeds[0].copy()
       new_embed.description = f"React with 🎉 to enter!\nTime Left: **{remaining_time}**\nHosted By: {ctx.author.mention}"
       await gw_msg.edit(embed = new_embed)
