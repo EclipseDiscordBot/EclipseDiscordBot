@@ -80,7 +80,7 @@ class giveaways(commands.Cog):
 			for i in word:
 				cleaned_prize += f"{i}\u2800"
 				
-		await ctx.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {new_msg.jump_url}")
+		await ctx.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {new_msg.jump_url}")#
 		
 			
 			
