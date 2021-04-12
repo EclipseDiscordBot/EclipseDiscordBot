@@ -43,7 +43,9 @@ class giveaways(commands.Cog):
     await gw_msg.edit(embed = new_embed)
     new_msg = await ctx.channel.fetch_message(gw_msg.id)
     reactions = new_msg.reactions[0]
-    winner = random.choice(reactions)
+    raffle = await reaction.users().flatten()
+    raffle.pop(raffle.index(self.bot.user))
+    winner = random.choice(raffle)
     cleaned_prize = ""
     for word in prize:
       for i in word:
@@ -76,7 +78,9 @@ class giveaways(commands.Cog):
     await gw_msg.edit(embed = new_embed)
     new_msg = await ctx.channel.fetch_message(gw_msg.id)
     reactions = new_msg.reactions[0]
-    winner = random.choice(reactions)
+    raffle = await reaction.users().flatten()
+    raffle.pop(raffle.index(self.bot.user))
+    winner = random.choice(raffle)
     for word in prize:
       for i in word:
         cleaned_prize += f"{i}\u2800"
