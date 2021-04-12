@@ -43,7 +43,7 @@ class giveaways(commands.Cog):
     await gw_msg.edit(embed = new_embed)
     new_msg = await ctx.channel.fetch_message(gw_msg.id)
     reactions = new_msg.reactions[0]
-    raffle = await reaction.users().flatten()
+    raffle = await reactions.users().flatten()
     raffle.pop(raffle.index(self.bot.user))
     winner = random.choice(raffle)
     cleaned_prize = ""
@@ -78,7 +78,7 @@ class giveaways(commands.Cog):
     await gw_msg.edit(embed = new_embed)
     new_msg = await ctx.channel.fetch_message(gw_msg.id)
     reactions = new_msg.reactions[0]
-    raffle = await reaction.users().flatten()
+    raffle = await reactions.users().flatten()
     raffle.pop(raffle.index(self.bot.user))
     winner = random.choice(raffle)
     for word in prize:
