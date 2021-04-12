@@ -3,6 +3,7 @@ from discord.ext import commands
 import datetime
 import humanize
 import asqlite
+import re
 
 
 class giveaways(commands.Cog):
@@ -65,6 +66,21 @@ class giveaways(commands.Cog):
 		if not int:
 			await ctx.send("I couldn't find any recent giveaways in this channel.")
 			return
-		gw_msg = await ctx.channel.fetc
+		gw_msg = await ctx.channel.fetch_message(int)
+		new_embed = gw_msg.embeds[0].copy()
+                e = [int(x) for x in re.findall(r'<@!?([0-9]+)>', new_embed.description)]
+		host = ctx.guild.get_member(e[0])
+		new_embed.description = f"React with 🎉 to enter!\n**Giveaway Ended**\nHosted By: {host.mention}"
+		await gw_msg.edit(embed = new_embed)
+		new_msg = ctx.channel.fetch_message(gw_msg.id)
+		reactions = new_msg.reactions[0]
+		winner = random.choice(reactions)
+		cleaned_prize = ""
+		for word in prize:
+			for i in word:
+				cleaned_prize += f"{i}\u2800"
+				
+		await ctx.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {new_msg.jump_url}")
+		
 			
 		
