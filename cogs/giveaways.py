@@ -3,6 +3,7 @@ from discord.ext import commands
 import datetime
 import humanize
 import re
+import asyncio
 
 
 class giveaways(commands.Cog):
