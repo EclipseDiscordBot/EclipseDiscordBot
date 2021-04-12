@@ -41,7 +41,7 @@ class giveaways(commands.Cog):
     new_embed = gw_msg.embeds[0].copy()
     new_embed.description = f"React with 🎉 to enter!\n**Giveaway Ended**\nHosted By: {ctx.author.mention}"
     await gw_msg.edit(embed = new_embed)
-    new_msg = ctx.channel.fetch_message(gw_msg.id)
+    new_msg = await ctx.channel.fetch_message(gw_msg.id)
     reactions = new_msg.reactions[0]
     winner = random.choice(reactions)
     cleaned_prize = ""
@@ -74,7 +74,7 @@ class giveaways(commands.Cog):
     host = ctx.guild.get_member(e[0])
     new_embed.description = f"React with 🎉 to enter!\n**Giveaway Ended**\nHosted By: {host.mention}"
     await gw_msg.edit(embed = new_embed)
-    new_msg = ctx.channel.fetch_message(gw_msg.id)
+    new_msg = await ctx.channel.fetch_message(gw_msg.id)
     reactions = new_msg.reactions[0]
     winner = random.choice(reactions)
     for word in prize:
