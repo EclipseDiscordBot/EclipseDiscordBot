@@ -10,7 +10,7 @@ class giveaways(commands.Cog):
     self.bot = bot
 
   @commands.command()
-  async def gstart(self,ctx,time,winners,prize):
+  async def gstart(self,ctx,time,winners,*,prize):
     if time.endswith('s'):
       seconds = time[:-1]
       duration = datetime.timedelta(seconds=int(seconds))
