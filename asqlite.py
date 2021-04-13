@@ -28,6 +28,7 @@ import asyncio
 PARSE_DECLTYPES = sqlite3.PARSE_DECLTYPES
 PARSE_COLNAMES = sqlite3.PARSE_COLNAMES
 
+
 class _WorkerEntry:
     __slots__ = ('func', 'args', 'kwargs', 'future', 'cancelled')
 
@@ -36,6 +37,7 @@ class _WorkerEntry:
         self.args = args
         self.kwargs = kwargs
         self.future = future
+
 
 class _Worker(threading.Thread):
     def __init__(self, *, loop):
@@ -75,6 +77,7 @@ class _Worker(threading.Thread):
     def stop(self):
         self._end.set()
 
+
 class _ContextManagerMixin:
     def __init__(self, _queue, _factory, func, *args, timeout=None, **kwargs):
         self._worker = _queue
@@ -107,6 +110,7 @@ class _ContextManagerMixin:
     async def __aexit__(self, exc_type, exc, tb):
         if self.__result is not None:
             await self.__result.close()
+
 
 class Cursor:
     """An asyncio-compatible version of :class:`sqlite3.Cursor`.
@@ -164,10 +168,12 @@ class Cursor:
         """Asynchronous version of :meth:`sqlite3.Cursor.fetchall`."""
         return await self._post(self._cursor.fetchall)
 
+
 class Transaction:
     """An asyncio-compatible transaction for sqlite3.
     This can be used as a context manager as well.
     """
+
     def __init__(self, conn):
         self.conn = conn
 
@@ -194,6 +200,7 @@ class Transaction:
         else:
             await self.rollback()
 
+
 class _CursorWithTransaction(Cursor):
     async def start(self):
         await self._conn.execute('BEGIN TRANSACTION;')
@@ -218,6 +225,7 @@ class _CursorWithTransaction(Cursor):
         finally:
             await self.close()
 
+
 class Connection:
     """An asyncio-compatible version of :class:`sqlite3.Connection`.
     Create these with :func:`.connect`.
@@ -227,6 +235,7 @@ class Connection:
         Along with :attr:`sqlite3.Connection.isolation_level`
         set to ``None`` and the journal_mode is set to ``WAL``.
     """
+
     def __init__(self, connection, queue):
         self._conn = connection
         self._queue = queue
@@ -322,6 +331,7 @@ class Connection:
         async with self.execute(query, *parameters) as cursor:
             return await cursor.fetchall()
 
+
 def _connect_pragmas(db, **kwargs):
     connection = sqlite3.connect(db, **kwargs)
     connection.execute('pragma journal_mode=wal')
@@ -329,6 +339,7 @@ def _connect_pragmas(db, **kwargs):
     connection.isolation_level = None
     connection.row_factory = sqlite3.Row
     return connection
+
 
 def connect(database, *, init=None, timeout=None, loop=None, **kwargs):
     """asyncio-compatible version of :func:`sqlite3.connect`.
@@ -351,6 +362,7 @@ def connect(database, *, init=None, timeout=None, loop=None, **kwargs):
     loop = loop or asyncio.get_event_loop()
     queue = _Worker(loop=loop)
     queue.start()
+
     def factory(con):
         return Connection(con, queue)
 
