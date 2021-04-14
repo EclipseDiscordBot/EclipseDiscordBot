@@ -5,6 +5,7 @@ import discord
 import traceback
 import sys
 from discord.ext import commands
+import datetime
 
 
 class ErrorHandler(commands.Cog):
@@ -122,30 +123,14 @@ class ErrorHandler(commands.Cog):
                             value=f"if that's the case, dm a dev with this code: {error_code}")
             await ctx.reply(embed=embed)
 
-        try:
-            os.mkdir(f"data/{str(error)}")
-        except Exception:
-            pass
-        path1 = f"data/{str(error)}/{random.randint(0, 1000000000000)}.txt"
-        error_file = open(path1, 'w')
-
         stacktrace = traceback.format_tb(error.__traceback__)
 
-        msg = f"""
-Exception found in command {ctx.command}: {str(error)}
-link to message: {ctx.message.jump_url} 
-message: {ctx.message.content}
-
-Traceback:
-{stacktrace}
-
-"""
-
-        error_file.write(msg)
-        error_file.close()
 
         log_channel = self.bot.get_channel(830069392976773120)
-        upload_file = discord.File(path1)
+        embed = discord.Embed(title = f"Unknown Exception caught in command {ctx.command}", description = f"Traceback: \n ```py\n{stacktrace}```", color = discord.Color.from_rgb(255,0,0))
+        embed.add_field(name = "Context Details", value = f"Guild: {ctx.guild} ({ctx.guild.id if ctx.guild else None})\n User: {ctx.author} ({ctx.author.id})")
+        embed.set_footer(text = "Command invoked at:")
+        embed.timestamp = datetime.datetime.now()
         await log_channel.send(f"code: `{error_code}`", file=upload_file)
         os.remove(path1)
 
