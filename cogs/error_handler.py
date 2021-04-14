@@ -132,7 +132,7 @@ class ErrorHandler(commands.Cog):
         stacktrace = traceback.format_tb(error.__traceback__)
 
         msg = f"""
-Exception: {str(error)}
+Exception found in command {ctx.command}: {str(error)}
 link to message: {ctx.message.jump_url} 
 message: {ctx.message.content}
 
@@ -147,6 +147,7 @@ Traceback:
         log_channel = self.bot.get_channel(830069392976773120)
         upload_file = discord.File(path1)
         await log_channel.send(f"code: `{error_code}`", file=upload_file)
+        os.remove(path1)
 
 
 
