@@ -35,7 +35,7 @@ class ErrorHandler(commands.Cog):
             dsc = f"`{ctx.command}` has been disabled by the developers. Please try later!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
             embed.add_field(name="Think its needs to be fixed very quick?",
-                            value=f"if that's the case, dm a dev with this code: {error_code}")
+                            value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
         elif isinstance(error, commands.NoPrivateMessage):
@@ -43,7 +43,7 @@ class ErrorHandler(commands.Cog):
             dsc = f"`{ctx.command}` can only be used in a server!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
             embed.add_field(name="Think its needs to be fixed very quick?",
-                            value=f"if that's the case, dm a dev with this code: {error_code}")
+                            value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
         elif isinstance(error, commands.UserInputError):
@@ -51,7 +51,7 @@ class ErrorHandler(commands.Cog):
             dsc = "Oops! You've made a mistake while giving me input! Please correct it and try again!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
             embed.add_field(name="Think its needs to be fixed very quick?",
-                            value=f"if that's the case, dm a dev with this code: {error_code}")
+                            value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
         elif isinstance(error, commands.CommandOnCooldown):
@@ -59,7 +59,7 @@ class ErrorHandler(commands.Cog):
             dsc = f"`{ctx.command}` is on cooldown! Please try again after {error.retry_after} seconds!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
             embed.add_field(name="Think its needs to be fixed very quick?",
-                            value=f"if that's the case, dm a dev with this code: {error_code}")
+                            value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
         elif isinstance(error, commands.MemberNotFound):
@@ -67,7 +67,7 @@ class ErrorHandler(commands.Cog):
             dsc = f"I couldn't find member {error.argument} in this server!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
             embed.add_field(name="Think its needs to be fixed very quick?",
-                            value=f"if that's the case, dm a dev with this code: {error_code}")
+                            value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
         elif isinstance(error, discord.errors.Forbidden):
@@ -75,7 +75,7 @@ class ErrorHandler(commands.Cog):
             dsc = f"Are you sure i have administrator permissions?"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
             embed.add_field(name="Think its needs to be fixed very quick?",
-                            value=f"if that's the case, dm a dev with this code: {error_code}")
+                            value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
         elif isinstance(error, commands.MissingPermissions):
@@ -85,7 +85,7 @@ class ErrorHandler(commands.Cog):
                 dsc = f"You are missing {perm} permission to run `{ctx.command}`"
                 embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
                 embed.add_field(name="Think its needs to be fixed very quick?",
-                                value=f"if that's the case, dm a dev with this code: {error_code}")
+                                value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                 await ctx.reply(embed=embed)
             else:
                 str_perms = ""
@@ -94,7 +94,7 @@ class ErrorHandler(commands.Cog):
                     dsc = f"You are missing these permissions to run `{ctx.command}`: {str_perms}"
                     embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
                     embed.add_field(name="Think its needs to be fixed very quick?",
-                                    value=f"if that's the case, dm a dev with this code: {error_code}")
+                                    value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                     await ctx.reply(embed=embed)
         elif isinstance(error, commands.BotMissingPermissions):
             title = "Missing Permissions"
@@ -103,7 +103,7 @@ class ErrorHandler(commands.Cog):
                 dsc = f"You are missing {perm} permission to run `{ctx.command}`"
                 embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
                 embed.add_field(name="Think its needs to be fixed very quick?",
-                                value=f"if that's the case, dm a dev with this code: {error_code}")
+                                value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                 await ctx.reply(embed=embed)
             else:
                 str_perms = ""
@@ -112,7 +112,7 @@ class ErrorHandler(commands.Cog):
                     dsc = f"You are missing these permissions to run `{ctx.command}`: {str_perms}"
                     embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
                     embed.add_field(name="Think its needs to be fixed very quick?",
-                                    value=f"if that's the case, dm a dev with this code: {error_code}")
+                                    value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                     await ctx.reply(embed=embed)
 
         else:
@@ -120,7 +120,7 @@ class ErrorHandler(commands.Cog):
             dsc = f"Sorry, the bot has run into an unknown Exception, it has been reported and is soon to be fixed!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
             embed.add_field(name="Think its needs to be fixed very quick?",
-                            value=f"if that's the case, dm a dev with this code: {error_code}")
+                            value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
         stacktrace = traceback.format_tb(error.__traceback__)
@@ -131,10 +131,21 @@ class ErrorHandler(commands.Cog):
         embed.add_field(name = "Context Details", value = f"Guild: {ctx.guild} ({ctx.guild.id if ctx.guild else None})\n User: {ctx.author} ({ctx.author.id})")
         embed.set_footer(text = "Command invoked at:")
         embed.timestamp = datetime.datetime.now()
-        await log_channel.send(f"code: `{error_code}`", file=upload_file)
+        await log_channel.send(f"code: {error_code}", embed = embed)
         os.remove(path1)
+ 
 
-
+    @commands.command()
+    @commands.cooldown(1, 86400, discord.BucketType.Member)
+    async def emergency(self,ctx,error_code):
+        log_channel = self.bot.get_channel(830069392976773120)
+        async for msg in log_channel.history(limit = 50):
+            if error_code in msg.content:
+                await msg.reply(f"hey <@605364556465963018> <@694839986763202580> {ctx.author} declares this as emergency! do something")
+                break
+        await ctx.message.reply("Alright, I've informed the devs about the emergency!")
+        
+                
 
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))
