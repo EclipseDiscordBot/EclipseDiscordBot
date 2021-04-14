@@ -136,7 +136,7 @@ class ErrorHandler(commands.Cog):
  
 
     @commands.command()
-    @commands.cooldown(1, 86400, commands.BucketType.Member)
+    @commands.cooldown(1, 86400, commands.BucketType.member)
     async def emergency(self,ctx,error_code):
         log_channel = self.bot.get_channel(830069392976773120)
         async for msg in log_channel.history(limit = 50):
