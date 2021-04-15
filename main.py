@@ -50,7 +50,7 @@ async def on_ready():
     for file in os.listdir("./cogs/slash_cmds"):
         if file.endswith('.py'):
             try:
-                bot.load_extension(f"cogs.{file[:-3]}")
+                bot.load_extension(f"cogs.slash_cmds.{file[:-3]}")
             except Exception as e:
                 exceptions += f"- {file} failed to load [{e}]\n"
             else:
