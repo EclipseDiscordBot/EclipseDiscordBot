@@ -53,6 +53,7 @@ class giveaways(commands.Cog):
             winner = random.choice(raffle)
         except Exception:
             await ctx.send(f"There were no entrants to the giveaway lol\n {gw_msg.jump_url}")
+            return
         cleaned_prize = ""
         for word in prize:
             for i in word:
@@ -89,6 +90,7 @@ class giveaways(commands.Cog):
             winner = random.choice(raffle)
         except Exception:
             await ctx.send(f"There were no entrants to the giveaway lol\n {gw_msg.jump_url}")
+            return
         cleaned_prize = ""
         for word in prize:
             for i in word:
