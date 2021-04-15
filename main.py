@@ -3,6 +3,7 @@ from discord.ext import commands
 import pickle
 import datetime
 from discord_slash import SlashCommand, SlashContext
+import os
 
 
 intents = discord.Intents.all()
