@@ -23,7 +23,7 @@ async def on_ready():
                         try:
                                 client.load_extension(f"cogs.{file[:-3]}")
                         except Exception as e:
-                                exceptions += f"- {file} failed to load\n"
+                                exceptions += f"- {file} failed to load [{e}]\n"
                         else:
                                 exceptions += f"+ {file} loaded successfully"
    
