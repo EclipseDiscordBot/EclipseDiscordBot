@@ -73,6 +73,7 @@ class giveaways(commands.Cog):
                 msg_id += id
         gw_msg = await ctx.channel.fetch_message(msg_id)
         new_embed = gw_msg.embeds[0].copy()
+        prize = gw_msg.embeds[0].title
         e = [int(x) for x in re.findall(r'<@!?([0-9]+)>', new_embed.description)]
         host = ctx.guild.get_member(e[0])
         new_embed.description = f"React with 🎉 to enter!\n**Giveaway Ended**\nHosted By: {host.mention}"
