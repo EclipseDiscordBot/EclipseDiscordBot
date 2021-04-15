@@ -12,7 +12,17 @@ import asyncio
 intents = discord.Intents.all()
 
 
-
+async def get_prefix(bot, message):
+        base = ["<@827566012467380274>", "<@!827566012467380274>", "<@827566012467380274> ", "<@!827566012467380274> "]
+        if message.guild is None:
+                base.append("e! ")
+                base.append("e!")
+        else:
+                async with bot.pool.acquire() as conn:
+                        async with conn.transaction():
+                                prefix = await conn.fetchval("SELECT prefix FROM prefixes WHERE guild_id = $1", (message.guild.id,))
+                                base.append(prefix)
+        return base
 
 bot = commands.Bot(command_prefix="e!", intents=intents)
 
