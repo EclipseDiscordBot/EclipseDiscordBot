@@ -125,28 +125,28 @@ class ErrorHandler(commands.Cog):
 
         stacktrace = traceback.format_tb(error.__traceback__)
 
-
         log_channel = self.bot.get_channel(830069392976773120)
-        embed = discord.Embed(title = f"Unknown Exception caught in command {ctx.command}", description = f"Traceback: \n ```py\n{stacktrace}```", color = discord.Color.from_rgb(255,0,0))
-        embed.add_field(name = "Context Details", value = f"Guild: {ctx.guild} ({ctx.guild.id if ctx.guild else None})\n User: {ctx.author} ({ctx.author.id})")
-        embed.set_footer(text = "Command invoked at:")
+        embed = discord.Embed(title=f"Unknown Exception caught in command {ctx.command}",
+                              description=f"Traceback: \n ```py\n{stacktrace}```",
+                              color=discord.Color.from_rgb(255, 0, 0))
+        embed.add_field(name="Context Details",
+                        value=f"Guild: {ctx.guild} ({ctx.guild.id if ctx.guild else None})\n User: {ctx.author} ({ctx.author.id})")
+        embed.set_footer(text="Command invoked at:")
         embed.timestamp = datetime.datetime.now()
-        embed.set_author(name = error)
-        await log_channel.send(f"code: {error_code}", embed = embed)
-        os.remove(path1)
- 
+        embed.set_author(name=error)
+        await log_channel.send(f"code: {error_code}", embed=embed)
 
     @commands.command()
     @commands.cooldown(1, 86400, commands.BucketType.member)
-    async def emergency(self,ctx,error_code):
+    async def emergency(self, ctx, error_code):
         log_channel = self.bot.get_channel(830069392976773120)
-        async for msg in log_channel.history(limit = 50):
+        async for msg in log_channel.history(limit=50):
             if error_code in msg.content:
-                await msg.reply(f"hey <@605364556465963018> <@694839986763202580> {ctx.author} declares this as emergency! do something")
+                await msg.reply(
+                    f"hey <@605364556465963018> <@694839986763202580> {ctx.author} declares this as emergency! do something")
                 break
         await ctx.message.reply("Alright, I've informed the devs about the emergency!")
-        
-                
+
 
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))
