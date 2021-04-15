@@ -34,15 +34,13 @@ class ErrorHandler(commands.Cog):
             title = "Disabled Command"
             dsc = f"`{ctx.command}` has been disabled by the developers. Please try later!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
-            embed.add_field(name="Think its needs to be fixed very quick?",
-                            value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
         elif isinstance(error, commands.NoPrivateMessage):
             title = "Server Command"
             dsc = f"`{ctx.command}` can only be used in a server!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
-            embed.add_field(name="Think its needs to be fixed very quick?",
+            embed.add_field(name="Think its a bug and needs to be fixed very quick?",
                             value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
@@ -50,23 +48,19 @@ class ErrorHandler(commands.Cog):
             title = "Input Error"
             dsc = "Oops! You've made a mistake while giving me input! Please correct it and try again!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
-            embed.add_field(name="Think its needs to be fixed very quick?",
-                            value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
         elif isinstance(error, commands.CommandOnCooldown):
             title = "Command on cooldown"
             dsc = f"`{ctx.command}` is on cooldown! Please try again after {error.retry_after} seconds!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
-            embed.add_field(name="Think its needs to be fixed very quick?",
-                            value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
         elif isinstance(error, commands.MemberNotFound):
             title = "Member not found"
             dsc = f"I couldn't find member {error.argument} in this server!"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
-            embed.add_field(name="Think its needs to be fixed very quick?",
+            embed.add_field(name="Think its a bug and needs to be fixed very quick?",
                             value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
@@ -74,7 +68,7 @@ class ErrorHandler(commands.Cog):
             title = "I don't have the permissions"
             dsc = f"Are you sure i have administrator permissions?"
             embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
-            embed.add_field(name="Think its needs to be fixed very quick?",
+            embed.add_field(name="Think its a bug and needs to be fixed very quick?",
                             value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
 
@@ -84,7 +78,7 @@ class ErrorHandler(commands.Cog):
                 perm = error.missing_perms[0]
                 dsc = f"You are missing {perm} permission to run `{ctx.command}`"
                 embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
-                embed.add_field(name="Think its needs to be fixed very quick?",
+                embed.add_field(name="Think its a bug and needs to be fixed very quick?",
                                 value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                 await ctx.reply(embed=embed)
             else:
@@ -93,7 +87,7 @@ class ErrorHandler(commands.Cog):
                     str_perms += f"{perm}, "
                     dsc = f"You are missing these permissions to run `{ctx.command}`: {str_perms}"
                     embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
-                    embed.add_field(name="Think its needs to be fixed very quick?",
+                    embed.add_field(name="Think its a bug and needs to be fixed very quick?",
                                     value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                     await ctx.reply(embed=embed)
         elif isinstance(error, commands.BotMissingPermissions):
@@ -102,7 +96,7 @@ class ErrorHandler(commands.Cog):
                 perm = error.missing_perms[0]
                 dsc = f"You are missing {perm} permission to run `{ctx.command}`"
                 embed = discord.Embed(title=title, description=dsc, color=discord.Color.random())
-                embed.add_field(name="Think its needs to be fixed very quick?",
+                embed.add_field(name="Think its a bug and needs to be fixed very quick?",
                                 value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                 await ctx.reply(embed=embed)
             else:
