@@ -131,6 +131,7 @@ class ErrorHandler(commands.Cog):
         embed.add_field(name = "Context Details", value = f"Guild: {ctx.guild} ({ctx.guild.id if ctx.guild else None})\n User: {ctx.author} ({ctx.author.id})")
         embed.set_footer(text = "Command invoked at:")
         embed.timestamp = datetime.datetime.now()
+        embed.set_author(name = error)
         await log_channel.send(f"code: {error_code}", embed = embed)
         os.remove(path1)
  
