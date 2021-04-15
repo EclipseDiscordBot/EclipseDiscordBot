@@ -51,7 +51,7 @@ async def on_ready():
          
 loop = asyncio.get_event_loop()
 f = pickle.load(open('credentials.pkl', 'rb'))
-bot.pool = loop.run_until_complete(asyncpg.create_pool(host = f["postgres_host"], port = f["postgres_port"], user = f["postgres_user"], port = f["postgres_port"], password = f["postgres_password"], database = f["postgres_database"]))
+bot.pool = loop.run_until_complete(asyncpg.create_pool(dsn = f["postgres_uri"], host = f["postgres_host"], user = f["postgres_user"], port = f["postgres_port"], password = f["postgres_password"], database = f["postgres_database"]))
 
 
 token = pickle.load(open("credentials.pkl", 'rb'))['discord']
