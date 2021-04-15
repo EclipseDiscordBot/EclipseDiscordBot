@@ -54,5 +54,4 @@ f = pickle.load(open('credentials.pkl', 'rb'))
 bot.pool = loop.run_until_complete(asyncpg.create_pool(dsn = f["postgres_uri"], host = f["postgres_host"], user = f["postgres_user"], port = f["postgres_port"], password = f["postgres_password"], database = f["postgres_database"]))
 
 
-token = pickle.load(open("credentials.pkl", 'rb'))['discord']
-bot.run(token)
+bot.run(f["discord"])
