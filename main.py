@@ -25,7 +25,7 @@ async def on_ready():
                         except Exception as e:
                                 exceptions += f"- {file} failed to load [{e}]\n"
                         else:
-                                exceptions += f"+ {file} loaded successfully"
+                                exceptions += f"+ {file} loaded successfully\n"
    
         embed = discord.Embed(title = "Bot ready!", description = f"Cogs status: \n ```diff\n{exceptions}```", color = bot.color)
         embed.timestamp = bot.launch_time
