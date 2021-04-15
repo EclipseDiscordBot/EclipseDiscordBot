@@ -17,6 +17,7 @@ bot.color = discord.Color.from_rgb(156, 7, 241)
 
 @bot.event
 async def on_ready():
+        bot.load_extension('jihaku')
         exceptions = ""
         for file in os.listdir("./cogs"):
                 if file.endswith('.py'):
