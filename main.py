@@ -25,7 +25,7 @@ async def on_ready():
                                 client.load_extension(f"cogs.{file[:-3]}")
                         except Exception as e:
                                 exceptions += f"- {file} failed to load\n"
-                                tracebacks += f"{traceback.format_exc()}\n"
+                                tracebacks += f"{traceback.format_tb(e.__traceback__)}\n"
                         else:
                                 exceptions += f"+ {file} loaded successfully"
    
