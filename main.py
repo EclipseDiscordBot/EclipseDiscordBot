@@ -18,20 +18,16 @@ bot.color = discord.Color.from_rgb(156, 7, 241)
 @bot.event
 async def on_ready():
         exceptions = ""
-        tracebacks = ""
         for file in os.listdir("./cogs"):
                 if file.endswith('.py'):
                         try:
                                 client.load_extension(f"cogs.{file[:-3]}")
                         except Exception as e:
                                 exceptions += f"- {file} failed to load\n"
-                                tracebacks += f"{traceback.format_tb(e.__traceback__)}\n"
                         else:
                                 exceptions += f"+ {file} loaded successfully"
    
         embed = discord.Embed(title = "Bot ready!", description = f"Cogs status: \n ```diff\n{exceptions}```", color = bot.color)
-        if tracebacks != "":
-                embed.add_field(name = "Exceptions", value = f"```py\n{tracebacks}")
         embed.timestamp = bot.launch_time
         embed.set_footer(text = "Bot online since:")
         c = bot.get_channel(827737123704143890)
