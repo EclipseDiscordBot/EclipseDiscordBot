@@ -83,6 +83,7 @@ class giveaways(commands.Cog):
         raffle = await reactions.users().flatten()
         raffle.pop(raffle.index(self.bot.user))
         winner = random.choice(raffle)
+        cleaned_prize = ""
         for word in prize:
             for i in word:
                 cleaned_prize += f"{i}\u200b"
