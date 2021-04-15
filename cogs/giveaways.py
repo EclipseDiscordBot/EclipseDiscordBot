@@ -49,7 +49,10 @@ class giveaways(commands.Cog):
         reactions = new_msg.reactions[0]
         raffle = await reactions.users().flatten()
         raffle.pop(raffle.index(self.bot.user))
-        winner = random.choice(raffle)
+        try:
+            winner = random.choice(raffle)
+        except Exception:
+            await ctx.send(f"There were no entrants to the giveaway lol\n {gw_msg.jump_url}")
         cleaned_prize = ""
         for word in prize:
             for i in word:
@@ -82,7 +85,10 @@ class giveaways(commands.Cog):
         reactions = new_msg.reactions[0]
         raffle = await reactions.users().flatten()
         raffle.pop(raffle.index(self.bot.user))
-        winner = random.choice(raffle)
+        try:
+            winner = random.choice(raffle)
+        except Exception:
+            await ctx.send(f"There were no entrants to the giveaway lol\n {gw_msg.jump_url}")
         cleaned_prize = ""
         for word in prize:
             for i in word:
