@@ -4,6 +4,7 @@ import pickle
 import datetime
 from discord_slash import SlashCommand, SlashContext
 import os
+import traceback
 
 
 intents = discord.Intents.all()
