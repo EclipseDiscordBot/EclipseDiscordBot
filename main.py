@@ -15,6 +15,7 @@ bot.launch_time = datetime.datetime.utcnow()
 bot.color = discord.Color.from_rgb(156, 7, 241)
 
 
+
 @bot.event
 async def on_ready():
         bot.load_extension('jihaku')
