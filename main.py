@@ -5,13 +5,25 @@ import datetime
 from discord_slash import SlashCommand, SlashContext
 import os
 import traceback
-
+import pickle
+import asyncpg
+import asyncio
 
 intents = discord.Intents.all()
 
+
+
+
 bot = commands.Bot(command_prefix="e!", intents=intents)
+
+
+
 slash = SlashCommand(bot, override_type=True)
+
+
 bot.launch_time = datetime.datetime.utcnow()
+
+
 bot.color = discord.Color.from_rgb(156, 7, 241)
 
 
@@ -35,8 +47,12 @@ async def on_ready():
         c = bot.get_channel(827737123704143890)
         await c.send(embed = embed)
                     
+
          
-                               
+loop = asyncio.get_event_loop()
+f = pickle.load(open('credentials.pkl', 'rb'))
+bot.pool = loop.run_until_complete(asyncpg.create_pool(host = f["postgres_host"], port = f["postgres_port"], user = f["postgres_user"], port = f["postgres_port"], password = f["postgres_password"], database = f["postgres_database"]))
+
 
 token = pickle.load(open("credentials.pkl", 'rb'))['discord']
 bot.run(token)
