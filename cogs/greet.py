@@ -13,17 +13,17 @@ class greet(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 ch_id, msg, del_after = await conn.fetchval("SELECT channel_id, msg, delafter FROM greet WHERE guild_id = $1", ctx.guild.id)
-    channel = ctx.guild.get_channel(ch_id)
-    embed = discord.Embed(title = "Greet configuration", description = f"These are the current "
-                                                                                        f"greet configurations of"
-                                                                                        f" **{ctx.guild.name}**",
-                          color = self.bot.color)
-    embed.add_field(name="Message", value = msg)
-    embed.add_field(name = "Channel", value = channel.mention)
-    embed.add_field(name = "Message will be deleted after", value = str(del_after))
-    embed.add_field(name = "Variables", value = "You can use these keywords that will be replaced accordingly. \n **{mc}** - Will be replaced with the guilds' member count \n **{mention}** - Will be replaced with the joined member's mention")
-    embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-    await ctx.send(embed = embed)
+        channel = ctx.guild.get_channel(ch_id)
+        embed = discord.Embed(title = "Greet configuration", description = f"These are the current "
+                                                                                            f"greet configurations of"
+                                                                                            f" **{ctx.guild.name}**",
+                              color = self.bot.color)
+        embed.add_field(name="Message", value = msg)
+        embed.add_field(name = "Channel", value = channel.mention)
+        embed.add_field(name = "Message will be deleted after", value = str(del_after))
+        embed.add_field(name = "Variables", value = "You can use these keywords that will be replaced accordingly. \n **{mc}** - Will be replaced with the guilds' member count \n **{mention}** - Will be replaced with the joined member's mention")
+        embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
+        await ctx.send(embed = embed)
 
 
 
