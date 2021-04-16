@@ -11,7 +11,8 @@ class giveaways(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(brief="Starts a GIVEAWAY")
+    @commands.cooldown(1, 15, commands.BucketType.member)
     async def gstart(self, ctx, time, winners, *, prize):
         if time.endswith('s'):
             seconds = time[:-1]
@@ -60,7 +61,8 @@ class giveaways(commands.Cog):
                 cleaned_prize += f"{i}\u200b"
         await ctx.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {new_msg.jump_url}")
 
-    @commands.command()
+    @commands.command(brief="Rerolls the giveaway")
+    @commands.cooldown(1, 5, commands.BucketType.member)
     async def greroll(self, ctx, id=None):
         msg_id = 0
         if not id:
