@@ -20,7 +20,7 @@ async def get_prefix(bot, message):
     else:
         async with bot.pool.acquire() as conn:
             async with conn.transaction():
-                prefix = await conn.fetchval("SELECT prefix FROM prefixes WHERE guild_id = $1", (message.guild.id,))
+                prefix = await conn.fetchval("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
                 base.append(prefix)
     return base
 
@@ -70,7 +70,8 @@ async def prefix(ctx, prefix):
     async with bot.pool.acquire() as conn:
         async with conn.transaction():
             await conn.execute("UPDATE prefixes SET prefix = $1 WHERE guild_id = $2", prefix, ctx.guild.id)
-    await ctx.send(f"My prefix in this server has successfully been changed to {prefix}\n\n **TIP:** To include spaces in the prefix do use quotes like {prefix}prefix \"hey \"")
+    await ctx.send(f"My prefix in this server has successfully been changed to {prefix}\n\n **TIP:** To include "
+                   f"spaces in the prefix do use quotes like {prefix}prefix \"hey \"")
 
 
 
