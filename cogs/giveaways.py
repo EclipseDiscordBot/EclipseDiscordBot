@@ -100,6 +100,5 @@ class Giveaway(commands.Cog):
         await ctx.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {new_msg.jump_url}")
 
 
-
 def setup(bot):
     bot.add_cog(Giveaway(bot))
