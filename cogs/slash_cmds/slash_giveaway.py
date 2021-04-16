@@ -14,7 +14,7 @@ class Giveaway(commands.Cog):
 
     @cog_ext.cog_slash(name="giveaway")
     @commands.cooldown(1, 15, commands.BucketType.member)
-    async def gstart(self, ctx: SlashContext, time, winners, *, prize):
+    async def gstart(self, ctx: SlashContext, time, winners, prize):
         if time.endswith('s'):
             seconds = time[:-1]
             duration = datetime.timedelta(seconds=int(seconds))
