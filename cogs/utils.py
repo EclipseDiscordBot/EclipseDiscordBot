@@ -6,7 +6,7 @@ class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(aliases=['av'], brief="gives the mentioned user(you if nobody is mentioned)'s avatar")
     async def avatar(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
