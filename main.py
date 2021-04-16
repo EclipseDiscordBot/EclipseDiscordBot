@@ -26,7 +26,7 @@ async def get_prefix(bot, message):
 
 mentions = discord.AllowedMentions(everyone=False, users=True, replied_user=False, roles=False)
 
-bot = commands.Bot(command_prefix="e!", intents=intents, allowed_mentions = mentions)
+bot = commands.Bot(command_prefix=get_prefix, intents=intents, allowed_mentions = mentions)
 
 slash = SlashCommand(bot, override_type=True)
 
