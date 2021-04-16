@@ -25,7 +25,7 @@ async def get_prefix(bot, message):
     return base
 
 
-bot = commands.Bot(command_prefix="e!", intents=intents)
+bot = commands.Bot(command_prefix=get_prefix, intents=intents)
 
 slash = SlashCommand(bot, override_type=True)
 
