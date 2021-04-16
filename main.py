@@ -63,6 +63,28 @@ async def on_ready():
     await c.send(embed=embed)
 
 
+@bot.command()
+@commands.has_permissions(administrator = True)
+@commands.guild_only()
+async def prefix(ctx, prefix):
+    async with bot.pool.acquire() as conn:
+        async with conn.transaction():
+            await conn.execute("UPDATE prefixes SET prefix = $1 WHERE guild_id = $2", prefix, ctx.guild.id)
+    await ctx.send(f"My prefix in this server has successfully been changed to {prefix}\n\n **TIP:** To include spaces in the prefix do use quotes like {prefix}prefix \"hey \"")
+
+
+
+
+@bot.event
+async def on_guild_join(guild):
+    async with bot.pool.acquire() as conn:
+        async with conn.transaction():
+            await conn.execute("INSERT INTO prefixes (guild_id, prefix) VALUES ($1, $2)", guild.id, "e!")
+
+
+
+
+
 loop = asyncio.get_event_loop()
 f = pickle.load(open('credentials.pkl', 'rb'))
 bot.pool = loop.run_until_complete(
