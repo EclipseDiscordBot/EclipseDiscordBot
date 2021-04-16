@@ -13,7 +13,7 @@ class owner_cmds(commands.Cog):
 
     @commands.command(breif = "Perform SQL commands ")
     @commands.is_owner()
-    async def sql(self, ctx, query, vals):
+    async def sql(self, ctx, query, vals=None):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 if query.startswith("SELECT"):
@@ -25,12 +25,20 @@ class owner_cmds(commands.Cog):
                     else:
                         await ctx.message.add_reaction("✅")
                 else:
-                    try:
-                        await conn.execute(query, vals)
-                    except Exception:
-                        await ctx.message.add_reaction("‼️")
+                    if val is None:
+                        try:
+                            await conn.execute(query, vals)
+                        except Exception:
+                            await ctx.message.add_reaction("‼️")
+                        else:
+                            await ctx.message.add_reaction("✅")
                     else:
-                        await ctx.message.add_reaction("✅")
+                        try:
+                            await conn.execute(query, vals)
+                        except Exception:
+                            await ctx.message.add_reaction("‼️")
+                        else:
+                            await ctx.message.add_reaction("✅")
 
 
 def setup(bot):
