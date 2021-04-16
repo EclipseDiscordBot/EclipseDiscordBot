@@ -64,7 +64,7 @@ async def on_ready():
 
 
 @bot.command()
-@commands.has_permissions(administrator = True)
+@commands.has_permissions(administrator=True)
 @commands.guild_only()
 async def prefix(ctx, prefix):
     async with bot.pool.acquire() as conn:
@@ -74,16 +74,11 @@ async def prefix(ctx, prefix):
                    f"spaces in the prefix do use quotes like {prefix}prefix \"hey \"")
 
 
-
-
 @bot.event
 async def on_guild_join(guild):
     async with bot.pool.acquire() as conn:
         async with conn.transaction():
             await conn.execute("INSERT INTO prefixes (guild_id, prefix) VALUES ($1, $2)", guild.id, "e!")
-
-
-
 
 
 loop = asyncio.get_event_loop()
