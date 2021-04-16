@@ -24,8 +24,9 @@ async def get_prefix(bot, message):
                 base.append(prefix)
     return base
 
+mentions = discord.AllowedMentions(everyone=False, users=True, replied_user=False, roles=False)
 
-bot = commands.Bot(command_prefix=get_prefix, intents=intents)
+bot = commands.Bot(command_prefix=get_prefix, intents=intents, allowed_mentions = mentions)
 
 slash = SlashCommand(bot, override_type=True)
 
@@ -79,6 +80,8 @@ async def on_guild_join(guild):
     async with bot.pool.acquire() as conn:
         async with conn.transaction():
             await conn.execute("INSERT INTO prefixes (guild_id, prefix) VALUES ($1, $2)", guild.id, "e!")
+            await conn.execute("INSERT INTO greet (guild_id, config, channel_id, msg, delafter VALUES ($1, $2, $3, "
+                               "$4, $5)", guild.id, 0, 0, "placeholder", 0)
 
 
 loop = asyncio.get_event_loop()
