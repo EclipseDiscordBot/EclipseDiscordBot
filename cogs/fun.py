@@ -17,11 +17,6 @@ class Fun(commands.Cog):
         choice = random.choice(options)
         await ctx.reply(f"I choose..... {choice}")
 
-    @commands.command(brief="PING SPAM(owner only to call other devs on, so nobody use it pls)", name="spamping")
-    @commands.is_owner()
-    async def spamping(self, ctx: discord.ext.commands.Context, times: int, member: discord.Member):
-        for i in range(times):
-            await ctx.reply(member.mention)
 
 
 def setup(bot):
