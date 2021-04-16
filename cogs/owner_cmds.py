@@ -17,28 +17,13 @@ class owner_cmds(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 if query.startswith("SELECT"):
-                    try:
-                        ret = await conn.fetchval(query, vals)
-                        await ctx.send(f"The query returned {ret}")
-                    except Exception:
-                        await ctx.message.add_reaction("‼️")
-                    else:
-                        await ctx.message.add_reaction("✅")
+                    ret = await conn.fetchval(query, vals)
+                    await ctx.send(f"The query returned {ret}")
                 else:
                     if vals is None:
-                        try:
-                            await conn.execute(query, vals)
-                        except Exception:
-                            await ctx.message.add_reaction("‼️")
-                        else:
-                            await ctx.message.add_reaction("✅")
+                        await conn.execute(query)
                     else:
-                        try:
-                            await conn.execute(query, vals)
-                        except Exception:
-                            await ctx.message.add_reaction("‼️")
-                        else:
-                            await ctx.message.add_reaction("✅")
+                        await conn.execute(query, vals)
 
 
 def setup(bot):
