@@ -25,7 +25,7 @@ class owner_cmds(commands.Cog):
                     else:
                         await ctx.message.add_reaction("✅")
                 else:
-                    if val is None:
+                    if vals is None:
                         try:
                             await conn.execute(query, vals)
                         except Exception:
