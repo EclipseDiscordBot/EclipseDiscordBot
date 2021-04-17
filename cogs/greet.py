@@ -141,7 +141,7 @@ class greet(commands.Cog):
                     msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", member.guild.id)
                     delafter = await conn.fetchval("SELECT delafter FROM greet WHERE guild_id = $1", member.guild.id)
                     channel = member.guild.get_channel(ch_id)
-                    text = msg.replace("{mc}", member.guild.member_count).replace("{mention}", member.mention)
+                    text = msg.replace("{mc}", str(member.guild.member_count)).replace("{mention}", member.mention)
                     await channel.send(text, delete_after=int(delafter))
 
 
