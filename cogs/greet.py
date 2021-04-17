@@ -101,7 +101,7 @@ class greet(commands.Cog):
         channel = ctx.guild.get_channel(ch_id)
         embed.add_field(name="Message", value=msg)
         embed.add_field(name="Channel", value=channel.mention)
-        embed.add_field(name="Message will be deleted after", value=str(del_after))
+        embed.add_field(name="Message will be deleted after", value=str(amt))
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
