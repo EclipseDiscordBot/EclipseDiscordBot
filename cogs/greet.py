@@ -51,7 +51,7 @@ class greet(commands.Cog):
     async def channel(self, ctx, channel: discord.TextChannel):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.execute("UPDATE greet SET channel_id = $1 WHERE guild_id = $2", ctx.channel.id, ctx.guild.id)
+                await conn.execute("UPDATE greet SET channel_id = $1 WHERE guild_id = $2", channel.id, ctx.guild.id)
                 del_after = await conn.fetchval("SELECT delafter FROM greet WHERE guild_id = $1", ctx.guild.id)
                 msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", ctx.guild.id)
         embed = discord.Embed(title="Greet configuration has been updated", description=f"These are the current "
