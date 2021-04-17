@@ -17,8 +17,14 @@ class greet(commands.Cog):
                 del_after = await conn.fetchval("SELECT delafter FROM greet WHERE guild_id = $1", ctx.guild.id)
                 config = await conn.fetchval("SELECT config FROM greet WHERE guild_id = $1", ctx.guild.id)
 
-
-        channel = ctx.guild.get_channel(ch_id)
+        try:
+            channel = ctx.guild.get_channel(ch_id)
+        except Exception:
+            channel = f"Not Setup Yet! Do {ctx.prefix}greet channel #channel"
+        if msg == "placeholder":
+            msg = f"Not Setup Yet! Do {ctx.prefix}greet msg <msg>"
+        if del_after == 0:
+            msg = f""
         if config == 1:
             title = "Greet is ENABLED"
         elif config == 0:
@@ -85,7 +91,7 @@ class greet(commands.Cog):
     async def delafter(self, ctx, amt: int):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.execute("UPDARE greet SET delafter = $1 WHERE guild_id = $2", amt, ctx.guild.id)
+                await conn.execute("UPDATE greet SET delafter = $1 WHERE guild_id = $2", amt, ctx.guild.id)
                 ch_id = await conn.fetchval("SELECT channel_id FROM greet WHERE guild_id = $1", ctx.guild.id)
                 msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", ctx.guild.id)
         embed = discord.Embed(title="Greet configuration has been updated", description=f"These are the current "
