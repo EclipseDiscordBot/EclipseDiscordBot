@@ -15,13 +15,19 @@ class greet(commands.Cog):
                 ch_id = await conn.fetchval("SELECT channel_id FROM greet WHERE guild_id = $1", ctx.guild.id)
                 msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", ctx.guild.id)
                 del_after = await conn.fetchval("SELECT delafter FROM greet WHERE guild_id = $1", ctx.guild.id)
+                config = await conn.fetchval("SELECT config FROM greet WHERE guild_id = $1", ctx.guild.id)
+
 
         channel = ctx.guild.get_channel(ch_id)
-        embed = discord.Embed(title="Greet configuration", description=f"These are the current greet configurations of **{ctx.guild.name}**\n\n You "
+        if config == 1:
+            title = "Greet is ENABLED"
+        elif config == 0:
+            title = "Greet is DISABLED"
+        embed = discord.Embed(title=title, description=f"These are the current greet configurations of **{ctx.guild.name}**\n\n You "
                                                                        f"can change using the following commands:\n"
                                                                        f"`{ctx.prefix}greet channel #channel`\n"
-                                                                       f"`{ctx.prefix}greet delafter 5\n"
-                                                                       f"`{ctx.prefix}greet msg your message here",
+                                                                       f"`{ctx.prefix}greet delafter 5`\n"
+                                                                       f"`{ctx.prefix}greet msg your message here`",
                               color=self.bot.color)
         embed.add_field(name="Message", value=msg)
         embed.add_field(name="Channel", value=channel.mention)
@@ -139,6 +145,8 @@ class greet(commands.Cog):
                 elif config == 1:
                     ch_id = await conn.fetchval("SELECT channel_id FROM greet WHERE guild_id = $1", member.guild.id)
                     msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", member.guild.id)
+                    if msg == "placeholder":
+                        return
                     delafter = await conn.fetchval("SELECT delafter FROM greet WHERE guild_id = $1", member.guild.id)
                     channel = member.guild.get_channel(ch_id)
                     text = msg.replace("{mc}", str(member.guild.member_count)).replace("{mention}", member.mention)
