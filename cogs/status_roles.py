@@ -30,7 +30,7 @@ class status_roles(commands.Cog):
     @sr.command()
     @commands.has_permissions(administrator = True)
     @commands.guild_only()
-    async def keyword(self,ctx,keyword):
+    async def keyword(self,ctx,keyword:str):
       async with self.bot.pool.acquire() as conn:
         async with conn.transaction():
           await conn.execute("UPDATE sr SET keyword = $1 WHERE guild_id = $1", ctx.guild.id)
@@ -47,6 +47,8 @@ class status_roles(commands.Cog):
     
     
     @sr.command()
+    @commands.guild_only()
+    @commands.has_permissions(administrator = True)
     async def role(self,ctx,role_id):
       if isinstance(role_id, int):
         try:
@@ -56,10 +58,24 @@ class status_roles(commands.Cog):
           return
       elif isinstance(role_id, discord.Role):
         role = role_id
-      
+      else:
+        await ctx.send("Please provide an ID or a role mention!")
+        return
       async with self.bot.pool.acquire() as conn:
-        async with 
-        
+        async with conn.transaction():
+          await conn.execute("UPDATE sr SET role_id = $1 WHERE guild_id = $2", role.id, ctx.guild.id)
+          keyword = await conn.fetchval("SELECT key FROM sr WHERE guild_id = $1", ctx.guild.id)
+      txt = role.mention
+      embed = discord.Embed(title="Status Roles has been updated!",
+                            description=f"Status roles gives a role to a person if they have a certain keyword in their custom activity.\n **Here is {ctx.guild.name}'s configuration**",
+                            color=self.bot.color)
+      embed.add_field(name="Role", value=txt)
+      embed.add_field(name="Keyword", value=keyword)
+      await ctx.send(embed=embed)
+
+
+
+
               
           
       

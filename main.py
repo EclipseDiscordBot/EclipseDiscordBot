@@ -9,7 +9,7 @@ import pickle
 import asyncpg
 import asyncio
 
-intents = discord.Intents.all()
+intents = discord.Intents()
 
 
 async def get_prefix(bot, message):
