@@ -82,8 +82,15 @@ async def on_guild_join(guild):
     async with bot.pool.acquire() as conn:
         async with conn.transaction():
             await conn.execute("INSERT INTO prefixes (guild_id, prefix) VALUES ($1, $2)", guild.id, "e!")
-            await conn.execute("INSERT INTO greet (guild_id, config, channel_id, msg, delafter VALUES ($1, $2, $3, $4, $5)", guild.id, 0, 0, "placeholder", 0)
+            await conn.execute("INSERT INTO greet (guild_id, config, channel_id, msg, delafter) VALUES ($1, $2, $3, $4, $5)", guild.id, 0, 0, "placeholder", 0)
 
+
+@bot.event
+async def on_guild_leave(guild):
+    async with bot.pool.acquire() as conn:
+        async with conn.transaction():
+            await conn.execute("DELETE FROM prefixes WHERE guild_id = $1", guild.id)
+            await conn.execute("DELETE FROM greet WHERE guild_id = $1", guild.id)
 
 loop = asyncio.get_event_loop()
 f = pickle.load(open('credentials.pkl', 'rb'))

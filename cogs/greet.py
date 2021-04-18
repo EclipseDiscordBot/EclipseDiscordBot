@@ -12,18 +12,36 @@ class greet(commands.Cog):
     async def greet(self, ctx):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                ch_id, msg, del_after = await conn.fetchval(
-                    "SELECT channel_id, msg, delafter FROM greet WHERE guild_id = $1", ctx.guild.id)
-        channel = ctx.guild.get_channel(ch_id)
-        embed = discord.Embed(title="Greet configuration", description=f"These are the current "
-                                                                       f"greet configurations of"
-                                                                       f" **{ctx.guild.name}**",
+                ch_id = await conn.fetchval("SELECT channel_id FROM greet WHERE guild_id = $1", ctx.guild.id)
+                msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", ctx.guild.id)
+                del_after = await conn.fetchval("SELECT delafter FROM greet WHERE guild_id = $1", ctx.guild.id)
+                config = await conn.fetchval("SELECT config FROM greet WHERE guild_id = $1", ctx.guild.id)
+
+        try:
+            channel = ctx.guild.get_channel(ch_id)
+        except Exception:
+            channel = f"Not Setup Yet! Do {ctx.prefix}greet channel #channel"
+        if msg == "placeholder":
+            msg = f"Not Setup Yet! Do {ctx.prefix}greet msg <msg>"
+        if del_after == 0:
+            msg = f""
+        if config == 1:
+            title = "Greet is ENABLED"
+        elif config == 0:
+            title = "Greet is DISABLED"
+        embed = discord.Embed(title=title, description=f"These are the current greet configurations of **{ctx.guild.name}**\n\n You "
+                                                                       f"can change using the following commands:\n"
+                                                                       f"`{ctx.prefix}greet channel #channel`\n"
+                                                                       f"`{ctx.prefix}greet delafter 5`\n"
+                                                                       f"`{ctx.prefix}greet msg your message here`",
                               color=self.bot.color)
         embed.add_field(name="Message", value=msg)
         embed.add_field(name="Channel", value=channel.mention)
         embed.add_field(name="Message will be deleted after", value=str(del_after))
         embed.add_field(name="Variables",
-                        value="You can use these keywords that will be replaced accordingly. \n **{mc}** - Will be replaced with the guilds' member count \n **{mention}** - Will be replaced with the joined member's mention")
+                        value="You can use these keywords that will be replaced accordingly. \n **{mc}** - Will be "
+                              "replaced with the guilds' member count \n **{mention}** - Will be replaced with the "
+                              "joined member's mention")
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
@@ -33,9 +51,9 @@ class greet(commands.Cog):
     async def channel(self, ctx, channel: discord.TextChannel):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.execute("UPDATE greet SET channel_id = $1 WHERE guild_id = $2", ctx.channel.id, ctx.guild.id)
-                del_after, msg = await conn.fetchval("SELECT delafter, msg FROM greet WHERE guild_id = $1",
-                                                     ctx.guild.id)
+                await conn.execute("UPDATE greet SET channel_id = $1 WHERE guild_id = $2", channel.id, ctx.guild.id)
+                del_after = await conn.fetchval("SELECT delafter FROM greet WHERE guild_id = $1", ctx.guild.id)
+                msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", ctx.guild.id)
         embed = discord.Embed(title="Greet configuration has been updated", description=f"These are the current "
                                                                                         f"greet configurations of"
                                                                                         f" **{ctx.guild.name}**",
@@ -47,12 +65,15 @@ class greet(commands.Cog):
         await ctx.send(embed=embed)
 
     @greet.command()
+    @commands.has_permissions(manage_messages = True)
+    @commands.guild_only()
     async def msg(self, ctx, *, msg):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("UPDATE greet SET msg = $1 WHERE guild_id = $2", msg, ctx.guild.id)
-                del_after, ch_id = await conn.fetchval("SELECT delafter, channel_id FROM greet WHERE guild_id = $1",
-                                                       ctx.guild.id)
+                del_after = await conn.fetchval("SELECT delafter, channel_id FROM greet WHERE guild_id = $1", ctx.guild.id)
+                ch_id = await conn.fetchval("SELECT channel_id FROM greet WHERE guild_id = $1", ctx.guild.id)
+
         embed = discord.Embed(title="Greet configuration has been updated", description=f"These are the current "
                                                                                         f"greet configurations of"
                                                                                         f" **{ctx.guild.name}**",
@@ -70,8 +91,9 @@ class greet(commands.Cog):
     async def delafter(self, ctx, amt: int):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.execute("UPDARE greet SET delafter = $1 WHERE guild_id = $2", amt, ctx.guild.id)
-                ch_id, msg = await conn.fetchval("SELECT channel_id, msg FROM greet WHERE guild_id = $1", ctx.guild.id)
+                await conn.execute("UPDATE greet SET delafter = $1 WHERE guild_id = $2", amt, ctx.guild.id)
+                ch_id = await conn.fetchval("SELECT channel_id FROM greet WHERE guild_id = $1", ctx.guild.id)
+                msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", ctx.guild.id)
         embed = discord.Embed(title="Greet configuration has been updated", description=f"These are the current "
                                                                                         f"greet configurations of"
                                                                                         f" **{ctx.guild.name}**",
@@ -79,7 +101,7 @@ class greet(commands.Cog):
         channel = ctx.guild.get_channel(ch_id)
         embed.add_field(name="Message", value=msg)
         embed.add_field(name="Channel", value=channel.mention)
-        embed.add_field(name="Message will be deleted after", value=str(del_after))
+        embed.add_field(name="Message will be deleted after", value=str(amt))
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
@@ -90,6 +112,9 @@ class greet(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("UPDATE greet SET config = $1", 1)
+                msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", ctx.guild.id)
+                del_after = await conn.fetchval("SELECT delafter FROM greet WHERE guild_id = $1", ctx.guild.id)
+                ch_id = await conn.fetchval("SELECT channel_id FROM greet WHERE guild_id = $1", ctx.guild.id)
         embed = discord.Embed(title="Greet is now ENABLED", description=f"These are the current "
                                                                         f"greet configurations of"
                                                                         f" **{ctx.guild.name}**",
@@ -110,8 +135,6 @@ class greet(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("UPDATE greet SET config = $1", 0)
-                ch_id, msg, del_after = await conn.fetchval(
-                    "SELECT channel_id, msg, delafter FROM greet WHERE guild_id = $1", ctx.guild.id)
         embed = discord.Embed(title="Greet is now DISABLED", description="", color=self.bot.color)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(
@@ -126,10 +149,13 @@ class greet(commands.Cog):
                 if config == 0:
                     return
                 elif config == 1:
-                    ch_id, msg, delafter = await conn.fetchval(
-                        "SELECT channel_id, msg, delafter FROM greet WHERE guild_id = $1", member.guild.id)
+                    ch_id = await conn.fetchval("SELECT channel_id FROM greet WHERE guild_id = $1", member.guild.id)
+                    msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", member.guild.id)
+                    if msg == "placeholder":
+                        return
+                    delafter = await conn.fetchval("SELECT delafter FROM greet WHERE guild_id = $1", member.guild.id)
                     channel = member.guild.get_channel(ch_id)
-                    text = msg.replace("{mc}", member.guild.member_count).replace("{mention}", member.mention)
+                    text = msg.replace("{mc}", str(member.guild.member_count)).replace("{mention}", member.mention)
                     await channel.send(text, delete_after=int(delafter))
 
 
