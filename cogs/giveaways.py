@@ -117,7 +117,9 @@ class Giveaway(commands.Cog):
                 gw = await conn.fetch("SELECT * FROM giveaways WHERE msg_id = $1", msg_id)
                 await self.gend(gw)
 
-    end_giveaways.start()
+    @commands.Cog.listener('on_ready')
+    async def on_ready(self):
+        self.end_giveaways.start()
 
 
 
