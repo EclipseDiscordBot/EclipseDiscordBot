@@ -48,7 +48,7 @@ class Giveaway(commands.Cog):
 
     @commands.command(brief="Starts a GIVEAWAY")
     @commands.cooldown(1, 15, commands.BucketType.member)
-    async def gstart(self, ctx, time, winners, *, prize):
+    async def gstart(self, ctx, time, winners:int, *, prize):
         if not isinstance(winners, int):
             await ctx.send("Winners must be a number like: 2")
             return
