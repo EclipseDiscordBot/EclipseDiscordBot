@@ -51,24 +51,30 @@ class Giveaway(commands.Cog):
     @commands.command(brief="Starts a GIVEAWAY")
     @commands.cooldown(1, 15, commands.BucketType.member)
     async def gstart(self, ctx, time, winners ,*, prize):
+        def convert(t):
+            pos = ["s", "m", "h", "d"]
 
-        if time.endswith('s'):
-            seconds = time[:-1]
-            duration = datetime.timedelta(seconds=int(seconds))
-        if time.endswith('m'):
-            minutes = time[:-1]
-            duration = datetime.timedelta(minutes=int(minutes))
-        elif time.endswith('h'):
-            hours = time[:-1]
-            duration = datetime.timedelta(hours=int(hours))
-        elif time.endswith('d'):
-            days = time[:-1]
-            duration = datetime.timedelta(days=int(days))
-        else:
-            duration = None
-        if duration is None:
+            time_dict = {"s": 1, "m": 60, "h": 3600, "d": 3600 * 24}
+
+            unit = t[-1]
+
+            if unit not in pos:
+                return -1
+            try:
+                val = int(time[:-1])
+            except:
+                return -2
+
+            return val * time_dict[unit]
+
+        seconds_duration = convert(time)
+        if seconds_duration == -1:
             await ctx.send("Failed to parse time. Please try again")
             return
+        if seconds_duration == -2:
+            await ctx.send("Failed to parse time. Please try again")
+            return
+        duration = datetime.timedelta(seconds = seconds_duration)
         if duration > datetime.timedelta(days = 30):
             await ctx.send("Time too long, maximum value is 30 days")
             return
