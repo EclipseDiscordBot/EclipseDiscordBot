@@ -43,6 +43,7 @@ async def on_ready():
         if file.endswith('.py'):
             try:
                 bot.load_extension(f"cogs.{file[:-3]}")
+                print(f"loaded cogs.{file[:-3]}")
             except Exception as e:
                 exceptions += f"- {file} failed to load [{e}]\n"
             else:
@@ -52,6 +53,7 @@ async def on_ready():
         if file.endswith('.py'):
             try:
                 bot.load_extension(f"cogs.slash_cmds.{file[:-3]}")
+                print(f"loaded cogs.slash_cmds.{file[:-3]}")
             except Exception as e:
                 exceptions += f"- {file} failed to load [{e}]\n"
             else:
