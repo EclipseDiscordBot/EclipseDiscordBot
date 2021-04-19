@@ -82,7 +82,7 @@ class Giveaway(commands.Cog):
             async with conn.transaction():
                 await conn.execute(
                     "INSERT INTO giveaways (msg_id, channel_id, guild_id, host, winners, end_time, prize) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-                    gw_msg.id, ctx.channel.id, ctx.author.id, int(winners), end_timestamp, prize)
+                    gw_msg.id, ctx.channel.id, ctx.guild.id, ctx.author.id, int(winners), end_timestamp, prize)
 
     @commands.command(brief="Rerolls the giveaway")
     @commands.cooldown(1, 5, commands.BucketType.member)
