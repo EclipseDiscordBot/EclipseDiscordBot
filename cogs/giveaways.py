@@ -108,20 +108,6 @@ class Giveaway(commands.Cog):
                 await self.gend(gw)
 
 
-        @tasks.loop(seconds = 5)
-        async def end_gws(self):
-            await self.bot.wait_until_ready()
-            print("Ending...")
-            async with self.bot.pool.acquire() as conn:
-                async with conn.transaction():
-                    res = await conn.fetch("SELECT * FROM giveaways")
-            for row in res:
-                end_time = datetime.datetime.fromtimestamp(row["end_time"])
-                if datetime.datetime.now() - end_time < datetime.timedelta(seconds = 5):
-                    await self.bot.pool.execute("DELETE FROM giveaways WHERE msg_id = $1", row["msg_id"])
-                    await self.gend(row)
-
-        end_gws.start()
 
 
 def setup(bot):
