@@ -28,9 +28,10 @@ async def get_prefix(bot, message):
                 base.append(prefix)
     return base
 
+
 mentions = discord.AllowedMentions(everyone=False, users=True, replied_user=False, roles=False)
 
-bot = commands.Bot(command_prefix=get_prefix, intents=intents, allowed_mentions = mentions)
+bot = commands.Bot(command_prefix=get_prefix, intents=intents, allowed_mentions=mentions)
 
 slash = SlashCommand(bot, override_type=True)
 
@@ -86,7 +87,9 @@ async def on_guild_join(guild):
     async with bot.pool.acquire() as conn:
         async with conn.transaction():
             await conn.execute("INSERT INTO prefixes (guild_id, prefix) VALUES ($1, $2)", guild.id, "e!")
-            await conn.execute("INSERT INTO greet (guild_id, config, channel_id, msg, delafter) VALUES ($1, $2, $3, $4, $5)", guild.id, 0, 0, "placeholder", 0)
+            await conn.execute(
+                "INSERT INTO greet (guild_id, config, channel_id, msg, delafter) VALUES ($1, $2, $3, $4, $5)", guild.id,
+                0, 0, "placeholder", 0)
 
 
 @bot.event
@@ -95,8 +98,6 @@ async def on_guild_leave(guild):
         async with conn.transaction():
             await conn.execute("DELETE FROM prefixes WHERE guild_id = $1", guild.id)
             await conn.execute("DELETE FROM greet WHERE guild_id = $1", guild.id)
-
-
 
 
 async def gend(gw):
@@ -109,35 +110,41 @@ async def gend(gw):
     new_embed = msg.embeds[0].copy()
     end_timestamp = gw["end_time"]
     await discord.utils.sleep_until(datetime.datetime.fromtimestamp(end_timestamp))
-    new_embed.description = f"React with 🎉 to enter!\n**Giveaway Ended**\nWinners: **{winners} winners**\nHosted By: {host.mention}"
-    await msg.edit(embed=new_embed)
     reactions = msg.reactions[0]
     raffle = await reactions.users().flatten()
     raffle.pop(raffle.index(bot.user))
-    try:
-        winner = random.choice(raffle)
-    except Exception:
-        await ch.send(f"There were no entrants to the giveaway lol\n {msg.jump_url}")
-        return
+    if winners > 1:
+        try:
+            winner = random.choice(raffle)
+            winner_str = winner.mention
+        except Exception:
+            await ch.send(f"There were no entrants to the giveaway lol\n {msg.jump_url}")
+            return
+    else:
+        new_list = []
+        for entrant in raffle:
+            new_list.append(entrant.mention)
+        final_set = set(new_list)
+        winner_list = random.sample(final_set, winners)
+        winner_str = ""
+        for win in winner_list:
+            winner_str += f"{win.mention}, "
+
+    new_embed.description = f"Winner(s): {winner_str}\n Hosted by: {host.mention}"
+    new_embed.timestamp = datetime.datetime.now()
+    if winners > 1:
+        new_embed.set_footer(text=f"{winners} winners • Ended at")
+    else:
+        new_embed.set_footer(text="Ended at")
     cleaned_prize = ""
     for word in prize:
         for i in word:
             cleaned_prize += f"{i}\u200b"
-    await ch.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {msg.jump_url}")
+    await ch.send(f"🎉 Congratulations {winner_str}! You won **{cleaned_prize}**! \n {msg.jump_url}")
     await bot.pool.execute("DELETE FROM giveaways WHERE msg_id = $1", gw["msg_id"])
 
 
-
-
-
-
-
-
-
-
-
-
-@tasks.loop(seconds = 5)
+@tasks.loop(seconds=5)
 async def end_gws():
     await bot.wait_until_ready()
     print("Ending...")
@@ -146,16 +153,11 @@ async def end_gws():
             res = await conn.fetch("SELECT * FROM giveaways")
     for row in res:
         end_time = datetime.datetime.fromtimestamp(row["end_time"])
-        if datetime.datetime.now() - end_time < datetime.timedelta(seconds = 5):
+        if datetime.datetime.now() - end_time < datetime.timedelta(seconds=5):
             await gend(row)
 
+
 end_gws.start()
-
-
-
-
-
-
 
 loop = asyncio.get_event_loop()
 f = pickle.load(open('credentials.pkl', 'rb'))
