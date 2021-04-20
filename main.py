@@ -122,6 +122,7 @@ async def gend(gw):
         for i in word:
             cleaned_prize += f"{i}\u200b"
     await ch.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {msg.jump_url}")
+    await bot.pool.execute("DELETE FROM giveaways WHERE msg_id = $1", gw["msg_id"])
 
 
 
@@ -144,7 +145,6 @@ async def end_gws():
     for row in res:
         end_time = datetime.datetime.fromtimestamp(row["end_time"])
         if datetime.datetime.now() - end_time < datetime.timedelta(seconds = 5):
-            await bot.pool.execute("DELETE FROM giveaways WHERE msg_id = $1", row["msg_id"])
             await gend(row)
 
 end_gws.start()
