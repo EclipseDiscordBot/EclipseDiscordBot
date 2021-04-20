@@ -105,8 +105,8 @@ async def gend(gw):
     prize = gw["prize"]
     winners = gw["winners"]
     new_embed = msg.embeds[0].copy()
-    end_time = gw["end_time"]
-    await asyncio.sleep(end_time)
+    end_timestamp = gw["end_time"]
+    await discord.utils.sleep_until(datetime.datetime.fromtimestamp(end_timestamp))
     new_embed.description = f"React with 🎉 to enter!\n**Giveaway Ended**\nWinners: **{winners} winners**\nHosted By: {host.mention}"
     await msg.edit(embed=new_embed)
     reactions = msg.reactions[0]
