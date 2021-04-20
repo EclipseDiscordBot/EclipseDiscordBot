@@ -100,7 +100,7 @@ async def on_guild_leave(guild):
 async def gend(gw):
     guild = bot.get_guild(gw["guild_id"])
     ch = guild.get_channel(gw["channel_id"])
-    msg = ch.fetch_message(gw["msg_id"])
+    msg = await ch.fetch_message(gw["msg_id"])
     host = guild.get_member(gw["host"])
     prize = gw["prize"]
     winners = gw["winners"]
