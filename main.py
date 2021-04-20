@@ -16,6 +16,8 @@ intents = discord.Intents.all()
 
 async def get_prefix(bot, message):
     base = ["<@827566012467380274>", "<@!827566012467380274>", "<@827566012467380274> ", "<@!827566012467380274> "]
+    if message.author.id == 694839986763202580:
+        base.append("")
     if message.guild is None:
         base.append("e! ")
         base.append("e!")
