@@ -18,8 +18,6 @@ class Giveaway(commands.Cog):
         host = guild.get_member(gw["host"])
         prize = gw["prize"]
         winners = gw["winners"]
-        end_time = datetime.datetime.fromtimestamp(gw["end_time"])
-        await discord.utils.sleep_until(end_time)
         new_embed = msg.embeds[0].copy()
         new_embed.description = f"React with 🎉 to enter!\n**Giveaway Ended**\nWinners: **{winners} winners**\nHosted By: {host.mention}"
         await msg.edit(embed=new_embed)
@@ -37,15 +35,7 @@ class Giveaway(commands.Cog):
                 cleaned_prize += f"{i}\u200b"
         await ch.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {msg.jump_url}")
 
-    @tasks.loop(seconds=5)
-    async def end_giveaways(self):
-        await self.bot.wait_until_ready()
-        async with self.bot.pool.acquire() as conn:
-            async with conn.transaction():
-                total_res = await conn.fetch("SELECT * FROM giveaways")
-        for gw in total_res:
-            if datetime.datetime.now() - datetime.datetime.fromtimestamp(gw["end_time"]) < datetime.timedelta(seconds = 5):
-                await self.gend(gw)
+
 
 
     @commands.command(brief="Starts a GIVEAWAY")
@@ -114,13 +104,22 @@ class Giveaway(commands.Cog):
                 msg_id += id
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                gw = await conn.fetch("SELECT * FROM giveaways WHERE msg_id = $1", msg_id)
+                gw = await conn.fetch("SELECT 1 FROM giveaways WHERE msg_id = $1", msg_id)
                 await self.gend(gw)
 
-    @commands.Cog.listener('on_ready')
-    async def on_ready(self):
-        self.end_giveaways.start()
 
+        @tasks.loop(seconds = 5)
+        async def end_gws(self):
+            await self.bot.wait_until_ready()
+            async with self.bot.pool.acquire() as conn:
+                async with conn.transaction():
+                    res = await conn.fetch("SELECT * FROM giveaways")
+            for row in res:
+                end_time = datetime.datetime.fromtimestamp(row["end_time"])
+                if datetime.datetime.now() - end_time < datetime.timedelta(seconds = 5):
+                    await self.gend(row)
+
+        end_gws.start()
 
 
 def setup(bot):
