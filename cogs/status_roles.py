@@ -76,5 +76,6 @@ class StatusRoles(commands.Cog):
             embed.add_field(name="Keyword", value=keyword)
             await ctx.send(embed=embed)
 
+
 def setup(bot):
     bot.load_cog(StatusRoles(bot))

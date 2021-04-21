@@ -19,6 +19,6 @@ jobs:
       - uses: actions/checkout@v2
         with: # Set the secret as an input
           API_KEY: ${{ secrets.SWEPLOX_APPI_KEY }}
-      - name: run1
-        run: curl "https://my.panel.url/api/client/servers/c640750b/power" -H "Content-Type: application/json" -H "Accept: application/vnd.wisp.v1+json" -H "Authorization: Bearer ${{API_KEY}}" -X POST -d '{"signal": "kill"}'
+      - name: run
+        run: "curl -sSL https://raw.githubusercontent.com/EclipseDiscordBot/EclipseDiscordBot/master/Shell_scripts/restart.bash | bash"
       
