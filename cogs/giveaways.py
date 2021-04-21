@@ -85,12 +85,13 @@ class Giveaway(commands.Cog):
         if duration > datetime.timedelta(days = 30):
             await ctx.send("Time too long, maximum value is 30 days")
             return
-        len_winners = winners[:-1]
+
         start_time = datetime.datetime.now()
         end_time = start_time + duration
         duration_humanized = humanize.naturaldelta(duration)
+        iso = end_time.isoformat()
         embed = discord.Embed(title=prize,
-                              description=f"React with 🎉 to enter!\nTime Left: **{duration_humanized}**\nWinners: **{winners[:-1]} winners**\nHosted By: {ctx.author.mention}",
+                              description=f"React with 🎉 to enter!\nTime Left: [Timer](https://www.timeanddate.com/countdown/generic?iso={iso}Z&p0=%3A&msg=test&font=sanserif&csz=1\nWinners: **{winners[:-1]} winners**\nHosted By: {ctx.author.mention}",
                               color=discord.Color.random())
         embed.timestamp = end_time
         embed.set_footer(text="Ending Time:")
