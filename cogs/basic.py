@@ -38,6 +38,11 @@ class Basic(commands.Cog):
             await ctx.reply("ok, testing!")
             raise Exception("TESTTTTTTT")
 
+    @commands.command(name="servers", aliases=["servercount"], brief="Tests an aspect of the bot")
+    @commands.is_owner()
+    async def servers(self, ctx):
+        await ctx.send(len(self.bot.guilds))
+
 
 def setup(bot):
     bot.add_cog(Basic(bot))
