@@ -106,6 +106,7 @@ async def gend(gw):
     msg = await ch.fetch_message(gw["msg_id"])
     host = guild.get_member(gw["host"])
     prize = gw["prize"]
+    print(f"ending giveaway id {msg.id}")
     winners = gw["winners"]
     new_embed = msg.embeds[0].copy()
     end_timestamp = gw["end_time"]
