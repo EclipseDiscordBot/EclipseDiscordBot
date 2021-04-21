@@ -15,10 +15,8 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
       - shell: bash
-        with: # Set the secret as an input
-          API_KEY: ${{ secrets.SWEPLOX_APPI_KEY }}
+        env:
+          API_KEY: ${{ secrets.SWEPLOX_API_KEY }}
         run: "curl -sSL https://raw.githubusercontent.com/EclipseDiscordBot/EclipseDiscordBot/master/Shell_scripts/restart.bash | bash"
       
