@@ -48,7 +48,7 @@ class Basic(commands.Cog):
     @commands.cooldown(5, 5, discord.ext.commands.BucketType.user)
     async def suggest(self, ctx: commands.Context):
         def chek(u1):
-            return u1 == ctx.author
+            return u1.author == ctx.author
         await ctx.reply(
             "Great! your suggestion is valuable! Now send what the new suggestion will do in brief in **1 SINGLE MESSAGE** \n\n **Pro tip: using shift+enter creates a new line without sending the message**")
         try:
@@ -72,8 +72,8 @@ Brief: ```{message.content}```
 Detailed Description: ```{message2.content}```
 
 """)
-                await suggestion_msg.add_reaction(':white_check_mark:')
-                await suggestion_msg.add_reaction(':negative_squared_cross_mark:')
+                #await suggestion_msg.add_reaction(':white_check_mark:')
+                #await suggestion_msg.add_reaction(':negative_squared_cross_mark:')
                 await ctx.reply("Done! Thanks for suggesting! keep your DMs open from me, so that I can inform you about your suggestion's status")
 
 
