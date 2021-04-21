@@ -78,4 +78,4 @@ class StatusRoles(commands.Cog):
 
 
 def setup(bot):
-    bot.load_cog(StatusRoles(bot))
+    bot.add_cog(StatusRoles(bot))
