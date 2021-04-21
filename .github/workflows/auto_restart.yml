@@ -17,8 +17,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - name: run
         with: # Set the secret as an input
           API_KEY: ${{ secrets.SWEPLOX_APPI_KEY }}
-      - name: run
         run: "curl -sSL https://raw.githubusercontent.com/EclipseDiscordBot/EclipseDiscordBot/master/Shell_scripts/restart.bash | bash"
       
