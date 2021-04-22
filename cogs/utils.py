@@ -55,7 +55,7 @@ class Utility(commands.Cog):
         else:
             brief = "Not specified"
             detailed = suggestion
-        suggestion_channel = await self.bot.get_channel(834442086513508363)
+        suggestion_channel = self.bot.get_channel(834442086513508363)
         dsc = f"""
 
 
@@ -68,8 +68,8 @@ class Utility(commands.Cog):
         embed.set_footer(text = f"From {ctx.guild if ctx.guild else None}")
         embed.timestamp = ctx.message.created_at
         suggestion_msg = await suggestion_channel.send(embed = embed)
-        await suggestion_msg.add_reaction(':white_check_mark:')
-        await suggestion_msg.add_reaction(':negative_squared_cross_mark:')
+        await suggestion_msg.add_reaction('✅')
+        await suggestion_msg.add_reaction('🚫')
         await ctx.reply("Done! you can check the your suggestion's reviews in https://discord.gg/qNwb6zdjJ6")
                 
 
