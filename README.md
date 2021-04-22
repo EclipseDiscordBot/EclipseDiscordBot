@@ -6,6 +6,6 @@
 # The Team
 - [Zapdos#0007](https://discord.com/users/694839986763202580)
 - [! ||Satyamedh||#0001](https://discord.com/users/605364556465963018)
-- ~~[DrKnown go pew pew#3850](https://discord.com/users/727446716491628585)~~(no hes not dev)
+- ~~[DrKnown go pew pew#3850](https://discord.com/users/727446716491628585)~~(idk about him anymore, he does nothing :P)
 
 ## Quick note: THERE IS NO API KEYS HERE GO AWAY PPL WHO WANT EM!
