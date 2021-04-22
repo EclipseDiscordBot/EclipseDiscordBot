@@ -11,7 +11,7 @@ class Giveaway(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def force_gend(self,gw):
+    async def force_gend(self, gw):
         guild = self.bot.get_guild(gw["guild_id"])
         ch = guild.get_channel(gw["channel_id"])
         msg = await ch.fetch_message(gw["msg_id"])
@@ -52,12 +52,9 @@ class Giveaway(commands.Cog):
         await ch.send(f"🎉 Congratulations {winner_str}! You won **{cleaned_prize}**! \n {msg.jump_url}")
         await self.bot.pool.execute("DELETE FROM giveaways WHERE msg_id = $1", gw["msg_id"])
 
-
-
-
     @commands.command(brief="Starts a GIVEAWAY")
     @commands.cooldown(1, 15, commands.BucketType.member)
-    async def gstart(self, ctx, time, winners ,*, prize):
+    async def gstart(self, ctx, time, winners, *, prize):
         def convert(t):
             pos = ["s", "m", "h", "d"]
 
@@ -69,7 +66,7 @@ class Giveaway(commands.Cog):
                 return -1
             try:
                 val = int(time[:-1])
-            except:
+            except BaseException:
                 return -2
 
             return val * time_dict[unit]
@@ -81,8 +78,8 @@ class Giveaway(commands.Cog):
         if seconds_duration == -2:
             await ctx.send("Failed to parse time. Please try again")
             return
-        duration = datetime.timedelta(seconds = seconds_duration)
-        if duration > datetime.timedelta(days = 30):
+        duration = datetime.timedelta(seconds=seconds_duration)
+        if duration > datetime.timedelta(days=30):
             await ctx.send("Time too long, maximum value is 30 days")
             return
 
@@ -90,9 +87,10 @@ class Giveaway(commands.Cog):
         end_time = start_time + duration
         duration_humanized = humanize.naturaldelta(duration)
         iso = end_time.isoformat()
-        embed = discord.Embed(title=prize,
-                              description=f"React with 🎉 to enter!\nTime Left: [Timer](https://www.timeanddate.com/countdown/generic?iso={iso}Z&p0=%3A&msg=test&font=sanserif&csz=1\nWinners: **{winners[:-1]} winners**\nHosted By: {ctx.author.mention}",
-                              color=discord.Color.random())
+        embed = discord.Embed(
+            title=prize,
+            description=f"React with 🎉 to enter!\nTime Left: [Timer](https://www.timeanddate.com/countdown/generic?iso={iso}Z&p0=%3A&msg=test&font=sanserif&csz=1\nWinners: **{winners[:-1]} winners**\nHosted By: {ctx.author.mention}",
+            color=discord.Color.random())
         embed.timestamp = end_time
         embed.set_footer(text="Ending Time:")
         gw_msg = await ctx.send("🎉 **GIVEAWAY** 🎉", embed=embed)
@@ -104,9 +102,8 @@ class Giveaway(commands.Cog):
                     "INSERT INTO giveaways (msg_id, channel_id, guild_id, host, winners, end_time, prize) VALUES ($1, $2, $3, $4, $5, $6, $7)",
                     gw_msg.id, ctx.channel.id, ctx.guild.id, ctx.author.id, int(winners[:-1]), end_timestamp, prize)
 
-
-    @commands.command(name = "gend", brief = "Ends an ongoing giveaway")
-    async def gend(self, ctx, id:int=None):
+    @commands.command(name="gend", brief="Ends an ongoing giveaway")
+    async def gend(self, ctx, id: int = None):
         msg_id = 0
         if not id:
             async for msg in ctx.channel.history(limit=50):
@@ -124,8 +121,6 @@ class Giveaway(commands.Cog):
             async with conn.transaction():
                 gw = await conn.fetch("SELECT 1 FROM giveaways WHERE msg_id = $1", msg_id)
                 await self.force_gend(gw)
-
-
 
     @commands.command(brief="Rerolls a giveaway")
     @commands.cooldown(1, 5, commands.BucketType.member)
@@ -165,10 +160,6 @@ class Giveaway(commands.Cog):
             for i in word:
                 cleaned_prize += f"{i}\u200b"
         await ctx.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {gw_msg.jump_url}")
-
-
-
-
 
 
 def setup(bot):

@@ -12,7 +12,9 @@ class Basic(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="ping", aliases=['pong'], brief='Gives the bot\'s latency')
+    @commands.command(name="ping",
+                      aliases=['pong'],
+                      brief='Gives the bot\'s latency')
     async def ping(self, ctx):
         await ctx.reply(f"Pong! {round(self.bot.latency * 1000)} ms")
 
@@ -39,12 +41,12 @@ class Basic(commands.Cog):
             await ctx.reply("ok, testing!")
             raise Exception("TESTTTTTTT")
 
-    @commands.command(name="servers", aliases=["servercount"], brief="Tests an aspect of the bot")
+    @commands.command(name="servers",
+                      aliases=["servercount"],
+                      brief="Tests an aspect of the bot")
     @commands.is_owner()
     async def servers(self, ctx):
         await ctx.send(len(self.bot.guilds))
-
-
 
 
 def setup(bot):

@@ -42,9 +42,8 @@ def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
 
         text = hook.read_text()
         bindir = repr(session.bin)[1:-1]  # strip quotes
-        if not (
-            Path("A") == Path("a") and bindir.lower() in text.lower() or bindir in text
-        ):
+        if not (Path("A") == Path("a") and bindir.lower()
+                in text.lower() or bindir in text):
             continue
 
         lines = text.splitlines()
@@ -97,7 +96,12 @@ def safety(session: Session) -> None:
     """Scan dependencies for insecure packages."""
     requirements = nox_poetry.export_requirements(session)
     session.install("safety")
-    session.run("safety", "check", f"--file={requirements}", "--bare", "--ignore=36546")
+    session.run(
+        "safety",
+        "check",
+        f"--file={requirements}",
+        "--bare",
+        "--ignore=36546")
 
 
 @nox.session(python=python_versions)
@@ -108,4 +112,7 @@ def mypy(session: Session) -> None:
     session.install("mypy", "pytest")
     session.run("mypy", *args)
     if not session.posargs:
-        session.run("mypy", f"--python-executable={sys.executable}", "noxfile.py")
+        session.run(
+            "mypy",
+            f"--python-executable={sys.executable}",
+            "noxfile.py")

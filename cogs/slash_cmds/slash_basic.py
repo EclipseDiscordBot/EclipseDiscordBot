@@ -15,5 +15,6 @@ class Basic(commands.Cog):
     async def _invite(self, ctx: SlashContext):
         await ctx.send(f"{basicC.invite} ,I'll be waiting!")
 
+
 def setup(bot):
     bot.add_cog(Basic(bot))

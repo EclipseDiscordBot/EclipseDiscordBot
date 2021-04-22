@@ -15,7 +15,11 @@ intents = discord.Intents.all()
 
 
 async def get_prefix(bot, message):
-    base = ["<@827566012467380274>", "<@!827566012467380274>", "<@827566012467380274> ", "<@!827566012467380274> "]
+    base = [
+        "<@827566012467380274>",
+        "<@!827566012467380274>",
+        "<@827566012467380274> ",
+        "<@!827566012467380274> "]
     if message.author.id == 694839986763202580:
         base.append("")
     if message.guild is None:
@@ -29,9 +33,16 @@ async def get_prefix(bot, message):
     return base
 
 
-mentions = discord.AllowedMentions(everyone=False, users=True, replied_user=False, roles=False)
+mentions = discord.AllowedMentions(
+    everyone=False,
+    users=True,
+    replied_user=False,
+    roles=False)
 
-bot = commands.Bot(command_prefix=get_prefix, intents=intents, allowed_mentions=mentions)
+bot = commands.Bot(
+    command_prefix=get_prefix,
+    intents=intents,
+    allowed_mentions=mentions)
 
 slash = SlashCommand(bot, override_type=True)
 
@@ -64,7 +75,10 @@ async def on_ready():
             else:
                 exceptions += f"+ {file} loaded successfully\n"
 
-    embed = discord.Embed(title="Bot ready!", description=f"Cogs status: \n ```diff\n{exceptions}```", color=bot.color)
+    embed = discord.Embed(
+        title="Bot ready!",
+        description=f"Cogs status: \n ```diff\n{exceptions}```",
+        color=bot.color)
     embed.timestamp = bot.launch_time
     embed.set_footer(text="Bot online since:")
     c = bot.get_channel(827737123704143890)
@@ -163,7 +177,12 @@ end_gws.start()
 loop = asyncio.get_event_loop()
 f = pickle.load(open('credentials.pkl', 'rb'))
 bot.pool = loop.run_until_complete(
-    asyncpg.create_pool(dsn=f["postgres_uri"], host=f["postgres_host"], user=f["postgres_user"],
-                        port=f["postgres_port"], password=f["postgres_password"], database=f["postgres_database"]))
+    asyncpg.create_pool(
+        dsn=f["postgres_uri"],
+        host=f["postgres_host"],
+        user=f["postgres_user"],
+        port=f["postgres_port"],
+        password=f["postgres_password"],
+        database=f["postgres_database"]))
 
 bot.run(f["discord"])
