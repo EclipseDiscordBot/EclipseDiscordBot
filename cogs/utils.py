@@ -62,7 +62,8 @@ class Utility(commands.Cog):
 **Brief:** ```{message.content}```
 **Detailed Description:** ```{message2.content}```
 
-"""             embed = discord.Embed(title = "New Suggestion", description = dsc, color = self.bot.color)
+"""             
+        embed = discord.Embed(title = "New Suggestion", description = dsc, color = self.bot.color)
         embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
         embed.set_footer(text = f"From {ctx.guild if ctx.guild else None}")
         embed.timestamp = ctx.message.created_at
