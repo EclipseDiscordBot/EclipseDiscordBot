@@ -6,7 +6,8 @@ class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['av'], brief="gives the mentioned user(you if nobody is mentioned)'s avatar")
+    @commands.command(aliases=['av'],
+                      brief="gives the mentioned user(you if nobody is mentioned)'s avatar")
     async def avatar(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
@@ -14,7 +15,8 @@ class Utility(commands.Cog):
         embed.set_image(url=member.avatar_url)
         await ctx.reply(embed=embed)
 
-    @commands.command(aliases=["ct", "timedif", "timediff"], brief="gives the difference between two ids (any ids)")
+    @commands.command(aliases=["ct", "timedif", "timediff"],
+                      brief="gives the difference between two ids (any ids)")
     async def snowflake(self, ctx, win_id: int, dm_id: int):
         win_time = discord.utils.snowflake_time(win_id)
         dm_time = discord.utils.snowflake_time(dm_id)
@@ -26,8 +28,6 @@ class Utility(commands.Cog):
             final = seconds_str[1:]
         await ctx.send(f"Difference between the two message ID's is `{final}` seconds!")
 
-        
-        
     @commands.command(name="suggest", brief="Suggest a command to the devs")
     @commands.cooldown(5, 5, discord.ext.commands.BucketType.user)
     async def suggest(self, ctx: commands.Context, *, suggestion=None):
@@ -62,16 +62,19 @@ class Utility(commands.Cog):
 **Brief:** ```{brief}```
 **Detailed Description:** ```{detailed}```
 
-"""             
-        embed = discord.Embed(title = "New Suggestion", description = dsc, color = self.bot.color)
-        embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-        embed.set_footer(text = f"From {ctx.guild if ctx.guild else None}")
+"""
+        embed = discord.Embed(
+            title="New Suggestion",
+            description=dsc,
+            color=self.bot.color)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+        embed.set_footer(text=f"From {ctx.guild if ctx.guild else None}")
         embed.timestamp = ctx.message.created_at
-        suggestion_msg = await suggestion_channel.send(embed = embed)
+        suggestion_msg = await suggestion_channel.send(embed=embed)
         await suggestion_msg.add_reaction('✅')
         await suggestion_msg.add_reaction('🚫')
         await ctx.reply("Done! you can check the your suggestion's reviews in https://discord.gg/qNwb6zdjJ6")
-                
+
 
 def setup(bot):
     bot.add_cog(Utility(bot))

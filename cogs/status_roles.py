@@ -21,9 +21,10 @@ class StatusRoles(commands.Cog):
             txt = role.mention
         if key == "placeholder":
             key = "Not setup yet"
-        embed = discord.Embed(title="Status Roles",
-                              description=f"Status roles gives a role to a person if they have a certain keyword in their custom activity.\n **Here is {ctx.guild.name}'s configuration**",
-                              color=self.bot.color)
+        embed = discord.Embed(
+            title="Status Roles",
+            description=f"Status roles gives a role to a person if they have a certain keyword in their custom activity.\n **Here is {ctx.guild.name}'s configuration**",
+            color=self.bot.color)
         embed.add_field(name="Role", value=txt)
         embed.add_field(name="Keyword", value=key)
         await ctx.send(embed=embed)
@@ -42,9 +43,10 @@ class StatusRoles(commands.Cog):
             txt = "Not setup yet"
         else:
             txt = role.mention
-        embed = discord.Embed(title="Status Roles has been updated!",
-                              description=f"Status roles gives a role to a person if they have a certain keyword in their custom activity.\n **Here is {ctx.guild.name}'s configuration**",
-                              color=self.bot.color)
+        embed = discord.Embed(
+            title="Status Roles has been updated!",
+            description=f"Status roles gives a role to a person if they have a certain keyword in their custom activity.\n **Here is {ctx.guild.name}'s configuration**",
+            color=self.bot.color)
         embed.add_field(name="Role", value=txt)
         embed.add_field(name="Keyword", value=keyword)
         await ctx.send(embed=embed)
@@ -69,9 +71,10 @@ class StatusRoles(commands.Cog):
                     await conn.execute("UPDATE sr SET role_id = $1 WHERE guild_id = $2", role.id, ctx.guild.id)
                     keyword = await conn.fetchval("SELECT key FROM sr WHERE guild_id = $1", ctx.guild.id)
             txt = role.mention
-            embed = discord.Embed(title="Status Roles has been updated!",
-                                  description=f"Status roles gives a role to a person if they have a certain keyword in their custom activity.\n **Here is {ctx.guild.name}'s configuration**",
-                                  color=self.bot.color)
+            embed = discord.Embed(
+                title="Status Roles has been updated!",
+                description=f"Status roles gives a role to a person if they have a certain keyword in their custom activity.\n **Here is {ctx.guild.name}'s configuration**",
+                color=self.bot.color)
             embed.add_field(name="Role", value=txt)
             embed.add_field(name="Keyword", value=keyword)
             await ctx.send(embed=embed)

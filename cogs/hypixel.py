@@ -11,7 +11,8 @@ from discord.ext import commands, tasks
 class Hypixel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.hypixel = asyncpixel.Hypixel(pickle.load(open("credentials.pkl", 'rb'))['hypixel'])
+        self.hypixel = asyncpixel.Hypixel(pickle.load(
+            open("credentials.pkl", 'rb'))['hypixel'])
         self.currentBazaar = None
         self.currentAh = None
         self.AHDict = None
@@ -32,16 +33,25 @@ class Hypixel(commands.Cog):
         queries_in_past_min = key_data.queries_in_past_min
         total_queries = key_data.total_queries
 
-        e = Embed(title="Here's some info about your API key",
-                  description="**PLEASE NOTE IF THIS ISNT YOUR API KEY DESTROY IT IMMEDIATELY AND INFORM THE OWNER**")
+        e = Embed(
+            title="Here's some info about your API key",
+            description="**PLEASE NOTE IF THIS ISNT YOUR API KEY DESTROY IT IMMEDIATELY AND INFORM THE OWNER**")
         e.add_field(name="Owner", value=owner_name, inline=False)
-        e.add_field(name="Global limit (queries / 2 minutes)", value=str(limit), inline=False)
-        e.add_field(name="No. of Queries in the past minute", value=str(queries_in_past_min), inline=False)
-        e.add_field(name="Total queries", value=str(total_queries), inline=False)
+        e.add_field(
+            name="Global limit (queries / 2 minutes)",
+            value=str(limit),
+            inline=False)
+        e.add_field(name="No. of Queries in the past minute",
+                    value=str(queries_in_past_min), inline=False)
+        e.add_field(
+            name="Total queries",
+            value=str(total_queries),
+            inline=False)
 
         await ctx.reply(embed=e)
 
-    @commands.command(name="bazaar", aliases=['bz'],
+    @commands.command(name="bazaar",
+                      aliases=['bz'],
                       brief="Gives information about a product in the Hypixel Skyblock bazaar")
     async def bazaar(self, ctx, *, itemId=None):
         final_item_id = ""
@@ -59,12 +69,30 @@ class Hypixel(commands.Cog):
 
         item_quick_status = self.currentBazaar[final_item_id].quick_status
 
-        e = Embed(title=final_item_name, description=f"Status of {final_item_name} in the past 30 seconds",
-                  color=discord.Color.random())
-        e.add_field(name="Buy Price", value=str(round(item_quick_status.buy_price)), inline=True)
-        e.add_field(name="Sell Price", value=str(round(item_quick_status.sell_price)), inline=True)
-        e.add_field(name="Buy Orders", value=item_quick_status.buy_orders, inline=True)
-        e.add_field(name="Sell Orders", value=item_quick_status.sell_orders, inline=True)
+        e = Embed(
+            title=final_item_name,
+            description=f"Status of {final_item_name} in the past 30 seconds",
+            color=discord.Color.random())
+        e.add_field(
+            name="Buy Price",
+            value=str(
+                round(
+                    item_quick_status.buy_price)),
+            inline=True)
+        e.add_field(
+            name="Sell Price",
+            value=str(
+                round(
+                    item_quick_status.sell_price)),
+            inline=True)
+        e.add_field(
+            name="Buy Orders",
+            value=item_quick_status.buy_orders,
+            inline=True)
+        e.add_field(
+            name="Sell Orders",
+            value=item_quick_status.sell_orders,
+            inline=True)
 
         await ctx.reply(embed=e)
 

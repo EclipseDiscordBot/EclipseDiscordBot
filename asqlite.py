@@ -70,7 +70,11 @@ class _Worker(threading.Thread):
 
     def post(self, func, *args, **kwargs):
         future = self.loop.create_future()
-        entry = _WorkerEntry(func=func, args=args, kwargs=kwargs, future=future)
+        entry = _WorkerEntry(
+            func=func,
+            args=args,
+            kwargs=kwargs,
+            future=future)
         self._worker_queue.put_nowait(entry)
         return future
 
@@ -299,22 +303,38 @@ class Connection:
         if len(parameters) == 1 and isinstance(parameters[0], (dict, tuple)):
             parameters = parameters[0]
 
-        factory = lambda cur: Cursor(self, cur)
-        return _ContextManagerMixin(self._queue, factory, self._conn.execute, sql, parameters)
+        def factory(cur): return Cursor(self, cur)
+        return _ContextManagerMixin(
+            self._queue,
+            factory,
+            self._conn.execute,
+            sql,
+            parameters)
 
     def executemany(self, sql, seq_of_parameters):
         """Asynchronous version of :meth:`sqlite3.Connection.executemany`.
         Note that this returns a :class:`Cursor` instead of a :class:`sqlite3.Cursor`.
         """
-        factory = lambda cur: Cursor(self, cur)
-        return _ContextManagerMixin(self._queue, factory, self._conn.executemany, sql, seq_of_parameters)
+
+        def factory(cur): return Cursor(self, cur)
+        return _ContextManagerMixin(
+            self._queue,
+            factory,
+            self._conn.executemany,
+            sql,
+            seq_of_parameters)
 
     def executescript(self, sql_script):
         """Asynchronous version of :meth:`sqlite3.Connection.executescript`.
         Note that this returns a :class:`Cursor` instead of a :class:`sqlite3.Cursor`.
         """
-        factory = lambda cur: Cursor(self, cur)
-        return _ContextManagerMixin(self._queue, factory, self._conn.executescript, sql_script)
+
+        def factory(cur): return Cursor(self, cur)
+        return _ContextManagerMixin(
+            self._queue,
+            factory,
+            self._conn.executescript,
+            sql_script)
 
     async def fetchone(self, query, *parameters):
         """Shortcut method version of :meth:`sqlite3.Cursor.fetchone` without making a cursor."""
@@ -374,4 +394,10 @@ def connect(database, *, init=None, timeout=None, loop=None, **kwargs):
     else:
         new_connect = _connect_pragmas
 
-    return _ContextManagerMixin(queue, factory, new_connect, database, timeout=timeout, **kwargs)
+    return _ContextManagerMixin(
+        queue,
+        factory,
+        new_connect,
+        database,
+        timeout=timeout,
+        **kwargs)

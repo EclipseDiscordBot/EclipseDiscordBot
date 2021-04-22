@@ -18,9 +18,10 @@ class Moderation(commands.Cog):
                 f"Your top role {ctx.author.top_role.name} is lower than {member}\'s top role {member.top_role.name}"
                 f" You cannot moderate them!")
             return
-        embed = discord.Embed(title="Ban Successful",
-                              description=f"Banned {member} from {ctx.guild.name} with reason ```{reason}```",
-                              color=discord.Color.random())
+        embed = discord.Embed(
+            title="Ban Successful",
+            description=f"Banned {member} from {ctx.guild.name} with reason ```{reason}```",
+            color=discord.Color.random())
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         try:
             await member.send(f"You were banned from {ctx.guild} for: {reason}")
@@ -38,8 +39,11 @@ class Moderation(commands.Cog):
                 f"Your top role {ctx.author.top_role.name} is lower than {member}\'s top role {member.top_role.name}"
                 f" You cannot moderate them!")
             return
-        embed = discord.Embed(title="Kick Successful", description=f"Kicked {member} from {ctx.guild.name} with "
-                                                                   f"reason ```{reason}```", color=discord.Color.random())
+        embed = discord.Embed(
+            title="Kick Successful",
+            description=f"Kicked {member} from {ctx.guild.name} with "
+            f"reason ```{reason}```",
+            color=discord.Color.random())
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         try:
             await member.send(f"You were kicked from {ctx.guild} for: {reason}")
@@ -47,6 +51,7 @@ class Moderation(commands.Cog):
             pass
         await member.kick(reason=f"Action by {ctx.author} Reason: {reason}")
         await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

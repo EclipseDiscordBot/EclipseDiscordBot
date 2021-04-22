@@ -30,17 +30,20 @@ class Giveaway(commands.Cog):
         start_time = datetime.datetime.now()
         end_time = start_time + duration
         duration_humanized = humanize.naturaldelta(duration)
-        embed = discord.Embed(title=prize,
-                              description=f"React with 🎉 to enter!\nTime Left: **{duration_humanized}**\nHosted By: {ctx.author.mention}",
-                              color=discord.Color.random())
+        embed = discord.Embed(
+            title=prize,
+            description=f"React with 🎉 to enter!\nTime Left: **{duration_humanized}**\nHosted By: {ctx.author.mention}",
+            color=discord.Color.random())
         embed.timestamp = end_time
         embed.set_footer(text="Ending Time:")
         gw_msg = await ctx.send("🎉 **GIVEAWAY** 🎉", embed=embed)
         await gw_msg.add_reaction("🎉")
         while datetime.datetime.now() < end_time:
-            await asyncio.sleep(
-                duration.total_seconds() / 10)  # edits the embed only 10 times regardless of duration to prevent ratelimitation
-            remaining_time = humanize.precisedelta((end_time - datetime.datetime.now()).total_seconds())
+            # edits the embed only 10 times regardless of duration to prevent
+            # ratelimitation
+            await asyncio.sleep(duration.total_seconds() / 10)
+            remaining_time = humanize.precisedelta(
+                (end_time - datetime.datetime.now()).total_seconds())
             new_embed = gw_msg.embeds[0].copy()
             new_embed.description = f"React with 🎉 to enter!\nTime Left: **{remaining_time}**\nHosted By: {ctx.author.mention}"
             await gw_msg.edit(embed=new_embed)
