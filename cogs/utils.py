@@ -59,8 +59,8 @@ class Utility(commands.Cog):
         dsc = f"""
 
 
-**Brief:** ```{message.content}```
-**Detailed Description:** ```{message2.content}```
+**Brief:** ```{brief}```
+**Detailed Description:** ```{detailed}```
 
 """             
         embed = discord.Embed(title = "New Suggestion", description = dsc, color = self.bot.color)
