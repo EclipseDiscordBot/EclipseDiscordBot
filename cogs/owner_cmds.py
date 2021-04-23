@@ -12,7 +12,7 @@ class OwnerOnlyCommands(commands.Cog):
     @commands.is_owner()
     async def spamping(self, ctx: discord.ext.commands.Context, times: int, member: discord.Member):
         for i in range(times):
-            await ctx.reply(member.mention)
+            await ctx.reply(f"{member.mention} {i}")
 
     @commands.command(breif="Perform SQL commands ")
     @commands.is_owner()

@@ -2,6 +2,7 @@ import discord
 import datetime
 import humanize
 import random
+from common_functions import ignore
 from discord.ext import commands
 
 
@@ -83,7 +84,7 @@ class Giveaway(commands.Cog):
 
         start_time = datetime.datetime.now()
         end_time = start_time + duration
-        duration_humanized = humanize.naturaldelta(duration)
+        # duration_humanized = humanize.naturaldelta(duration)
         iso = end_time.isoformat()
         embed = discord.Embed(
             title=prize,
@@ -131,6 +132,7 @@ class Giveaway(commands.Cog):
                         if res is None:
                             continue
                         msg_id += res[0]["msg_id"]
+                        ignore.ignore(msg)
                         break
         if msg_id == 0:
             if not id:
