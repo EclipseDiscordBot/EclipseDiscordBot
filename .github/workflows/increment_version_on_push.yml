@@ -1,6 +1,9 @@
 name: Auto Increment version based on
 
-on: [pull_request, issues]
+on:
+  push:
+    branches: [ master ]
+
 
 jobs:
   greeting:
