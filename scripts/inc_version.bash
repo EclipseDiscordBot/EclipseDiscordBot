@@ -4,4 +4,5 @@
 #git add .
 #git commit -m "incremented_version"
 #git push
+echo "test"
 echo "${author}"

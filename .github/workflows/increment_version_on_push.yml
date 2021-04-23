@@ -11,6 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - shell: bash
-        run: "curl -sSL https://raw.githubusercontent.com/EclipseDiscordBot/EclipseDiscordBot/master/scripts/inc_version.bash | bash"
         env:
           author: ${{ github.event.push.user.login }}
+        run: "curl -sSL https://raw.githubusercontent.com/EclipseDiscordBot/EclipseDiscordBot/master/scripts/inc_version.bash | bash"
