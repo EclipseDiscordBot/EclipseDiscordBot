@@ -1,5 +1,6 @@
 import os
 import constants.basic as basicC
+import constants.version as version
 from discord.ext import commands
 
 
@@ -23,7 +24,7 @@ class Basic(commands.Cog):
 
     @commands.command(name="version", brief="Gives the bot's version")
     async def version(self, ctx):
-        await ctx.reply(basicC.version)
+        await ctx.reply(version.version)
 
     @commands.command(name="invite", brief="Gives the bot's invite link!")
     async def invite(self, ctx):
