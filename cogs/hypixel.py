@@ -30,7 +30,7 @@ class Hypixel(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get(f'https://api.mojang.com/user/profiles/{owner_uuid}/names') as response:
                 json = await response.json()
-                owner_name = json[len(json) - 1]["name"]
+                owner_name = json[-1][-1]
         limit = key_data.limit
         queries_in_past_min = key_data.queries_in_past_min
         total_queries = key_data.total_queries
