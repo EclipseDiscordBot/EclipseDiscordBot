@@ -1,7 +1,7 @@
 import discord
 import datetime
-import humanize
 import random
+from common_functions import ignore
 from discord.ext import commands
 
 
@@ -83,7 +83,7 @@ class Giveaway(commands.Cog):
 
         start_time = datetime.datetime.now()
         end_time = start_time + duration
-        duration_humanized = humanize.naturaldelta(duration)
+        # duration_humanized = humanize.naturaldelta(duration)
         iso = end_time.isoformat()
         embed = discord.Embed(
             title=prize,
@@ -105,10 +105,9 @@ class Giveaway(commands.Cog):
         msg_id = 0
         if not id:
             async for msg in ctx.channel.history(limit=50):
-                if msg.author == self.bot.user and "🎉" in msg.content:
-                    if msg.embeds:
-                        msg_id += msg.id
-                        break
+                if msg.author == self.bot.user and "🎉" in msg.content and msg.embeds:
+                    msg_id += msg.id
+                    break
         if msg_id == 0:
             if not id:
                 await ctx.send("I couldn't find any recent giveaways!")
@@ -131,6 +130,7 @@ class Giveaway(commands.Cog):
                         if res is None:
                             continue
                         msg_id += res[0]["msg_id"]
+                        ignore.ignore(msg)
                         break
         if msg_id == 0:
             if not id:
