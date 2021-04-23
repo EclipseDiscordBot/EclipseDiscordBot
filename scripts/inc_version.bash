@@ -6,3 +6,5 @@
 #git push
 echo "test"
 echo "${author}"
+echo "test2"
+echo "${github.event.pusher.name}"
