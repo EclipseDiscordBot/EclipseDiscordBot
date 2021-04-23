@@ -1,6 +1,7 @@
 import os
 import constants.basic as basicC
 from discord.ext import commands
+import sys
 
 
 class Basic(commands.Cog):
@@ -22,7 +23,7 @@ class Basic(commands.Cog):
     async def restart(self, ctx):
         await ctx.reply("Restarting...")
         os.system("sh startupfile.sh")
-        exit(0)
+        sys.exit(0)
 
     @commands.command(name="version", brief="Gives the bot's version")
     async def version(self, ctx):
