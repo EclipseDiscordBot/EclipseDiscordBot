@@ -10,8 +10,8 @@ class Moderation(commands.Cog):
 
     @commands.guild_only()
     @commands.has_permissions(ban_members=True)
-    @commands.command(name = "ban",
-                      brief = 'Bans the user mentioned from the guild')
+    @commands.command(name="ban",
+                      brief='Bans the user mentioned from the guild')
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         if ctx.author.top_role < member.top_role:
             await ctx.reply(
