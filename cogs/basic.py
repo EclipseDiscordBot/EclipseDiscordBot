@@ -1,6 +1,5 @@
 import os
 import constants.basic as basicC
-import constants.version as version
 from discord.ext import commands
 
 
@@ -8,6 +7,9 @@ class Basic(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        filee = open("constants/version.txt", 'r')
+        self.version = filee.read()
+        filee.close()
 
     @commands.command(name="ping",
                       aliases=['pong'],
@@ -24,7 +26,7 @@ class Basic(commands.Cog):
 
     @commands.command(name="version", brief="Gives the bot's version")
     async def version(self, ctx):
-        await ctx.reply(version.version)
+        await ctx.reply(self.version)
 
     @commands.command(name="invite", brief="Gives the bot's invite link!")
     async def invite(self, ctx):
