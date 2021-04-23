@@ -105,10 +105,9 @@ class Giveaway(commands.Cog):
         msg_id = 0
         if not id:
             async for msg in ctx.channel.history(limit=50):
-                if msg.author == self.bot.user and "🎉" in msg.content:
-                    if msg.embeds:
-                        msg_id += msg.id
-                        break
+                if msg.author == self.bot.user and "🎉" in msg.content and msg.embeds:
+                    msg_id += msg.id
+                    break
         if msg_id == 0:
             if not id:
                 await ctx.send("I couldn't find any recent giveaways!")
