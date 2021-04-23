@@ -22,7 +22,8 @@ class ErrorHandler(commands.Cog):
             return
 
         cog = ctx.cog
-        if cog and cog._get_overridden_method(cog.cog_command_error) is not None:
+        if cog and cog._get_overridden_method(
+                cog.cog_command_error) is not None:
             return
 
         ignored = (commands.CommandNotFound, commands.NotOwner)

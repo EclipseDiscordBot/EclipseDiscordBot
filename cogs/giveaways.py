@@ -1,6 +1,5 @@
 import discord
 import datetime
-import humanize
 import random
 from common_functions import ignore
 from discord.ext import commands
