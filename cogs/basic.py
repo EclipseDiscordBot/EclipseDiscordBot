@@ -26,7 +26,7 @@ class Basic(commands.Cog):
         sys.exit(0)
 
     @commands.command(name="version", brief="Gives the bot's version")
-    async def version(self, ctx):
+    async def _version(self, ctx):
         await ctx.reply(self.version)
 
     @commands.command(name="invite", brief="Gives the bot's invite link!")
