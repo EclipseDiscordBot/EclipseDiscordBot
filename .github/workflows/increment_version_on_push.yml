@@ -14,3 +14,6 @@ jobs:
         env:
           author: ${{ github.event.pusher.name }}
         run: "curl -sSL https://raw.githubusercontent.com/EclipseDiscordBot/EclipseDiscordBot/master/scripts/inc_version.bash | bash"
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Increment version
