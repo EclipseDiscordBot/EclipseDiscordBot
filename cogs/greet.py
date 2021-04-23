@@ -50,7 +50,7 @@ class Greet(commands.Cog):
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
-    @greet.command()
+    @commands.command()
     @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
     async def channel(self, ctx, channel: discord.TextChannel):
@@ -73,7 +73,7 @@ class Greet(commands.Cog):
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
-    @greet.command()
+    @commands.command()
     @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
     async def msg(self, ctx, *, msg):
@@ -98,7 +98,7 @@ class Greet(commands.Cog):
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
-    @greet.command()
+    @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_messages=True)
     async def delafter(self, ctx, amt: int):
@@ -120,7 +120,7 @@ class Greet(commands.Cog):
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
-    @greet.command()
+    @commands.command()
     @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
     async def enable(self, ctx):
@@ -147,7 +147,7 @@ class Greet(commands.Cog):
             url="https://cdn.discordapp.com/attachments/829735317966815273/832573291775787038/dbd26c4768e6ce541f5b857b4973226e.png")
         await ctx.send(embed=embed)
 
-    @greet.command()
+    @commands.command()
     @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
     async def disable(self, ctx):

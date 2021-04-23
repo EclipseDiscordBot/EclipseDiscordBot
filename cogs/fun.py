@@ -11,8 +11,8 @@ class Fun(commands.Cog):
     @commands.command(brief="Chooses a random object from specified options",
                       aliases=["pick", "choose"])
     async def choice(self, ctx, *, options: str):
-        options = options.split(' ')
-        choice = random.choice(options)
+        options1 = options.split(' ')
+        choice = random.choice(options1)
         await ctx.reply(f"I choose..... {choice}")
 
 
