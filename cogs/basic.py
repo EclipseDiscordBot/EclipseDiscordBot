@@ -2,7 +2,6 @@ import discord
 import os
 import asyncio
 import constants.basic as basicC
-from common_functions.discord_checks import *
 from discord.ext import commands
 from discord_slash import cog_ext, SlashContext
 
