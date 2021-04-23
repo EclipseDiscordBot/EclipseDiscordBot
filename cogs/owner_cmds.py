@@ -30,4 +30,4 @@ class OwnerOnlyCommands(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(OwnerOnlyCOmmands(bot))
+    bot.add_cog(OwnerOnlyCommands(bot))
