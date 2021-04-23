@@ -170,7 +170,7 @@ class Greet(commands.Cog):
                 config = await conn.fetchval("SELECT config FROM greet WHERE guild_id = $1", member.guild.id)
                 if config == 0:
                     return
-                elif config == 1:
+                if config == 1:
                     ch_id = await conn.fetchval("SELECT channel_id FROM greet WHERE guild_id = $1", member.guild.id)
                     msg = await conn.fetchval("SELECT msg FROM greet WHERE guild_id = $1", member.guild.id)
                     if msg == "placeholder":
