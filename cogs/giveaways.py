@@ -130,9 +130,8 @@ class Giveaway(commands.Cog):
                         res = await conn.fetch("SELECT * FROM giveaways WHERE msg_id = $1", msg_id)
                         if res is None:
                             continue
-                        else:
-                            msg_id += res[0]["msg_id"]
-                            break
+                        msg_id += res[0]["msg_id"]
+                        break
         if msg_id == 0:
             if not id:
                 await ctx.send("I couldn't find any recent giveaways!")
