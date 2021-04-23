@@ -1,7 +1,4 @@
-import discord
-import os
 import random
-import asyncio
 from discord.ext import commands
 from discord_slash import cog_ext, SlashContext
 

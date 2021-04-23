@@ -1,10 +1,8 @@
 import discord
 import datetime
 import humanize
-import re
 import random
 from discord.ext import commands
-from discord.ext import tasks
 
 
 class Giveaway(commands.Cog):

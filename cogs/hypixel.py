@@ -1,7 +1,6 @@
 import aiohttp
 import discord
 from discord import Embed
-import asyncpixel
 import pickle
 from constants import bz_ids
 from huge_functions.auction_calc import *

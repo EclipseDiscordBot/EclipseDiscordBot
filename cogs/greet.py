@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 
-class greet(commands.Cog):
+class Greet(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -17,14 +17,14 @@ class greet(commands.Cog):
                 del_after = await conn.fetchval("SELECT delafter FROM greet WHERE guild_id = $1", ctx.guild.id)
                 config = await conn.fetchval("SELECT config FROM greet WHERE guild_id = $1", ctx.guild.id)
 
-        try:
-            channel = ctx.guild.get_channel(ch_id)
-        except Exception:
-            channel = f"Not Setup Yet! Do {ctx.prefix}greet channel #channel"
+        channel = ctx.guild.get_channel(ch_id)
+        if channel is None:
+            channel = f"Not Setup Yet! Do {ctx.prefix}greet channel `#channel`"
         if msg == "placeholder":
             msg = f"Not Setup Yet! Do {ctx.prefix}greet msg <msg>"
         if del_after == 0:
             msg = f""
+        title = ""
         if config == 1:
             title = "Greet is ENABLED"
         elif config == 0:
@@ -185,4 +185,4 @@ class greet(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(greet(bot))
+    bot.add_cog(Greet(bot))

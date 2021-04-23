@@ -2,6 +2,11 @@ import discord
 from discord.ext import commands
 
 
+# TODO
+#  @zapd0s add names and description to every command
+#  Also this file might have been broken by auto-pep8
+#  cogs/status_roles.py
+
 class StatusRoles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -32,24 +37,23 @@ class StatusRoles(commands.Cog):
         @commands.command()
         @commands.has_permissions(administrator=True)
         @commands.guild_only()
-        async def keyword(self, ctx, keyword: str):
+        async def keyword(self, ctx, keyword1: str):
             async with self.bot.pool.acquire() as conn:
                 async with conn.transaction():
                     await conn.execute("UPDATE sr SET keyword = $1 WHERE guild_id = $1", ctx.guild.id)
                     role_id = await conn.fetchval("SELECT role_id FROM sr WHERE guild_id = $1", ctx.guild.id)
-
-        role = ctx.guild.get_role(role_id)
-        if role is None:
-            txt = "Not setup yet"
-        else:
-            txt = role.mention
-        embed = discord.Embed(
-            title="Status Roles has been updated!",
-            description=f"Status roles gives a role to a person if they have a certain keyword in their custom activity.\n **Here is {ctx.guild.name}'s configuration**",
-            color=self.bot.color)
-        embed.add_field(name="Role", value=txt)
-        embed.add_field(name="Keyword", value=keyword)
-        await ctx.send(embed=embed)
+                    role = ctx.guild.get_role(role_id)
+                    if role is None:
+                        txt = "Not setup yet"
+                    else:
+                        txt = role.mention
+                    embed = discord.Embed(
+                        title="Status Roles has been updated!",
+                        description=f"Status roles gives a role to a person if they have a certain keyword in their custom activity.\n **Here is {ctx.guild.name}'s configuration**",
+                        color=self.bot.color)
+                    embed.add_field(name="Role", value=txt)
+                    embed.add_field(name="Keyword", value=keyword1)
+                    await ctx.send(embed=embed)
 
         @commands.command()
         @commands.guild_only()

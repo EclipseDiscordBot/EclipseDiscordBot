@@ -1,9 +1,8 @@
-import os
+
 import random
 import string
 import discord
 import traceback
-import sys
 from discord.ext import commands
 import datetime
 

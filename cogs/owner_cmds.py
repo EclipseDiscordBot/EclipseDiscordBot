@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 
-class owner_cmds(commands.Cog):
+class OwnerOnlyCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -30,4 +30,4 @@ class owner_cmds(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(owner_cmds(bot))
+    bot.add_cog(OwnerOnlyCOmmands(bot))

@@ -1,10 +1,8 @@
 import discord
 from discord.ext import commands
-import pickle
 import datetime
-from discord_slash import SlashCommand, SlashContext
+from discord_slash import SlashCommand
 import os
-import traceback
 import pickle
 import asyncpg
 import asyncio

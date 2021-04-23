@@ -1,6 +1,3 @@
-import discord
-import os
-import asyncio
 import constants.basic as basicC
 from discord.ext import commands
 from discord_slash import cog_ext, SlashContext
