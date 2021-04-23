@@ -113,8 +113,7 @@ class Giveaway(commands.Cog):
             if not id:
                 await ctx.send("I couldn't find any recent giveaways!")
                 return
-            else:
-                msg_id += id
+            msg_id += id
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 gw = await conn.fetch("SELECT 1 FROM giveaways WHERE msg_id = $1", msg_id)
@@ -138,8 +137,7 @@ class Giveaway(commands.Cog):
             if not id:
                 await ctx.send("I couldn't find any recent giveaways!")
                 return
-            else:
-                msg_id += id
+            msg_id += id
 
         gw_msg = await ctx.channel.fetch_message(msg_id)
         if gw_msg is None:
