@@ -1,17 +1,32 @@
 import asyncpixel
+import pickle
+import matplotlib.pyplot as plt
 
 
 async def calc_auc(hypixel: asyncpixel.Hypixel, currentAh: list) -> dict:
     # TODO Finish calc_auc in huge functions
     ahDict = {}
     binDict = {}
-    counter = 0
-    print(currentAh[0:5])
     for item in currentAh:
         if item.bin:
-            binDict[f"{item.item_name}_{counter}"] = item
+            try:
+                if not binDict[item.item_name]:
+                    binDict[item.item_name] = []
+            except KeyError:
+                binDict[item.item_name] = []
+            binDict[item.item_name].append(item)
         else:
-            ahDict[f"{item.item_name}_{counter}"] = item
-        counter += 1
-    print(f"Ah dict: {ahDict}.\n.\n.\n.\n.\nBin dict: {binDict}")
-    return {'a': 'b'}
+            try:
+                if not ahDict[item.item_name]:
+                    ahDict[item.item_name] = []
+            except KeyError:
+                ahDict[item.item_name] = []
+            ahDict[item.item_name].append(item)
+
+    listofnames = []
+    for item in currentAh:
+        listofnames.append(item.item_name)
+    pickle.dump(listofnames, open('data/hypixelCog/ah_names.pkl', 'wb'))
+    pickle.dump(ahDict, open('data/hypixelCog/ah_items.pkl', 'wb'))
+    pickle.dump(binDict, open('data/hypixelCog/bin_items.pkl', 'wb'))
+    return {"ahDict": ahDict, "binDict": binDict}

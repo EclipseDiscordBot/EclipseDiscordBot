@@ -1,8 +1,10 @@
+
 import aiohttp
 import discord
 from discord import Embed
 import pickle
 from constants import bz_ids
+import asyncpixel
 from huge_functions.auction_calc import *
 from discord.ext import commands, tasks
 
@@ -112,13 +114,16 @@ class Hypixel(commands.Cog):
         ah = await self.hypixel.auctions()
         print(f'Total pages: {ah.total_pages}')
         for page_no in range(ah.total_pages):
-            page = await self.hypixel.auctions(page_no)
+            try:
+                page = await self.hypixel.auctions(page_no)
+            except Exception:
+                page = await self.hypixel.auctions(page_no)
             pages.append(page)
             print(f'appended page {page_no}')
         for page in pages:
-            for auction in page:
+            for auction in page.auctions:
                 final_ah.append(auction)
-                print(f"appended item {len(final_ah) -1}")
+                print(f"appended item {len(final_ah)}")
 
         self.currentAh = final_ah
         self.AHDict = await calc_auc(self.hypixel, self.currentAh)
