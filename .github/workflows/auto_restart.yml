@@ -2,7 +2,7 @@ name: Auto Restart on git push
 
 on:
   push:
-    branches: [ master ]
+    branches: [ stable ]
   workflow_dispatch:
 
 jobs:
