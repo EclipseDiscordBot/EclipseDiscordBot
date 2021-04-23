@@ -1,6 +1,5 @@
 import asyncpixel
 import pickle
-import matplotlib.pyplot as plt
 
 
 async def calc_auc(hypixel: asyncpixel.Hypixel, currentAh: list) -> dict:
