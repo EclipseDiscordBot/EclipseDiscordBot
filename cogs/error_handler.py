@@ -86,7 +86,7 @@ class ErrorHandler(commands.Cog):
 
         elif isinstance(error, discord.errors.Forbidden):
             title = "I don't have the permissions"
-            dsc = f"Are you sure i have administrator permissions?"
+            dsc = "Are you sure i have administrator permissions?"
             embed = discord.Embed(
                 title=title,
                 description=dsc,
@@ -147,7 +147,7 @@ class ErrorHandler(commands.Cog):
 
         else:
             title = "Unknown exception"
-            dsc = f"Sorry, the bot has run into an unknown Exception, it has been reported and is soon to be fixed!"
+            dsc = "Sorry, the bot has run into an unknown Exception, it has been reported and is soon to be fixed!"
             embed = discord.Embed(
                 title=title,
                 description=dsc,
