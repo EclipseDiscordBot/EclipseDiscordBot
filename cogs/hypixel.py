@@ -17,6 +17,7 @@ class Hypixel(commands.Cog):
         self.currentAh = None
         self.AHDict = None
         self.bazaar_loop.start()
+        self.auction_loop.start()
         self.bz_id_item = bz_ids.id_name
         self.bz_item_id = bz_ids.name_id
 
@@ -110,12 +111,15 @@ class Hypixel(commands.Cog):
         pages = []
         final_ah = []
         ah = await self.hypixel.auctions()
+        print(f'Total pages: {ah.total_pages}')
         for page_no in range(ah.total_pages):
             page = await self.hypixel.auctions(page_no)
             pages.append(page)
+            print(f'appended page {page_no}')
         for page in pages:
             for auction in page:
                 final_ah.append(auction)
+                print(f"appended item {len(final_ah) -1}")
 
         self.currentAh = final_ah
         self.AHDict = await calc_auc(self.hypixel, self.currentAh)
