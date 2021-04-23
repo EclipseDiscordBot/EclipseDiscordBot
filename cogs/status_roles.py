@@ -10,7 +10,8 @@ class StatusRoles(commands.Cog):
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
     async def sr(self, ctx):
-        # TODO @zapd0s add names and description to every command. Also this file might have been broken by auto-pep8. cogs/status_roles.py
+        # TODO @zapd0s add names and description to every command. Also this
+        # file might have been broken by auto-pep8. cogs/status_roles.py
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 role_id = await conn.fetchval("SELECT role_id FROM sr WHERE guild_id = $1", ctx.guild.id)
