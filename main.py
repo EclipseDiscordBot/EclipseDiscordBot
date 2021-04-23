@@ -162,7 +162,6 @@ async def gend(gw):
 @tasks.loop(seconds=5)
 async def end_gws():
     await bot.wait_until_ready()
-    print("Ending...")
     async with bot.pool.acquire() as conn:
         async with conn.transaction():
             res = await conn.fetch("SELECT * FROM giveaways")

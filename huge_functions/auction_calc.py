@@ -6,9 +6,11 @@ import PIL
 
 
 async def calc_auc(hypixel: asyncpixel.Hypixel, currentAh: list) -> dict:
+    # TODO Finish calc_auc in huge functions
     ahDict = {}
     binDict = {}
     counter = 0
+    print(currentAh[0:5])
     for item in currentAh:
         if item.bin:
             binDict[f"{item.item_name}_{counter}"] = item
