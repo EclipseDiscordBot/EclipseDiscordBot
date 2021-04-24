@@ -1,0 +1,21 @@
+{
+  "load_cogs": true,
+  "cogs": {
+    "jishaku": true,
+    "slash_basic": true,
+    "slash_fun": true,
+    "slash_giveaway": true,
+    "slash_mod": true
+    "basic": true,
+    "error_handler": true,
+    "fun": true,
+    "giveaways": true,
+    "greet": true,
+    "help": false,
+    "hypixel": true,
+    "mod": true,
+    "owner_cmds": true,
+    "status_roles": false,
+    "utils": true
+  }
+}
