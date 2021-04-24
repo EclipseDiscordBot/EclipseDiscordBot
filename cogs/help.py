@@ -13,8 +13,6 @@ class EclipseHelpCommand(commands.HelpCommand):
             cmd_str = ""
             for cmd in commands:
                 cmd_str += f"`{cmd.qualified_name}, `"
-            if cmd_str is None:
-                cmd_str = "No commands"
             embed.add_field(name = cog_name, value = cmd_str)
         embed.description = f"Type `{prefix}help <command>` for more information on a command\n" \
                             f"You can also type `{prefix}help <category>` for more info on a category" \
