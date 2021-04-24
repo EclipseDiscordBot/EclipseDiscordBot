@@ -24,7 +24,7 @@ class EclipseHelpCommand(commands.HelpCommand):
         await ctx.reply(embed=embed)
 
 
-class help(commands.Cog):
+class EclipseHelp(commands.Cog):
     def __init__(self, bot):
         self._original_help_command = bot.help_command
         bot.help_command = EclipseHelpCommand()
@@ -36,4 +36,4 @@ class help(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(help(bot))
+    bot.add_cog(EclipseHelp(bot))
