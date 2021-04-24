@@ -1,0 +1,23 @@
+{
+  "cogs": {
+    "basic": false,
+    "cogs.basic": true,
+    "cogs.error_handler": true,
+    "cogs.fun": true,
+    "cogs.giveaways": true,
+    "cogs.greet": true,
+    "cogs.help": false,
+    "cogs.hypixel": true,
+    "cogs.mod": true,
+    "cogs.owner_cmds": true,
+    "cogs.slash_cmds.slash_basic": true,
+    "cogs.slash_cmds.slash_fun": true,
+    "cogs.slash_cmds.slash_giveaway": true,
+    "cogs.slash_cmds.slash_mod": true,
+    "cogs.status_roles": false,
+    "cogs.utils": true,
+    "jishaku": true,
+    "moderation": false
+  },
+  "load_cogs": true
+}
