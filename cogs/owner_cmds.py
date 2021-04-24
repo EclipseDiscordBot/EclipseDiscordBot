@@ -2,7 +2,8 @@ import asyncio
 import json
 
 import discord
-import os, sys
+import os
+import sys
 from discord.ext import commands
 
 
@@ -39,7 +40,7 @@ class OwnerOnlyCommands(commands.Cog):
         self.bot.config['cogs'][cog] = False
         with open('constants/config.json', 'w') as file:
             json.dump(self.bot.config, file, sort_keys=True,
-                  indent=2, separators=(',', ': '))
+                      indent=2, separators=(',', ': '))
         await ctx.reply(f"{cog} has been disabled until re-enabled! rebooting!")
         await asyncio.sleep(2)
         await self.restart(ctx)
