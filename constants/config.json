@@ -1,21 +1,23 @@
 {
-  "load_cogs": true,
-  "cogs": {
-    "jishaku": true,
-    "cogs.slash_cmds.slash_basic": true,
-    "cogs.slash_cmds.slash_fun": true,
-    "cogs.slash_cmds.slash_giveaway": true,
-    "cogs.slash_cmds.slash_mod": true,
-    "cogs.basic": true,
-    "cogs.error_handler": true,
-    "cogs.fun": true,
-    "cogs.giveaways": true,
-    "cogs.greet": true,
-    "cogs.help": false,
-    "cogs.hypixel": true,
-    "cogs.mod": true,
-    "cogs.owner_cmds": true,
-    "cogs.status_roles": false,
-    "cogs.utils": true
-  }
+   "load_cogs":true,
+   "cogs":{
+      "jishaku":true,
+      "cogs.slash_cmds.slash_basic":true,
+      "cogs.slash_cmds.slash_fun":true,
+      "cogs.slash_cmds.slash_giveaway":true,
+      "cogs.slash_cmds.slash_mod":true,
+      "cogs.basic":true,
+      "cogs.error_handler":true,
+      "cogs.fun":false,
+      "cogs.giveaways":true,
+      "cogs.greet":true,
+      "cogs.help":false,
+      "cogs.hypixel":true,
+      "cogs.mod":true,
+      "cogs.owner_cmds":true,
+      "cogs.status_roles":false,
+      "cogs.utils":true,
+      "basic":false,
+      "moderation":false
+   }
 }

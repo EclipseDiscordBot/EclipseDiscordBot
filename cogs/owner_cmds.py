@@ -1,9 +1,12 @@
+import json
+
 import discord
+import os, sys
 from discord.ext import commands
 
 
 class OwnerOnlyCommands(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.command(
@@ -27,6 +30,35 @@ class OwnerOnlyCommands(commands.Cog):
                         await conn.execute(query)
                     else:
                         await conn.execute(query, vals)
+
+    @commands.command(name="disablecog", brief="disables a cog")
+    @commands.is_owner()
+    async def _disable(self, ctx, cog: str):
+        self.bot.remove_cog(cog.split('.')[-1])
+        self.bot.config['cogs'][cog] = False
+        with open('constants/config.json', 'w') as file:
+            json.dump(self.bot.config, file, sort_keys=True,
+                  indent=2, separators=(',', ': '))
+        await ctx.reply(f"{cog} has been disabled until re-enabled! rebooting!")
+        await self.restart(ctx)
+
+    @commands.command(name="enablecog", brief="enables a cog")
+    @commands.is_owner()
+    async def _enable(self, ctx, cog: str):
+        self.bot.load_extension(cog)
+        self.bot.config['cogs'][cog] = True
+        with open('constants/config.json', 'w') as file:
+            json.dump(self.bot.config, file, sort_keys=True,
+                      indent=2, separators=(',', ': '))
+        await ctx.reply(f"{cog} has been enabled! rebooting!")
+        await self.restart(ctx)
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def restart(self, ctx):
+        await ctx.reply("Restarting...")
+        os.system("sh startupfile.sh")
+        sys.exit(0)
 
 
 def setup(bot):
