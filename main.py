@@ -55,7 +55,7 @@ bot.color = discord.Color.from_rgb(156, 7, 241)
 async def on_ready():
     bot.load_extension('jishaku')
     exceptions = ""
-    with open("constants/config.json", "r") as read_file:
+    with open("config/config.json", "r") as read_file:
         data = json.load(read_file)
         bot.config = data
     for file in os.listdir("./cogs"):

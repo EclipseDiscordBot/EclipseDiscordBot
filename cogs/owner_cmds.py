@@ -37,7 +37,7 @@ class OwnerOnlyCommands(commands.Cog):
     @commands.is_owner()
     async def _disable(self, ctx, cog: str):
         self.bot.config['cogs'][cog] = False
-        with open('constants/config.json', 'w') as file:
+        with open('config/config.json', 'w') as file:
             json.dump(self.bot.config, file, sort_keys=True,
                       indent=2, separators=(',', ': '))
             file.flush()
@@ -49,7 +49,7 @@ class OwnerOnlyCommands(commands.Cog):
     @commands.is_owner()
     async def _enable(self, ctx, cog: str):
         self.bot.config['cogs'][cog] = True
-        with open('constants/config.json', 'w') as file:
+        with open('config/config.json', 'w') as file:
             json.dump(self.bot.config, file, sort_keys=True,
                       indent=2, separators=(',', ': '))
             file.flush()
