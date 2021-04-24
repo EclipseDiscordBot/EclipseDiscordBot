@@ -57,6 +57,7 @@ async def on_ready():
     exceptions = ""
     with open("constants/config.json", "r") as read_file:
         data = json.load(read_file)
+        bot.config = data
     for file in os.listdir("./cogs"):
         if file.endswith('.py'):
             try:

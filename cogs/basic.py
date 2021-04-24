@@ -18,13 +18,6 @@ class Basic(commands.Cog):
     async def ping(self, ctx):
         await ctx.reply(f"Pong! {round(self.bot.latency * 1000)} ms")
 
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def restart(self, ctx):
-        await ctx.reply("Restarting...")
-        os.system("sh startupfile.sh")
-        sys.exit(0)
-
     @commands.command(name="version", brief="Gives the bot's version")
     async def _version(self, ctx):
         await ctx.reply(self.version)
