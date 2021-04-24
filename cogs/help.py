@@ -18,7 +18,7 @@ class EclipseHelpCommand(commands.HelpCommand):
                             f"You can also type `{prefix}help <category>` for more info on a category" \
                             f"**Note that this help command shows only the commands that you can use**"
         embed.set_author(name = ctx.author, icon_url = ctx.author.avatar_url)
-        embed.set_footer(text = "Eclipse", icon_url = ctx.bot.avatar_url)
+        embed.set_footer(text = "Eclipse", icon_url = ctx.bot.user.avatar_url)
         await ctx.reply(embed = embed)
 
 
