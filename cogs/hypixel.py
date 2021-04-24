@@ -18,7 +18,7 @@ class Hypixel(commands.Cog):
         self.currentAh = None
         self.AHDict = None
         self.bazaar_loop.start()
-        self.auction_loop.start()
+        # self.auction_loop.start()
         self.bz_id_item = bz_ids.id_name
         self.bz_item_id = bz_ids.name_id
 
