@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
 import datetime
+import json
 from discord_slash import SlashCommand
 import os
+from classes.LoadCog import load_extention
 import pickle
 import asyncpg
 import asyncio
@@ -53,10 +55,12 @@ bot.color = discord.Color.from_rgb(156, 7, 241)
 async def on_ready():
     bot.load_extension('jishaku')
     exceptions = ""
+    with open("constants/config.json", "r") as read_file:
+        data = json.load(read_file)
     for file in os.listdir("./cogs"):
         if file.endswith('.py'):
             try:
-                bot.load_extension(f"cogs.{file[:-3]}")
+                load_extention(bot, f'cogs.{file[:-3]}', data)
                 print(f"loaded cogs.{file[:-3]}")
             except Exception as e:
                 exceptions += f"- {file} failed to load [{e}]\n"
@@ -66,7 +70,7 @@ async def on_ready():
     for file in os.listdir("./cogs/slash_cmds"):
         if file.endswith('.py'):
             try:
-                bot.load_extension(f"cogs.slash_cmds.{file[:-3]}")
+                load_extention(bot, f'cogs.slash_cmds.{file[:-3]}', data)
                 print(f"loaded cogs.slash_cmds.{file[:-3]}")
             except Exception as e:
                 exceptions += f"- {file} failed to load [{e}]\n"
