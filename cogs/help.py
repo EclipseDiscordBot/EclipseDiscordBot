@@ -5,9 +5,9 @@ class EclipseHelpCommand(commands.HelpCommand):
     def get_command_signature(self, command):
         return f"{self.clean_prefix}{command.qualified_name} {command.signature}"
     async def send_bot_help(self, mapping):
-        ctx = self.context
-        embed = discord.Embed(title = "Help", color = ctx.bot.color)
+        embed = discord.Embed(title = "Help", color = self.bot.color)
         prefix = self.clean_prefix
+        ctx = self.context
         for cog, commands in mapping.items():
             cog_name = getattr(cog, "qualified_name", "No Category")
             cmd_str = ""
