@@ -36,11 +36,11 @@ class OwnerOnlyCommands(commands.Cog):
     @commands.command(name="disablecog", brief="disables a cog")
     @commands.is_owner()
     async def _disable(self, ctx, cog: str):
-        self.bot.remove_cog(cog.split('.')[-1])
         self.bot.config['cogs'][cog] = False
         with open('constants/config.json', 'w') as file:
             json.dump(self.bot.config, file, sort_keys=True,
                       indent=2, separators=(',', ': '))
+            file.flush()
         await ctx.reply(f"{cog} has been disabled until re-enabled! rebooting!")
         await asyncio.sleep(2)
         await self.restart(ctx)
@@ -48,11 +48,11 @@ class OwnerOnlyCommands(commands.Cog):
     @commands.command(name="enablecog", brief="enables a cog")
     @commands.is_owner()
     async def _enable(self, ctx, cog: str):
-        self.bot.load_extension(cog)
         self.bot.config['cogs'][cog] = True
         with open('constants/config.json', 'w') as file:
             json.dump(self.bot.config, file, sort_keys=True,
                       indent=2, separators=(',', ': '))
+            file.flush()
         await ctx.reply(f"{cog} has been enabled! rebooting!")
         await asyncio.sleep(2)
         await self.restart(ctx)
