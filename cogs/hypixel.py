@@ -123,7 +123,6 @@ class Hypixel(commands.Cog):
         for page in pages:
             for auction in page.auctions:
                 final_ah.append(auction)
-                print(f"appended item {len(final_ah)}")
 
         self.currentAh = final_ah
         self.AHDict = await calc_auc(self.hypixel, self.currentAh)

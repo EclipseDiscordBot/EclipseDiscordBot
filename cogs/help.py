@@ -10,10 +10,10 @@ class EclipseHelpCommand(commands.HelpCommand):
         ctx = self.context
         embed = discord.Embed(title="Help", color=ctx.bot.color)
         prefix = self.clean_prefix
-        for cog, commands in mapping.items():
+        for cog, cmds in mapping.items():
             cog_name = getattr(cog, "qualified_name", "No Category")
             cmd_str = ""
-            for cmd in commands:
+            for cmd in cmds:
                 cmd_str += f"`{cmd.qualified_name}, `"
             embed.add_field(name=cog_name, value=cmd_str)
         embed.description = f"Type `{prefix}help <command>` for more information on a command\n" \
@@ -24,7 +24,7 @@ class EclipseHelpCommand(commands.HelpCommand):
         await ctx.reply(embed=embed)
 
 
-class help(commands.Cog):
+class EclipseHelp(commands.Cog):
     def __init__(self, bot):
         self._original_help_command = bot.help_command
         bot.help_command = EclipseHelpCommand()
@@ -36,4 +36,4 @@ class help(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(help(bot))
+    bot.add_cog(EclipseHelp(bot))
