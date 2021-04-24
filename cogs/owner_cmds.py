@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 import discord
@@ -40,6 +41,7 @@ class OwnerOnlyCommands(commands.Cog):
             json.dump(self.bot.config, file, sort_keys=True,
                   indent=2, separators=(',', ': '))
         await ctx.reply(f"{cog} has been disabled until re-enabled! rebooting!")
+        await asyncio.sleep(2)
         await self.restart(ctx)
 
     @commands.command(name="enablecog", brief="enables a cog")
@@ -51,6 +53,7 @@ class OwnerOnlyCommands(commands.Cog):
             json.dump(self.bot.config, file, sort_keys=True,
                       indent=2, separators=(',', ': '))
         await ctx.reply(f"{cog} has been enabled! rebooting!")
+        await asyncio.sleep(2)
         await self.restart(ctx)
 
     @commands.command(hidden=True)
