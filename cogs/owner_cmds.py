@@ -60,7 +60,6 @@ class OwnerOnlyCommands(commands.Cog):
     @commands.is_owner()
     async def restart(self, ctx):
         await ctx.reply("Restarting...")
-        os.system("sh startupfile.sh")
         sys.exit(0)
 
 
