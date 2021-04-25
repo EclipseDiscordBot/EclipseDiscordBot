@@ -43,7 +43,7 @@ bot = commands.Bot(
     command_prefix=get_prefix,
     intents=intents,
     allowed_mentions=mentions,
-case_insensitive=True)
+    case_insensitive=True)
 
 slash = SlashCommand(bot, override_type=True)
 
