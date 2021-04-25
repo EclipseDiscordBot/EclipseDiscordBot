@@ -15,7 +15,8 @@ class Fun(commands.Cog):
         choice = random.choice(options1)
         await ctx.reply(f"I choose..... {choice}")
 
-    @commands.command(brief="Repeats you")
+    # TODO fix this and disable mentions
+    # @commands.command(brief="Repeats you")
     async def say(self, ctx, *, words: str):
         await ctx.reply(words)
 
