@@ -83,7 +83,7 @@ class ReactionRoles(commands.Cog):
                         pass
 
     @commands.Cog.listener('on_raw_reaction_remove')
-    async def reaction_add(self, payload: discord.RawReactionActionEvent):
+    async def reaction_remove(self, payload: discord.RawReactionActionEvent):
         if payload.member == self.bot.user:
             return
         async with self.pool.acquire():
@@ -96,7 +96,7 @@ class ReactionRoles(commands.Cog):
                 server_check = (row['server'] == payload.guild_id)
                 if server_check and msg_check and emoji_check:
                     role: discord.Role = self.bot.get_guild(payload.guild_id).get_role(row['role_id'])
-                    member: discord.Member = payload.member
+                    member: discord.Member = self.bot.get_guild(payload.guild_id).get_member(payload.user_id)
                     await member.remove_roles(role, reason=f"Self-Role. MSG_ID:{row['msg_id']}")
                     try:
                         await member.send(
