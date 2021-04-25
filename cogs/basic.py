@@ -1,7 +1,5 @@
-import os
 import constants.basic as basicC
 from discord.ext import commands
-import sys
 
 
 class Basic(commands.Cog):

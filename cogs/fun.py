@@ -15,6 +15,10 @@ class Fun(commands.Cog):
         choice = random.choice(options1)
         await ctx.reply(f"I choose..... {choice}")
 
+    @commands.command(brief="Repeats you")
+    async def say(self, ctx, *, words: str):
+        await ctx.reply(words)
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))

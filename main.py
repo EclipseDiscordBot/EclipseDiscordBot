@@ -36,13 +36,14 @@ async def get_prefix(bot, message):
 mentions = discord.AllowedMentions(
     everyone=False,
     users=True,
-    replied_user=False,
+    replied_user=True,
     roles=False)
 
 bot = commands.Bot(
     command_prefix=get_prefix,
     intents=intents,
-    allowed_mentions=mentions)
+    allowed_mentions=mentions,
+    case_insensitive=True)
 
 slash = SlashCommand(bot, override_type=True)
 
