@@ -1,6 +1,6 @@
 import asyncio
 import json
-
+import os
 import discord
 import sys
 from discord.ext import commands
@@ -41,7 +41,6 @@ class OwnerOnlyCommands(commands.Cog):
                       indent=2, separators=(',', ': '))
             file.flush()
         await ctx.reply(f"{cog} has been disabled until re-enabled! rebooting!")
-        await asyncio.sleep(2)
         await self.restart(ctx)
 
     @commands.command(name="enablecog", brief="enables a cog")
@@ -53,15 +52,14 @@ class OwnerOnlyCommands(commands.Cog):
                       indent=2, separators=(',', ': '))
             file.flush()
         await ctx.reply(f"{cog} has been enabled! rebooting!")
-        await asyncio.sleep(2)
         await self.restart(ctx)
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def restart(self, ctx):
         await ctx.reply("Restarting...")
-        sys.exit(0)
-
+        os.system("bash startupfile.sh")
+        await self.bot.logout()
 
 def setup(bot):
     bot.add_cog(OwnerOnlyCommands(bot))
