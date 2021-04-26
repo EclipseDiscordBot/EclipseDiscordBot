@@ -18,12 +18,8 @@ class Greet(commands.Cog):
                 config = await conn.fetchval("SELECT config FROM greet WHERE guild_id = $1", ctx.guild.id)
 
         channel = ctx.guild.get_channel(ch_id)
-        if channel is None:
-            channel = f"Not Setup Yet! Do {ctx.prefix}greet channel `#channel`"
         if msg == "placeholder":
             msg = f"Not Setup Yet! Do {ctx.prefix}greet msg <msg>"
-        if del_after == 0:
-            msg = f""
         title = ""
         if config == 1:
             title = "Greet is ENABLED"
@@ -38,15 +34,15 @@ class Greet(commands.Cog):
             f"`{ctx.prefix}greet msg your message here`",
             color=self.bot.color)
         embed.add_field(name="Message", value=msg)
-        embed.add_field(name="Channel", value=channel.mention)
+        embed.add_field(name="Channel", value=(channel.mention if (isinstance(channel, discord.TextChannel)) else "Not Setup Yet!"))
         embed.add_field(
             name="Message will be deleted after",
-            value=str(del_after))
+            value=(str(del_after) if del_after else "Will not be deleted"))
         embed.add_field(
             name="Variables",
             value="You can use these keywords that will be replaced accordingly. \n **{mc}** - Will be "
             "replaced with the guilds' member count \n **{mention}** - Will be replaced with the "
-            "joined member's mention")
+            "joined member's mention \n **IF YOU DON'T WANT GREET MESSAGES TO BE DELETED, SET delafter TO 0**")
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
@@ -69,7 +65,7 @@ class Greet(commands.Cog):
         embed.add_field(name="Channel", value=channel.mention)
         embed.add_field(
             name="Message will be deleted after",
-            value=str(del_after))
+            value=(str(del_after) if del_after else "Will not be deleted"))
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
@@ -94,7 +90,7 @@ class Greet(commands.Cog):
         embed.add_field(name="Channel", value=channel.mention)
         embed.add_field(
             name="Message will be deleted after",
-            value=str(del_after))
+            value=(str(del_after) if del_after else "Will not be deleted"))
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
@@ -141,7 +137,7 @@ class Greet(commands.Cog):
         embed.add_field(name="Channel", value=channel.mention)
         embed.add_field(
             name="Message will be deleted after",
-            value=str(del_after))
+            value=(str(del_after) if del_after else "Will not be deleted"))
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/attachments/829735317966815273/832573291775787038/dbd26c4768e6ce541f5b857b4973226e.png")
@@ -181,7 +177,7 @@ class Greet(commands.Cog):
                         "{mc}", str(
                             member.guild.member_count)).replace(
                         "{mention}", member.mention)
-                    await channel.send(text, delete_after=int(delafter))
+                    await channel.send(text, delete_after=(int(delafter) if delafter else None))
 
 
 def setup(bot):
