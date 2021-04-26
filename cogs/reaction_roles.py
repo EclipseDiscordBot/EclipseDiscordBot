@@ -92,14 +92,13 @@ class ReactionRoles(commands.Cog):
 
                     async with self.pool.acquire() as conn:
                         async with conn.transaction():
-                            gid = int(ctx.guild.id)
                             mid = int(msg.content)
                             rid = int(argv2.id)
                             await conn.execute(
-                                "DELETE FROM reaction_roles WHERE ",
-                                gid, mid, argv1, rid)
-                    await react_msg.add_reaction(argv1)
-                    await ctx.reply("Reaction Role added!")
+                                "DELETE FROM reaction_roles WHERE role_id=$1,message_id=$2",
+                                rid, mid)
+                    await react_msg.remove_reaction(argv1, self.bot.user)
+                    await ctx.reply("Reaction Role Removed!")
 
     @commands.Cog.listener('on_raw_reaction_add')
     async def reaction_add(self, payload: discord.RawReactionActionEvent):
