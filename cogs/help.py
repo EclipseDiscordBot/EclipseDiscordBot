@@ -16,7 +16,10 @@ class EclipseHelpCommand(commands.HelpCommand):
                 command_signatures += f"`{self.get_command_signature(cmd)}`\n"
             if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "No Category")
-                embed.add_field(name=cog_name, value=command_signatures, inline=False)
+                embed.add_field(
+                    name=cog_name,
+                    value=command_signatures,
+                    inline=False)
         embed.description = f"Type `{prefix}help <command>` for more information on a command\n" \
                             f"You can also type `{prefix}help <category>` for more info on a category" \
                             f"**Note that this help command shows only the commands that you can use**"

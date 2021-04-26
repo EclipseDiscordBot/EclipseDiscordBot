@@ -113,7 +113,8 @@ class ReactionRoles(commands.Cog):
                 msg_check = (row['msg_id'] == payload.message_id)
                 server_check = (row['server'] == payload.guild_id)
                 if server_check and msg_check and emoji_check:
-                    role: discord.Role = self.bot.get_guild(payload.guild_id).get_role(row['role_id'])
+                    role: discord.Role = self.bot.get_guild(
+                        payload.guild_id).get_role(row['role_id'])
                     member: discord.Member = payload.member
                     await member.add_roles(role, reason=f"Self-Role. MSG_ID:{row['msg_id']}")
                     try:
@@ -134,14 +135,17 @@ class ReactionRoles(commands.Cog):
                 msg_check = (row['msg_id'] == payload.message_id)
                 server_check = (row['server'] == payload.guild_id)
                 if server_check and msg_check and emoji_check:
-                    role: discord.Role = self.bot.get_guild(payload.guild_id).get_role(row['role_id'])
-                    member: discord.Member = self.bot.get_guild(payload.guild_id).get_member(payload.user_id)
+                    role: discord.Role = self.bot.get_guild(
+                        payload.guild_id).get_role(row['role_id'])
+                    member: discord.Member = self.bot.get_guild(
+                        payload.guild_id).get_member(payload.user_id)
                     await member.remove_roles(role, reason=f"Self-Role. MSG_ID:{row['msg_id']}")
                     try:
                         await member.send(
                             f"Removed your `{role.name}` role in `{self.bot.get_guild(payload.guild_id).name}`")
                     except discord.Forbidden:
                         pass
+
 
 def setup(bot):
     bot.add_cog(ReactionRoles(bot))
