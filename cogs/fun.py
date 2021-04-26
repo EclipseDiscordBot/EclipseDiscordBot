@@ -15,10 +15,11 @@ class Fun(commands.Cog):
         choice = random.choice(options1)
         await ctx.reply(f"I choose..... {choice}")
 
-    # TODO fix this and disable mentions
-    # @commands.command(brief="Repeats you")
+
+    @commands.command(brief="Repeats you")
     async def say(self, ctx, *, words: str):
-        await ctx.reply(words)
+        txt = await commands.clean_content().convert(ctx, words)
+        await ctx.reply(txt)
 
 
 def setup(bot):
