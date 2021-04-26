@@ -109,7 +109,7 @@ class ReactionRoles(commands.Cog):
                 async with conn.transaction():
                     res = await conn.fetch("SELECT * FROM reaction_roles")
             for row in res:
-                emoji_check = (payload.emoji.name == row['reaction'])
+                emoji_check = (str(payload.emoji) == row['reaction'])
                 msg_check = (row['msg_id'] == payload.message_id)
                 server_check = (row['server_id'] == payload.guild_id)
                 if server_check and msg_check and emoji_check:
@@ -131,7 +131,7 @@ class ReactionRoles(commands.Cog):
                 async with conn.transaction():
                     res = await conn.fetch("SELECT * FROM reaction_roles")
             for row in res:
-                emoji_check = (payload.emoji.name == row['reaction'])
+                emoji_check = (str(payload.emoji) == row['reaction'])
                 msg_check = (row['msg_id'] == payload.message_id)
                 server_check = (row['server_id'] == payload.guild_id)
                 if server_check and msg_check and emoji_check:
