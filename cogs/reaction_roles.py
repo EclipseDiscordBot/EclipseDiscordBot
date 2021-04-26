@@ -107,10 +107,12 @@ class ReactionRoles(commands.Cog):
         async with self.pool.acquire():
             async with self.bot.pool.acquire() as conn:
                 async with conn.transaction():
-                    res = await conn.fetch("SELECT * FROM reaction_roles WHERE server=$1,msg_id=$2", payload.guild_id, payload.message_id)
+                    res = await conn.fetch("SELECT * FROM reaction_roles")
             for row in res:
                 emoji_check = (payload.emoji.name == row['reaction'])
-                if emoji_check:
+                msg_check = (row['msg_id'] == payload.message_id)
+                server_check = (row['server_id'] == payload.guild_id)
+                if server_check and msg_check and emoji_check:
                     role: discord.Role = self.bot.get_guild(
                         payload.guild_id).get_role(row['role_id'])
                     member: discord.Member = payload.member
@@ -127,11 +129,12 @@ class ReactionRoles(commands.Cog):
         async with self.pool.acquire():
             async with self.bot.pool.acquire() as conn:
                 async with conn.transaction():
-                    res = await conn.fetch("SELECT * FROM reaction_roles WHERE server=$1,msg_id=$2", payload.guild_id,
-                                           payload.message_id)
+                    res = await conn.fetch("SELECT * FROM reaction_roles")
             for row in res:
                 emoji_check = (payload.emoji.name == row['reaction'])
-                if emoji_check:
+                msg_check = (row['msg_id'] == payload.message_id)
+                server_check = (row['server_id'] == payload.guild_id)
+                if server_check and msg_check and emoji_check:
                     role: discord.Role = self.bot.get_guild(
                         payload.guild_id).get_role(row['role_id'])
                     member: discord.Member = self.bot.get_guild(
