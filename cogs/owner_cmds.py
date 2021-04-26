@@ -61,5 +61,6 @@ class OwnerOnlyCommands(commands.Cog):
         os.system("bash startupfile.sh")
         await self.bot.logout()
 
+
 def setup(bot):
     bot.add_cog(OwnerOnlyCommands(bot))
