@@ -55,7 +55,7 @@ class ReactionRoles(commands.Cog):
                             mid = int(msg.content)
                             rid = int(argv2.id)
                             await conn.execute(
-                                "INSERT INTO reaction_roles(server,msg_id,reaction,role_id) VALUES($1, $2, $3, $4)",
+                                "INSERT INTO reaction_roles(server_id,msg_id,reaction,role_id) VALUES($1, $2, $3, $4)",
                                 gid, mid, argv1, rid)
                     await react_msg.add_reaction(argv1)
                     await ctx.reply("Reaction Role added!")
@@ -111,7 +111,7 @@ class ReactionRoles(commands.Cog):
             for row in res:
                 emoji_check = (payload.emoji.name == row['reaction'])
                 msg_check = (row['msg_id'] == payload.message_id)
-                server_check = (row['server'] == payload.guild_id)
+                server_check = (row['server_id'] == payload.guild_id)
                 if server_check and msg_check and emoji_check:
                     role: discord.Role = self.bot.get_guild(payload.guild_id).get_role(row['role_id'])
                     member: discord.Member = payload.member
@@ -132,7 +132,7 @@ class ReactionRoles(commands.Cog):
             for row in res:
                 emoji_check = (payload.emoji.name == row['reaction'])
                 msg_check = (row['msg_id'] == payload.message_id)
-                server_check = (row['server'] == payload.guild_id)
+                server_check = (row['server_id'] == payload.guild_id)
                 if server_check and msg_check and emoji_check:
                     role: discord.Role = self.bot.get_guild(payload.guild_id).get_role(row['role_id'])
                     member: discord.Member = self.bot.get_guild(payload.guild_id).get_member(payload.user_id)
