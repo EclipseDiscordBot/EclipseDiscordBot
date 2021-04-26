@@ -11,11 +11,10 @@ class EclipseHelpCommand(commands.HelpCommand):
         embed = discord.Embed(title="Help", color=ctx.bot.color)
         prefix = self.clean_prefix
         for cog, commands in mapping.items():
-            filtered = await self.filter_commands(commands, sort=True)
-            command_signatures = [self.get_command_signature(c) for c in filtered]
+            command_signatures = [self.get_command_signature(c) for c in commands]
             if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "No Category")
-                embed.add_field(name=cog_name, value="\n".join(command_signatures), inline=False)
+                embed.add_field(name=cog_name, value="\n".join(f"`{command_signatures}`"), inline=False)
         embed.description = f"Type `{prefix}help <command>` for more information on a command\n" \
                             f"You can also type `{prefix}help <category>` for more info on a category" \
                             f"**Note that this help command shows only the commands that you can use**"
