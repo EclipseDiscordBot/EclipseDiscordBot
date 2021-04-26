@@ -13,7 +13,7 @@ class EclipseHelpCommand(commands.HelpCommand):
         for cog, commands in mapping.items():
             command_signatures = ""
             for cmd in commands:
-                command_signatures += f"`{get_command_signature(cmd)}`\n"
+                command_signatures += f"`{self.get_command_signature(cmd)}`\n"
             if command_signatures:
                 cog_name = getattr(cog, "qualified_name", "No Category")
                 embed.add_field(name=cog_name, value=command_signatures, inline=False)
