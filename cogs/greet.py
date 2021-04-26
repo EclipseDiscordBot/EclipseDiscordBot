@@ -34,7 +34,13 @@ class Greet(commands.Cog):
             f"`{ctx.prefix}greet msg your message here`",
             color=self.bot.color)
         embed.add_field(name="Message", value=msg)
-        embed.add_field(name="Channel", value=(channel.mention if (isinstance(channel, discord.TextChannel)) else "Not Setup Yet!"))
+        embed.add_field(
+            name="Channel",
+            value=(
+                channel.mention if (
+                    isinstance(
+                        channel,
+                        discord.TextChannel)) else "Not Setup Yet!"))
         embed.add_field(
             name="Message will be deleted after",
             value=(str(del_after) if del_after else "Will not be deleted"))
