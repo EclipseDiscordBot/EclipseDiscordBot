@@ -12,7 +12,7 @@ class ReactionRoles(commands.Cog):
         # server_id int, msg_id int, reaction text, role_id int
 
     @commands.command(name="reactionroles", aliases=['rr', 'reaction'])
-    @commands.has_permissions(manage_server=True)
+    @commands.has_permissions(manage_guild=True)
     async def rr(self, ctx: commands.Context, subcommand: str, argv1: str, argv2: discord.Role):
         def check(u):
             return u.author == ctx.author
