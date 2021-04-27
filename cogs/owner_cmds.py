@@ -64,7 +64,7 @@ class OwnerOnlyCommands(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def updatesra(self, ctx, key:str):
+    async def updatesra(self, ctx, key: str):
         prev_credd = pickle.load(open('credentials.pkl', 'rb'))
         prev_credd['some_random_api'] = key
         pickle.dump(prev_credd, open('credentials.pkl', 'wb'))
