@@ -13,7 +13,7 @@ class EclipseHelpCommand(commands.HelpCommand):
         for cog, commands in mapping.items():
             command_txt = " "
             for cmd in commands:
-                command_txt += f"`{self.get_command_signature(cmd)}`\n"
+                command_txt += f"`{cmd.qualified_name}` "
             cog_name = getattr(cog, "qualified_name", "No Category")
             embed.add_field(name=cog_name, value=command_txt, inline=False)
         embed.description = f"Type `{prefix}help <command>` for more information on a command\n" \
