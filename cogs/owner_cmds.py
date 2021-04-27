@@ -3,6 +3,7 @@ import json
 import os
 import discord
 import sys
+import pickle
 from discord.ext import commands
 
 
@@ -60,6 +61,15 @@ class OwnerOnlyCommands(commands.Cog):
         await ctx.reply("Restarting...")
         os.system("bash startupfile.sh")
         await self.bot.logout()
+
+    @commands.command()
+    @commands.is_owner()
+    async def updatesra(self, ctx, key:str):
+        prev_credd = pickle.load(open('credentials.pkl', 'rb'))
+        prev_credd['some_random_api'] = key
+        pickle.dump(prev_credd, open('credentials.pkl', 'wb'))
+        await ctx.reply("Done! rebooting!")
+        await self.restart(ctx)
 
 
 def setup(bot):
