@@ -87,7 +87,7 @@ class Greet(commands.Cog):
             color=self.bot.color)
         channel = ctx.guild.get_channel(ch_id)
         embed.add_field(name="Message", value=msg)
-        embed.add_field(name="Channel", value=channel.mention)
+        embed.add_field(name="Channel", value=(channel.mention if (isinstance(channel, discord.TextChannel)) else "Not Setup Yet!"))
         embed.add_field(
             name="Message will be deleted after",
             value=(str(del_after) if del_after else "Will not be deleted"))
