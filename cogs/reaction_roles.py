@@ -95,7 +95,7 @@ class ReactionRoles(commands.Cog):
                             mid = int(msg.content)
                             rid = int(argv2.id)
                             await conn.execute(
-                                "DELETE FROM reaction_roles WHERE role_id = $1 AND message_id = $2",
+                                "DELETE FROM reaction_roles WHERE role_id = $1 AND msg_id = $2",
                                 rid, mid)
                     await react_msg.remove_reaction(argv1, self.bot.user)
                     await ctx.reply("Reaction Role Removed!")
