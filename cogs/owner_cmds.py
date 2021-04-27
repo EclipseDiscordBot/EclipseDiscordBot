@@ -1,8 +1,9 @@
 import asyncio
 import json
-
+import os
 import discord
 import sys
+import pickle
 from discord.ext import commands
 
 
@@ -41,7 +42,6 @@ class OwnerOnlyCommands(commands.Cog):
                       indent=2, separators=(',', ': '))
             file.flush()
         await ctx.reply(f"{cog} has been disabled until re-enabled! rebooting!")
-        await asyncio.sleep(2)
         await self.restart(ctx)
 
     @commands.command(name="enablecog", brief="enables a cog")
@@ -53,14 +53,23 @@ class OwnerOnlyCommands(commands.Cog):
                       indent=2, separators=(',', ': '))
             file.flush()
         await ctx.reply(f"{cog} has been enabled! rebooting!")
-        await asyncio.sleep(2)
         await self.restart(ctx)
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def restart(self, ctx):
         await ctx.reply("Restarting...")
-        sys.exit(0)
+        os.system("bash startupfile.sh")
+        await self.bot.logout()
+
+    @commands.command()
+    @commands.is_owner()
+    async def updatesra(self, ctx, key: str):
+        prev_credd = pickle.load(open('credentials.pkl', 'rb'))
+        prev_credd['some_random_api'] = key
+        pickle.dump(prev_credd, open('credentials.pkl', 'wb'))
+        await ctx.reply("Done! rebooting!")
+        await self.restart(ctx)
 
 
 def setup(bot):

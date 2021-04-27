@@ -34,7 +34,7 @@ class Basic(commands.Cog):
 
     @commands.command(name="servers",
                       aliases=["servercount"],
-                      brief="Tests an aspect of the bot")
+                      brief="Tells how many servers the bot is in")
     @commands.is_owner()
     async def servers(self, ctx):
         await ctx.send(len(self.bot.guilds))
