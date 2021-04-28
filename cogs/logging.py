@@ -47,8 +47,6 @@ class Logging(commands.Cog):
         e = Embed(
             title="Message Edited",
             description=f"Message Edited in {channel.mention}")
-        if msg.cached_message is not None:
-            e.add_field(name="Old message: ", value=new_edited_msg_content.content)
         e.add_field(name="New message: ", value=new_edited_msg_content.content)
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
