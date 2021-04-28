@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord import Embed
 import datetime
 
+
 class Logging(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -33,16 +34,18 @@ class Logging(commands.Cog):
             async with conn.transaction():
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
                 log_channel_id = log_channel_ids[0]['channel_id']
-                log_chnl = self.bot.get_guild(msg.guild_id).get_channel(log_channel_id)
-                if log_chnl is None: return
+                log_chnl = self.bot.get_guild(
+                    msg.guild_id).get_channel(log_channel_id)
+                if log_chnl is None:
+                    return
                 await log_chnl.send(embed=e)
                 await conn.execute("INSERT INTO logs(server_id,channel_id,msg_id,reason,timestamp,type,mod_id,punished_id)"
-                                   "VALUES($1,$2,$3,$4,$5,$6,$7,$8)",msg.guild_id,msg.channel_id,msg.message_id,f"Message deleted by " + str(msg.cached_message.author.name) if msg.cached_message else "Unknown",datetime.datetime.now().timestamp(),0,0,0)
-
+                                   "VALUES($1,$2,$3,$4,$5,$6,$7,$8)", msg.guild_id, msg.channel_id, msg.message_id, f"Message deleted by " + str(msg.cached_message.author.name) if msg.cached_message else "Unknown", datetime.datetime.now().timestamp(), 0, 0, 0)
 
     @commands.Cog.listener("on_raw_message_edit")
     async def msg_edit(self, msg: discord.RawMessageUpdateEvent):
-        channel: discord.TextChannel = self.bot.get_guild(msg.guild_id).get_channel(msg.channel_id)
+        channel: discord.TextChannel = self.bot.get_guild(
+            msg.guild_id).get_channel(msg.channel_id)
         new_edited_msg_content = await channel.fetch_message(msg.message_id)
         e = Embed(
             title="Message Edited",
@@ -52,8 +55,10 @@ class Logging(commands.Cog):
             async with conn.transaction():
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
                 log_channel_id = log_channel_ids[0]['channel_id']
-                log_chnl = self.bot.get_guild(msg.guild_id).get_channel(log_channel_id)
-                if log_chnl is None: return
+                log_chnl = self.bot.get_guild(
+                    msg.guild_id).get_channel(log_channel_id)
+                if log_chnl is None:
+                    return
                 await log_chnl.send(embed=e)
                 await conn.execute(
                     "INSERT INTO logs(server_id,channel_id,msg_id,reason,timestamp,type,mod_id,punished_id)"
