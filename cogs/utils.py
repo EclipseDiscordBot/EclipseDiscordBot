@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 import asyncio
-
+from urllib.parse import quote
+import aiohttp
 
 class Utility(commands.Cog):
     def __init__(self, bot):
@@ -75,6 +76,21 @@ class Utility(commands.Cog):
         await suggestion_msg.add_reaction('✅')
         await suggestion_msg.add_reaction('🚫')
         await ctx.reply("Done! you can check the your suggestion's reviews in https://discord.gg/qNwb6zdjJ6 <#834442086513508363>")
+
+    @commands.command(description="QRifies your text")
+    @commands.cooldown(15, 15, commands.BucketType.user)
+    async def qr(self, ctx, *, text: str):
+        final_text = quote(text)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                    f"https://chart.googleapis.com/chart?chl={final_text}&chs=200x200&cht=qr&chld=H%7C0") as res:
+                await ctx.reply(res.url)
+
+    @commands.command(description="QRifies your text")
+    @commands.cooldown(15, 15, commands.BucketType.user)
+    async def qr(self, ctx, *, text: str):
+        final_text = quote(text)
+        await ctx.reply(f"https://minecraftskinstealer.com/achievement/13/Achievement+Acquired%21/{final_text}")
 
 
 def setup(bot):
