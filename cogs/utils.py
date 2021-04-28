@@ -92,6 +92,20 @@ class Utility(commands.Cog):
         final_text = quote(text)
         await ctx.reply(f"https://minecraftskinstealer.com/achievement/13/Achievement+Acquired%21/{final_text}")
 
+    @commands.Cog.listener("on_message")
+    async def on_msg(self, msg: discord.Message):
+        if msg.author == self.bot.user: return
+        try:
+            allowed_names = {"sum": sum}
+            code = compile(msg.content, "<string>", "eval")
+            for name in code.co_names:
+                if name not in allowed_names:
+                    return
+            result = eval(code, {"__builtins__": {}}, allowed_names)
+            await msg.reply(result)
+        except Exception:
+            return
+
 
 def setup(bot):
     bot.add_cog(Utility(bot))
