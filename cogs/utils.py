@@ -86,9 +86,9 @@ class Utility(commands.Cog):
                     f"https://chart.googleapis.com/chart?chl={final_text}&chs=200x200&cht=qr&chld=H%7C0") as res:
                 await ctx.reply(res.url)
 
-    @commands.command(description="QRifies your text")
+    @commands.command(description="MINECRAFTifies your text", aliases=["achievements"])
     @commands.cooldown(15, 15, commands.BucketType.user)
-    async def qr(self, ctx, *, text: str):
+    async def achievement(self, ctx, *, text: str):
         final_text = quote(text)
         await ctx.reply(f"https://minecraftskinstealer.com/achievement/13/Achievement+Acquired%21/{final_text}")
 
