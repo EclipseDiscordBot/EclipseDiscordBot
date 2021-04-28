@@ -33,7 +33,9 @@ class Logging(commands.Cog):
             async with conn.transaction():
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
                 log_channel_id = log_channel_ids[0]['channel_id']
-                await self.bot.get_guild(msg.guild_id).get_channel(log_channel_id).send(embed=e)
+                log_chnl = self.bot.get_guild(msg.guild_id).get_channel(log_channel_id)
+                if log_chnl is None: return
+                await log_chnl.send(embed=e)
 
 
 def setup(bot: commands.Bot):
