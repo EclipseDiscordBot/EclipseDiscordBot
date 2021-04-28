@@ -6,6 +6,8 @@ class EclipseHelpCommand(commands.HelpCommand):
     def get_command_signature(self, command):
         return f"{self.clean_prefix}{command.qualified_name} {command.signature}"
 
+    # todo fix dis! @zapd0s! it doesnt even show description!
+
     async def send_bot_help(self, mapping):
         ctx = self.context
         embed = discord.Embed(title="Help", color=ctx.bot.color)
