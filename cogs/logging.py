@@ -21,19 +21,19 @@ class Logging(commands.Cog):
                                    ctx.guild.id)
         await ctx.reply(f"Aight! logging is now " + ("enabled" if toggle else "disabled"))
 
-
     @commands.Cog.listener("on_raw_message_delete")
     async def msg_del(self, msg: discord.RawMessageDeleteEvent):
         channel = self.bot.get_guild(msg.guild_id).get_channel(msg.channel_id)
         deleted_msg_content = msg.cached_message.content if msg.cached_message else "Message not found in cache"
-        e = Embed(title="Message deleted", description=f"Message deleted in {channel.mention}")
+        e = Embed(
+            title="Message deleted",
+            description=f"Message deleted in {channel.mention}")
         e.add_field(name="Content: ", value=deleted_msg_content)
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
                 log_channel_id = log_channel_ids[0]['channel_id']
-                await self.bot.get_guild(msg.guild_id).get_channel(log_channel_id   ).send(embed=e)
-
+                await self.bot.get_guild(msg.guild_id).get_channel(log_channel_id).send(embed=e)
 
 
 def setup(bot: commands.Bot):
