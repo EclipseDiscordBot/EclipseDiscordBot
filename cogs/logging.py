@@ -37,6 +37,22 @@ class Logging(commands.Cog):
                 if log_chnl is None: return
                 await log_chnl.send(embed=e)
 
+    @commands.Cog.listener("on_raw_message_edit")
+    async def msg_edit(self, msg: discord.RawMessageUpdateEvent):
+        channel: discord.TextChannel = self.bot.get_guild(msg.guild_id).get_channel(msg.channel_id)
+        new_edited_msg_content = await channel.fetch_message(msg.message_id)
+        e = Embed(
+            title="Message Edited",
+            description=f"Message Edited in {channel.mention}")
+        e.add_field(name="New message: ", value=new_edited_msg_content.content)
+        async with self.bot.pool.acquire() as conn:
+            async with conn.transaction():
+                log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
+                log_channel_id = log_channel_ids[0]['channel_id']
+                log_chnl = self.bot.get_guild(msg.guild_id).get_channel(log_channel_id)
+                if log_chnl is None: return
+                await log_chnl.send(embed=e)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(Logging(bot))
