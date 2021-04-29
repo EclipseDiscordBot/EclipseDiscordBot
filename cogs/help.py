@@ -25,7 +25,7 @@ class EclipseHelpCommand(commands.HelpCommand):
         all_commands = cog.get_commands()
         dsc = ""
         for command in all_commands:
-            dsc += f"**{command.qualified_name}** - {command.breif}\n"
+            dsc += f"**{command.qualified_name}** - {command.brief}\n"
 
         embed.description=dsc
         await ctx.send(embed=embed)
