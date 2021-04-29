@@ -20,7 +20,7 @@ class Logging(commands.Cog):
                                    channel.id,
                                    toggle,
                                    ctx.guild.id)
-        await ctx.reply(f"Aight! logging is now " + ("enabled" if toggle else "disabled"))
+        await ctx.reply("Aight! logging is now " + ("enabled" if toggle else "disabled"))
 
     @commands.Cog.listener("on_raw_message_delete")
     async def msg_del(self, msg: discord.RawMessageDeleteEvent):
@@ -40,7 +40,7 @@ class Logging(commands.Cog):
                     return
                 await log_chnl.send(embed=e)
                 await conn.execute("INSERT INTO logs(server_id,channel_id,msg_id,reason,timestamp,type,mod_id,punished_id)"
-                                   "VALUES($1,$2,$3,$4,$5,$6,$7,$8)", msg.guild_id, msg.channel_id, msg.message_id, f"Message deleted by " + str(msg.cached_message.author.name) if msg.cached_message else "Unknown", datetime.datetime.now().timestamp(), 0, 0, 0)
+                                   "VALUES($1,$2,$3,$4,$5,$6,$7,$8)", msg.guild_id, msg.channel_id, msg.message_id, "Message deleted by " + str(msg.cached_message.author.name) if msg.cached_message else "Unknown", datetime.datetime.now().timestamp(), 0, 0, 0)
 
     @commands.Cog.listener("on_raw_message_edit")
     async def msg_edit(self, msg: discord.RawMessageUpdateEvent):

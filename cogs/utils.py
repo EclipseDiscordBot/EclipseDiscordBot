@@ -120,7 +120,7 @@ class Utility(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 if option == "math":
-                    await conn.execute(f"UPDATE config SET math=$1 WHERE server_id=$2", toggle, ctx.guild.id)
+                    await conn.execute("UPDATE config SET math=$1 WHERE server_id=$2", toggle, ctx.guild.id)
                 else:
                     await ctx.reply("unknown cmd!")
                     return
