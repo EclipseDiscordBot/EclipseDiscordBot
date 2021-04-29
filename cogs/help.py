@@ -27,6 +27,25 @@ class EclipseHelpCommand(commands.HelpCommand):
         for command in all_commands:
             dsc += f"**{command.qualified_name}** - {command.brief}\n"
 
+    async def send_command_help(self, command):
+        ctx = self.context
+        prefix = self.clean_prefix
+        embed = discord.Embed(title = command.qualified_name, color=ctx.bot.color)
+        embed.description = command.brief
+        embed.add_field(name = "Usage", value = f"```{get_command_signature(command)}```")
+        a_str = ""
+        for a in command.aliases:
+            a_str += f"`{a}` "
+        embed.add_field(name = "Aliases", value = a_str)
+        bool_can = await command.can_run(ctx)
+        if bool_can == True:
+            can_txt = "This command can be used by you"
+        else:
+            can_txt = "This command cannot be used by you"
+        embed.set_footer(text = can_txt)
+        await ctx.send(emebd = embed)
+
+
         embed.description=dsc
         await ctx.send(embed=embed)
 
