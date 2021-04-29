@@ -32,7 +32,7 @@ class EclipseHelpCommand(commands.HelpCommand):
         prefix = self.clean_prefix
         embed = discord.Embed(title = command.qualified_name, color=ctx.bot.color)
         embed.description = command.brief
-        embed.add_field(name = "Usage", value = f"```{get_command_signature(command)}```")
+        embed.add_field(name = "Usage", value = f"```{self.get_command_signature(command)}```")
         a_str = ""
         for a in command.aliases:
             a_str += f"`{a}` "
