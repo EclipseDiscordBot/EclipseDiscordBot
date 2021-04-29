@@ -106,6 +106,18 @@ class Utility(commands.Cog):
         except Exception:
             return
 
+    @commands.command(name="ar", aliases=['autoresponse'])
+    @commands.has_permissions(manage_guild=True)
+    async def ar(self, ctx, option:str, toggle:bool):
+        async with self.bot.pool.acquire() as conn:
+            async with conn.transaction():
+                if option == "math":
+                    await conn.execute(f"UPDATE config SET math=$1 WHERE server_id=$2", toggle, ctx.guild.id)
+                else:
+                    await ctx.reply("unknown cmd!")
+                    return
+        await ctx.reply("done!")
+
 
 def setup(bot):
     bot.add_cog(Utility(bot))
