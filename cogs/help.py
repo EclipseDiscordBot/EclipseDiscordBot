@@ -34,6 +34,8 @@ class EclipseHelpCommand(commands.HelpCommand):
         dsc = ""
         for command in all_commands:
             dsc += f"**{command.qualified_name}** - {command.brief}\n"
+        embed.description=dsc
+        await ctx.send(embed=embed)
 
     async def send_command_help(self, command):
         ctx = self.context
@@ -55,10 +57,9 @@ class EclipseHelpCommand(commands.HelpCommand):
         else:
             can_txt = "This command cannot be used by you"
         embed.set_footer(text=can_txt)
-        await ctx.send(emebd=embed)
-
-        embed.description = dsc
         await ctx.send(embed=embed)
+
+
 
 
 class help(commands.Cog):
