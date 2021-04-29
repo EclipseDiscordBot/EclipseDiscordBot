@@ -96,8 +96,9 @@ class Utility(commands.Cog):
     async def on_msg(self, msg: discord.Message):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                data = await conn.fetch("SELECT * FROM config WHERE server_id=$1")
-                if not data['math']:
+                data = await conn.fetch("SELECT * FROM config WHERE server_id=$1", msg.guild.id)
+                print(data)
+                if not data[0]['math']:
                     return
         if msg.author == self.bot.user: return
         try:
