@@ -9,7 +9,8 @@ class EclipseHelpCommand(commands.HelpCommand):
     # todo fix dis! @zapd0s! it doesnt even show description!
 
     async def send_bot_help(self, mapping):
-        embed = discord.Embed(title="Help", description = "Here is a list of my commands!", color = self.bot.color)
+        ctx = self.context
+        embed = discord.Embed(title="Help", description = "Here is a list of my commands!", color = ctx.bot.color)
         for cog, commands in mapping.items():
             all_cmds = [f"{c.qualified_name}" for c in commands]
             if all_cmds:
