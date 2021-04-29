@@ -12,7 +12,7 @@ class EclipseHelpCommand(commands.HelpCommand):
         embed = discord.Embed(title="Help")
         for cog, commands in mapping.items():
             all_cmds = [f"{c.qualified_name}" for c in commands]
-            if command_signatures:
+            if all_cmds:
                 cog_name = getattr(cog, "qualified_name", "No Category")
                 embed.add_field(name=cog_name, value=" ".join(all_cmds), inline=False)
 
