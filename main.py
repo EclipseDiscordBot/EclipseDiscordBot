@@ -20,16 +20,15 @@ async def get_prefix(bot, message):
         "<@!827566012467380274>",
         "<@827566012467380274> ",
         "<@!827566012467380274> "]
-    if message.author.id == 694839986763202580:
+    if message.author.id == 694839986763202580 or message.author.id == 605364556465963018:
         base.append("")
-    if message.guild is None:
-        base.append("e! ")
-        base.append("e!")
     else:
         async with bot.pool.acquire() as conn:
             async with conn.transaction():
                 prefix = await conn.fetchval("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
                 base.append(prefix)
+    base.append("e! ")
+    base.append("e!")
     return base
 
 
