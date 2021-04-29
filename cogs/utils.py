@@ -4,6 +4,7 @@ import asyncio
 from urllib.parse import quote
 import aiohttp
 
+
 class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -86,7 +87,8 @@ class Utility(commands.Cog):
                     f"https://chart.googleapis.com/chart?chl={final_text}&chs=200x200&cht=qr&chld=H%7C0") as res:
                 await ctx.reply(res.url)
 
-    @commands.command(description="MINECRAFTifies your text", aliases=["achievements"])
+    @commands.command(description="MINECRAFTifies your text",
+                      aliases=["achievements"])
     @commands.cooldown(15, 15, commands.BucketType.user)
     async def achievement(self, ctx, *, text: str):
         final_text = quote(text)
@@ -99,7 +101,8 @@ class Utility(commands.Cog):
                 data = await conn.fetch("SELECT * FROM config WHERE server_id=$1", msg.guild.id)
                 if not data[0]['math']:
                     return
-        if msg.author == self.bot.user: return
+        if msg.author == self.bot.user:
+            return
         try:
             allowed_names = {"sum": sum}
             code = compile(msg.content, "<string>", "eval")
@@ -113,7 +116,7 @@ class Utility(commands.Cog):
 
     @commands.command(name="ar", aliases=['autoresponse'])
     @commands.has_permissions(manage_guild=True)
-    async def ar(self, ctx, option:str, toggle:bool):
+    async def ar(self, ctx, option: str, toggle: bool):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 if option == "math":
