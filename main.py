@@ -1,4 +1,4 @@
-import apraw
+import asyncpraw as apraw
 import discord
 from discord.ext import commands
 import datetime
@@ -23,7 +23,7 @@ async def get_prefix(bot, message):
         "<@!827566012467380274> "]
     if message.author.id == 694839986763202580 or message.author.id == 605364556465963018:
         base.append("")
-    if not ctx.guild:
+    if not message.guild:
         base.append("e! ")
         base.append("e!")
         return base
@@ -208,7 +208,7 @@ bot.pool = loop.run_until_complete(
         password=f["postgres_password"],
         database=f["postgres_database"]))
 
-bot.reddit = apraw.Reddit(client_id=f['reddit_id'], client_secret=f['reddit_secret'], user_agent="Eclipse Discord Bot", username="aBotThatDoesntPost", password=f['reddit_pass'])
+bot.reddit = apraw.Reddit(client_id=f['reddit_id'], client_secret=f['reddit_secret'], user_agent="Eclipse")
 bot.memes = []
 
 bot.run(f["discord"])
