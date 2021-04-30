@@ -48,8 +48,6 @@ class EclipseHelpCommand(commands.HelpCommand):
         await ctx.send(embed = embed)
 
 
-        embed.description=dsc
-        await ctx.send(embed=embed)
 
 
 
