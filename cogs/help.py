@@ -35,10 +35,11 @@ class EclipseHelpCommand(commands.HelpCommand):
         embed = discord.Embed(title = command.qualified_name, color=ctx.bot.color)
         embed.description = command.brief
         embed.add_field(name = "Usage", value = f"```{self.get_command_signature(command)}```")
-        a_str = ""
-        for a in command.aliases:
-            a_str += f"`{a}` "
-        embed.add_field(name = "Aliases", value = a_str)
+        if command.aliases:
+            a_str = ""
+            for a in command.aliases:
+                a_str += f"`{a}` "
+            embed.add_field(name = "Aliases", value = a_str)
         bool_can = await command.can_run(ctx)
         if bool_can == True:
             can_txt = "This command can be used by you"
