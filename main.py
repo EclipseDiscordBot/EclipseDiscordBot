@@ -109,6 +109,8 @@ async def on_guild_join(guild):
                 0, 0, "placeholder", 0)
             await conn.execute("INSERT INTO logging(server_id,channel_id,enabled) VALUES($1,$2,$3)",
                                guild.id, 0, False)
+            await conn.execute("INSERT INTO automeme(server_id,channel_id,enabled) VALUES($1,$2,$3)",
+                               guild.id, 0, False)
 
 
 @bot.event
@@ -118,6 +120,7 @@ async def on_guild_leave(guild):
             await conn.execute("DELETE FROM prefixes WHERE guild_id = $1", guild.id)
             await conn.execute("DELETE FROM greet WHERE guild_id = $1", guild.id)
             await conn.execute("DELETE FROM logging WHERE server_id=$1", guild.id)
+            await conn.execute("DELETE FROM automeme WHERE server_id=$1", guild.id)
 
 
 async def gend(gw):
