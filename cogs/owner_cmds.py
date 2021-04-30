@@ -7,11 +7,12 @@ import pickle
 from discord.ext import commands
 
 
-class OwnerOnlyCommands(commands.Cog):
+class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.command(
+        hidden=True,
         brief="PING SPAM(owner only to call other devs on, so nobody use it pls)",
         name="spamping")
     @commands.is_owner()
@@ -19,7 +20,7 @@ class OwnerOnlyCommands(commands.Cog):
         for i in range(times):
             await ctx.reply(f"{member.mention} {i}")
 
-    @commands.command(breif="Perform SQL commands ")
+    @commands.command(hidden=True, brief="Perform SQL commands ")
     @commands.is_owner()
     async def sql(self, ctx, query, vals=None):
         async with self.bot.pool.acquire() as conn:
@@ -33,7 +34,7 @@ class OwnerOnlyCommands(commands.Cog):
                     else:
                         await conn.execute(query, vals)
 
-    @commands.command(name="disablecog", brief="disables a cog")
+    @commands.command(hidden=True, name="disablecog", brief="disables a cog")
     @commands.is_owner()
     async def _disable(self, ctx, cog: str):
         self.bot.config['cogs'][cog] = False
@@ -44,7 +45,7 @@ class OwnerOnlyCommands(commands.Cog):
         await ctx.reply(f"{cog} has been disabled until re-enabled! rebooting!")
         await self.restart(ctx)
 
-    @commands.command(name="enablecog", brief="enables a cog")
+    @commands.command(hidden=True, name="enablecog", brief="enables a cog")
     @commands.is_owner()
     async def _enable(self, ctx, cog: str):
         self.bot.config['cogs'][cog] = True
@@ -62,7 +63,7 @@ class OwnerOnlyCommands(commands.Cog):
         os.system("bash startupfile.sh")
         await self.bot.logout()
 
-    @commands.command()
+    @commands.command(hidden=True, name="updatesra", aliases=["sra"], brief="Updates SRA key")
     @commands.is_owner()
     async def updatesra(self, ctx, key: str):
         prev_credd = pickle.load(open('credentials.pkl', 'rb'))

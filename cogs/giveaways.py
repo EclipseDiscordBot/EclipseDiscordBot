@@ -50,7 +50,7 @@ class Giveaway(commands.Cog):
         await ch.send(f"🎉 Congratulations {winner_str}! You won **{cleaned_prize}**! \n {msg.jump_url}")
         await self.bot.pool.execute("DELETE FROM giveaways WHERE msg_id = $1", gw["msg_id"])
 
-    @commands.command(brief="Starts a GIVEAWAY")
+    @commands.command(name="gstart", brief="Starts a GIVEAWAY")
     @commands.cooldown(1, 15, commands.BucketType.member)
     async def gstart(self, ctx, time, winners, *, prize):
         def convert(t):
@@ -118,7 +118,7 @@ class Giveaway(commands.Cog):
                 gw = await conn.fetch("SELECT 1 FROM giveaways WHERE msg_id = $1", msg_id)
                 await self.force_gend(gw)
 
-    @commands.command(brief="Rerolls a giveaway")
+    @commands.command(name="greroll", brief="Rerolls a giveaway")
     @commands.cooldown(1, 5, commands.BucketType.member)
     async def greroll(self, ctx, id=None):
         msg_id = 0

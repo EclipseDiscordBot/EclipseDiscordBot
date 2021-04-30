@@ -8,7 +8,7 @@ class Logging(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(brief="Sets the log channel and toggles logging")
+    @commands.command(name= "log", brief="Sets the log channel and toggles logging")
     @commands.has_permissions(manage_guild=True)
     async def log(self, ctx, channel: discord.TextChannel, toggle: bool):
         async with self.bot.pool.acquire() as conn:
