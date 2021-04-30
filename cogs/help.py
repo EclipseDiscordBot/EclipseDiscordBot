@@ -26,6 +26,8 @@ class EclipseHelpCommand(commands.HelpCommand):
         dsc = ""
         for command in all_commands:
             dsc += f"**{command.qualified_name}** - {command.brief}\n"
+        embed.description = dsc
+        await ctx.send(embed=embed)
 
     async def send_command_help(self, command):
         ctx = self.context
