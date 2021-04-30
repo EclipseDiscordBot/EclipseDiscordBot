@@ -1,6 +1,6 @@
 import random
 import urllib
-
+import os
 import aiofiles
 import aiohttp
 import discord
@@ -41,6 +41,7 @@ class ImageGeneration(commands.Cog):
 
             file = discord.File(open(f'data/amongus.{rand}.gif', 'rb'))
             await ctx.reply(file=file)
+            os.system(f"rm data/amongus.{rand}.gif")
 
 
 def setup(bot: commands.Bot):
