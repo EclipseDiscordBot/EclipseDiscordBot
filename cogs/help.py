@@ -9,17 +9,25 @@ class EclipseHelpCommand(commands.HelpCommand):
     async def send_bot_help(self, mapping):
         ctx = self.context
         bot_prefix = self.clean_prefix
-        embed = discord.Embed(title="Help", description = f"Type *`{bot_prefix}help <category>`* for more info on a category.", color = ctx.bot.color)
+        embed = discord.Embed(
+            title="Help",
+            description=f"Type *`{bot_prefix}help <category>`* for more info on a category.",
+            color=ctx.bot.color)
         for cog, commands in mapping.items():
             all_cmds = [f"`{c.qualified_name}`" for c in commands]
             if all_cmds:
                 cog_name = getattr(cog, "qualified_name", "No Category")
-                embed.add_field(name=cog_name, value=" ".join(all_cmds), inline=False)
-        await ctx.send(embed = embed)
+                embed.add_field(
+                    name=cog_name,
+                    value=" ".join(all_cmds),
+                    inline=False)
+        await ctx.send(embed=embed)
 
     async def send_cog_help(self, cog):
         ctx = self.context
-        embed = discord.Embed(title = f"{cog.qualified_name} Commands", color = ctx.bot.color)
+        embed = discord.Embed(
+            title=f"{cog.qualified_name} Commands",
+            color=ctx.bot.color)
         all_commands = cog.get_commands()
         dsc = ""
         for command in all_commands:
@@ -30,26 +38,25 @@ class EclipseHelpCommand(commands.HelpCommand):
     async def send_command_help(self, command):
         ctx = self.context
         prefix = self.clean_prefix
-        embed = discord.Embed(title = command.qualified_name, color=ctx.bot.color)
+        embed = discord.Embed(
+            title=command.qualified_name,
+            color=ctx.bot.color)
         embed.description = command.brief
-        embed.add_field(name = "Usage", value = f"```{self.get_command_signature(command)}```")
+        embed.add_field(
+            name="Usage",
+            value=f"```{self.get_command_signature(command)}```")
         if command.aliases:
             a_str = ""
             for a in command.aliases:
                 a_str += f"`{a}` "
-            embed.add_field(name = "Aliases", value = a_str)
+            embed.add_field(name="Aliases", value=a_str)
         bool_can = await command.can_run(ctx)
-        if bool_can == True:
+        if bool_can:
             can_txt = "This command can be used by you"
         else:
             can_txt = "This command cannot be used by you"
-        embed.set_footer(text = can_txt)
-        await ctx.send(embed = embed)
-
-
-
-
-
+        embed.set_footer(text=can_txt)
+        await ctx.send(embed=embed)
 
 
 class help(commands.Cog):

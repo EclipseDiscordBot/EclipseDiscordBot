@@ -22,7 +22,7 @@ class Fun(commands.Cog):
         await ctx.reply(txt)
 
     @commands.command(brief="gives a random meme from r/memes")
-    @commands.cooldown(1,5,commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def meme(self, ctx):
         random_post = self.bot.memes[random.randint(0, len(self.bot.memes))]
         await ctx.reply(embed=random_post)

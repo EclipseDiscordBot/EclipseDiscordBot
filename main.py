@@ -103,7 +103,6 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-
 @bot.command()
 @commands.has_permissions(administrator=True)
 @commands.guild_only()
@@ -196,7 +195,6 @@ async def end_gws():
             await gend(row)
 
 
-
 loop = asyncio.get_event_loop()
 f = pickle.load(open('credentials.pkl', 'rb'))
 bot.pool = loop.run_until_complete(
@@ -208,7 +206,10 @@ bot.pool = loop.run_until_complete(
         password=f["postgres_password"],
         database=f["postgres_database"]))
 
-bot.reddit = apraw.Reddit(client_id=f['reddit_id'], client_secret=f['reddit_secret'], user_agent="Eclipse")
+bot.reddit = apraw.Reddit(
+    client_id=f['reddit_id'],
+    client_secret=f['reddit_secret'],
+    user_agent="Eclipse")
 bot.memes = []
 
 bot.run(f["discord"])

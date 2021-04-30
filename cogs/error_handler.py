@@ -174,7 +174,9 @@ class ErrorHandler(commands.Cog):
         embed.set_author(name=error)
         await log_channel.send(f"code: {error_code}", embed=embed)
 
-    @commands.command(name="emergency", aliases=["error"], brief="Mark an error as an emergency to prioritize its fixing")
+    @commands.command(name="emergency",
+                      aliases=["error"],
+                      brief="Mark an error as an emergency to prioritize its fixing")
     @commands.cooldown(1, 86400, commands.BucketType.member)
     async def emergency(self, ctx, error_code):
         log_channel = self.bot.get_channel(830069392976773120)

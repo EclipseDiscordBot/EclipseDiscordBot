@@ -8,7 +8,8 @@ class Logging(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name= "log", brief="Sets the log channel and toggles logging")
+    @commands.command(name="log",
+                      brief="Sets the log channel and toggles logging")
     @commands.has_permissions(manage_guild=True)
     async def log(self, ctx, channel: discord.TextChannel, toggle: bool):
         async with self.bot.pool.acquire() as conn:
@@ -29,7 +30,9 @@ class Logging(commands.Cog):
         e = Embed(
             title="Message deleted",
             description=f"Message deleted in {channel.mention}")
-        e.add_field(name="Content: ", value=(deleted_msg_content if not len(deleted_msg_content) == 0 else "Empty msg"))
+        e.add_field(
+            name="Content: ", value=(
+                deleted_msg_content if not len(deleted_msg_content) == 0 else "Empty msg"))
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
