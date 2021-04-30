@@ -212,4 +212,7 @@ bot.reddit = apraw.Reddit(
     user_agent="Eclipse")
 bot.memes = []
 
+
+bot.sra_api = f['some_random_api']
+
 bot.run(f["discord"])

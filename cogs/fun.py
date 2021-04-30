@@ -1,7 +1,7 @@
 import asyncio
 import random
 import urllib.parse
-
+import aiofiles
 import aiohttp
 import discord
 from discord.ext import commands
@@ -40,17 +40,7 @@ class Fun(commands.Cog):
                 await asyncio.sleep(2)
                 await ctx.reply("lol thats a fake bot token :P")
 
-    @commands.command(name="youtube", aliases=['yt'], brief="Fakes a youtube comment")
-    @commands.cooldown(1,15,commands.BucketType.user)
-    async def youtube(self, ctx, user: discord.User=None, *, comment:str):
-        comment = urllib.parse.quote(comment)
-        uname = urllib.parse.quote((str(ctx.author) if not user else str(user)))
-        if len(comment) > 999:
-            await ctx.reply("comment cant be more than 1000 chars long")
-            return
-        url = (ctx.author.avatar_url if not user else user.avatar_url)
-        await ctx.reply(
-            f"https://some-random-api.ml/canvas/youtube-comment?avatar={url}&username={uname}&comment={comment}")
+
 
 
 
