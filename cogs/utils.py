@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
+from constants.basic import *
 from urllib.parse import quote
 import aiohttp
 
@@ -76,7 +77,7 @@ class Utility(commands.Cog):
         suggestion_msg = await suggestion_channel.send(embed=embed)
         await suggestion_msg.add_reaction('✅')
         await suggestion_msg.add_reaction('🚫')
-        await ctx.reply("Done! you can check the your suggestion's reviews in https://discord.gg/qNwb6zdjJ6 <#834442086513508363>")
+        await ctx.reply(f"Done! you can check the your suggestion's reviews in {support_server} <#834442086513508363>")
 
     @commands.command(description="QRifies your text")
     @commands.cooldown(15, 15, commands.BucketType.user)
