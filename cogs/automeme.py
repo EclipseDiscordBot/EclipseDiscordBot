@@ -34,7 +34,7 @@ class AutoMeme(commands.Cog):
             e.set_footer(text=f'\U00002b06 {hot_post.score} | Api by reddit')
             self.bot.memes.append(e)
 
-        random_post = self.bot.memes[random.randint(0, len(self.bot.memes))]
+        random_post = self.bot.memes[random.randint(0, len(self.bot.memes)-1)]
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 data = await conn.fetch("SELECT * FROM automeme")
