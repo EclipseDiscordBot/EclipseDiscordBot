@@ -16,7 +16,7 @@ class AltFinder(commands.Cog):
         if not dur.lower().endswith("d"):
             return await ctx.send("The duration must be days like `7d`")
 
-        delta = datetime.timedelta(days=dur[:-1])
+        delta = datetime.timedelta(days=int(dur[:-1]))
         alts = []
 
         def check(mem: discord.User):
