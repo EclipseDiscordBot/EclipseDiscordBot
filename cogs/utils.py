@@ -97,7 +97,7 @@ class Utility(commands.Cog):
     @commands.Cog.listener("on_message")
     async def on_msg(self, msg: discord.message):
         if not msg.guild:
-            return 
+            return
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 data = await conn.fetch("SELECT * FROM config WHERE server_id=$1", msg.guild.id)

@@ -11,10 +11,9 @@ class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(
-        hidden=True,
-        brief="PING SPAM(owner only to call other devs on, so nobody use it pls)",
-        name="spamping")
+    @commands.command(hidden=True,
+                      brief="PING SPAM(owner only to call other devs on, so nobody use it pls)",
+                      name="spamping")
     @commands.is_owner()
     async def spamping(self, ctx: discord.ext.commands.Context, times: int, member: discord.Member):
         for i in range(times):
@@ -63,7 +62,8 @@ class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
         os.system("bash startupfile.sh")
         await self.bot.logout()
 
-    @commands.command(hidden=True, name="updatesra", aliases=["sra"], brief="Updates SRA key")
+    @commands.command(hidden=True, name="updatesra",
+                      aliases=["sra"], brief="Updates SRA key")
     @commands.is_owner()
     async def updatesra(self, ctx, key: str):
         prev_credd = pickle.load(open('credentials.pkl', 'rb'))
