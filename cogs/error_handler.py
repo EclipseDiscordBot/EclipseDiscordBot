@@ -64,7 +64,7 @@ class ErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.CommandOnCooldown):
             title = "Command on cooldown"
-            dsc = f"`{ctx.command}` is on cooldown! Please try again after {error.retry_after} seconds!"
+            dsc = f"`{ctx.command}` is on cooldown! Please try again after {round(error.retry_after)} seconds!"
             embed = discord.Embed(
                 title=title,
                 description=dsc,
