@@ -95,7 +95,9 @@ class Utility(commands.Cog):
         await ctx.reply(f"https://minecraftskinstealer.com/achievement/13/Achievement+Acquired%21/{final_text}")
 
     @commands.Cog.listener("on_message")
-    async def on_msg(self, msg: discord.Message):
+    async def on_msg(self, msg: discord.message):
+        if not msg.guild:
+            return 
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 data = await conn.fetch("SELECT * FROM config WHERE server_id=$1", msg.guild.id)
