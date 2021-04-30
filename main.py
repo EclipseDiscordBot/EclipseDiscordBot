@@ -89,8 +89,6 @@ async def on_ready():
     await c.send(embed=embed)
 
 
-
-@bot.event
 async def on_message(message):
     if bot.user.mentioned_in(message):
         if not message.guild:
