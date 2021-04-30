@@ -27,13 +27,11 @@ class Utility(commands.Cog):
         diff = dm_time - win_time
         seconds = diff.total_seconds()
         seconds_str = str(seconds)
-        final = seconds_str
-        if seconds_str.startswith("-"):
-            final = seconds_str[1:]
+        final = abs(int(seconds_str))
         await ctx.send(f"Difference between the two message ID's is `{final}` seconds!")
 
     @commands.command(name="suggest", brief="Suggest a command to the devs")
-    @commands.cooldown(5, 5, discord.ext.commands.BucketType.user)
+    @commands.cooldown(1, 900, discord.ext.commands.BucketType.user)
     async def suggest(self, ctx: commands.Context, *, suggestion=None):
         if suggestion is None:
             def chek(u1):
