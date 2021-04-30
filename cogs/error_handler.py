@@ -4,7 +4,7 @@ import discord
 import traceback
 from discord.ext import commands
 import datetime
-
+import humanize
 
 class ErrorHandler(commands.Cog):
 
@@ -64,7 +64,7 @@ class ErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.CommandOnCooldown):
             title = "Command on cooldown"
-            dsc = f"`{ctx.command}` is on cooldown! Please try again after {round(error.retry_after)} seconds!"
+            dsc = f"`{ctx.command}` is on cooldown! Please try again after {humanize.naturaldelta(datetime.timedelta(seconds=error.retry_after))}!"
             embed = discord.Embed(
                 title=title,
                 description=dsc,
