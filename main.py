@@ -22,15 +22,16 @@ async def get_prefix(bot, message):
         "<@!827566012467380274> "]
     if message.author.id == 694839986763202580 or message.author.id == 605364556465963018:
         base.append("")
+    if not message.guild:
+        base.append("e! ")
+        base.append("e!")
+        return base
     else:
         async with bot.pool.acquire() as conn:
             async with conn.transaction():
                 prefix = await conn.fetchval("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
                 base.append(prefix)
-    base.append("e! ")
-    base.append("e!")
-    return base
-
+                return base
 
 mentions = discord.AllowedMentions(
     everyone=False,
@@ -176,8 +177,16 @@ async def end_gws():
         if datetime.datetime.now() - end_time < datetime.timedelta(seconds=5):
             await gend(row)
 
-
-end_gws.start()
+@bot.event
+async def on_message(message):
+    if bot.user.mentioned_in(message):
+        if message.guild is None:
+            return await message.reply("Hello! My prefix here is *`e!`*")
+        else:
+            async with bot.pool.acquire() as conn:
+                async with conn.transaction():
+                    prefix = await conn.fetchval("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
+            await message.reply(f"Hello! My prefix here is *`{prefix}`*")
 
 loop = asyncio.get_event_loop()
 f = pickle.load(open('credentials.pkl', 'rb'))
