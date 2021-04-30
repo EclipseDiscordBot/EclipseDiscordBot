@@ -29,7 +29,7 @@ class Logging(commands.Cog):
         e = Embed(
             title="Message deleted",
             description=f"Message deleted in {channel.mention}")
-        e.add_field(name="Content: ", value=deleted_msg_content)
+        e.add_field(name="Content: ", value=(deleted_msg_content if not len(deleted_msg_content) == 0 else "Empty msg"))
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)

@@ -1,3 +1,4 @@
+import apraw
 import discord
 from discord.ext import commands
 import datetime
@@ -192,5 +193,8 @@ bot.pool = loop.run_until_complete(
         port=f["postgres_port"],
         password=f["postgres_password"],
         database=f["postgres_database"]))
+
+bot.reddit = apraw.Reddit(client_id=f['reddit_id'], client_secret=f['reddit_secret'], user_agent="Eclipse Discord Bot", username="aBotThatDoesntPost", password=f['reddit_pass'])
+bot.memes = []
 
 bot.run(f["discord"])

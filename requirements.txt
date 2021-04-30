@@ -8,3 +8,4 @@ discord-py-slash-command
 aiohttp
 humanize~=3.4.1
 asyncpg
+apraw
