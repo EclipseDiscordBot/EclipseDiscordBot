@@ -13,7 +13,7 @@ class EclipseHelpCommand(commands.HelpCommand):
         bot_prefix = self.clean_prefix
         embed = discord.Embed(title="Help", description = f"Type *`{bot_prefix}help <category>`* for more info on a category.", color = ctx.bot.color)
         for cog, commands in mapping.items():
-            all_cmds = [f"`{c.qualified_name}`" for c in commands]
+            all_cmds = [f"{c.qualified_name}" for c in commands]
             if all_cmds:
                 cog_name = getattr(cog, "qualified_name", "No Category")
                 embed.add_field(name=cog_name, value=" ".join(all_cmds), inline=False)
