@@ -115,8 +115,8 @@ class Utility(commands.Cog):
             return
 
     @commands.command(name="ar", aliases=['autoresponse'])
-    @commands.has_permissions(manage_guild=True)
     @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
     async def ar(self, ctx, option: str, toggle: bool):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
