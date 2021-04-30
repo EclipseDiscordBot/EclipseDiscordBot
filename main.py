@@ -177,6 +177,7 @@ async def end_gws():
         if datetime.datetime.now() - end_time < datetime.timedelta(seconds=5):
             await gend(row)
 
+
 @bot.event
 async def on_message(message):
     if bot.user.mentioned_in(message):
