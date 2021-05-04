@@ -5,7 +5,7 @@ import datetime
 import json
 from discord_slash import SlashCommand
 import os
-from classes.LoadCog import load_extention
+from classes.LoadCog import load_extension
 import pickle
 import asyncpg
 import asyncio
@@ -63,7 +63,7 @@ async def on_ready():
     for file in os.listdir("./cogs"):
         if file.endswith('.py'):
             try:
-                load_extention(bot, f'cogs.{file[:-3]}', data)
+                load_extension(bot, f'cogs.{file[:-3]}', data)
                 print(f"loaded cogs.{file[:-3]}")
             except Exception as e:
                 exceptions += f"- {file} failed to load [{e}]\n"
@@ -73,7 +73,7 @@ async def on_ready():
     for file in os.listdir("./cogs/slash_cmds"):
         if file.endswith('.py'):
             try:
-                load_extention(bot, f'cogs.slash_cmds.{file[:-3]}', data)
+                load_extension(bot, f'cogs.slash_cmds.{file[:-3]}', data)
                 print(f"loaded cogs.slash_cmds.{file[:-3]}")
             except Exception as e:
                 exceptions += f"- {file} failed to load [{e}]\n"
