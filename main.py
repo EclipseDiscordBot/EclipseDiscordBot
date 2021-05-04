@@ -126,7 +126,7 @@ async def on_guild_join(guild):
                                guild.id, 0, False)
             await conn.execute("INSERT INTO automeme(server_id,channel_id,enabled) VALUES($1,$2,$3)",
                                guild.id, 0, False)
-            await conn.execute("INSERT INTO automeme(math,server_id) VALUES($1,$2)",
+            await conn.execute("INSERT INTO config(math,server_id) VALUES($1,$2)",
                                False, guild.id)
 
 
