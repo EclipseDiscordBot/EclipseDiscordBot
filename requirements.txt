@@ -6,7 +6,7 @@ numpy~=1.20.2
 pillow~=8.2.0
 discord-py-slash-command
 aiohttp
-humanize~=3.4.1
+humanize~=3.5.0
 asyncpg
 asyncpraw
 aiofiles
