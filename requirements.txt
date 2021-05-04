@@ -10,3 +10,4 @@ humanize~=3.4.1
 asyncpg
 asyncpraw
 aiofiles
+num2words

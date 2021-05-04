@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 import asyncio
+
+from num2words import num2words
+
 from constants.basic import *
 from urllib.parse import quote
 import aiohttp
@@ -127,6 +130,54 @@ class Utility(commands.Cog):
                     await ctx.reply("unknown cmd!")
                     return
         await ctx.reply("done!")
+
+    @commands.command()
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    async def poll(self, ctx, que=None, opt0=None, opt1=None, opt2=None, opt3=None, opt4=None, opt5=None, opt6=None,
+                   opt7=None,
+                   opt8=None, opt9=None, test=None):
+        if test is None:
+            if que is None:
+                await ctx.send('Tell me a question.')
+            elif opt0 is None or opt1 is None:
+                await ctx.send('need at least 2 options.')
+            else:
+                listl = [opt0, opt1, opt2, opt3, opt4, opt5, opt6, opt7, opt8, opt9]
+                embed = discord.Embed(title=que, description=f'choose one of these options! \n')
+                for i in listl:
+                    if i is None:
+                        pass
+                    else:
+                        idn = listl.index(i) + 1
+                        embed.add_field(name=':' + num2words(idn) + ':', value=i, inline=False)
+                msg = await ctx.send(embed=embed)
+                for i in listl:
+                    if i is None:
+                        pass
+                    else:
+                        idn = listl.index(i) + 1
+                        if idn == 10:
+                            await msg.add_reaction('0️⃣')
+                        if idn == 1:
+                            await msg.add_reaction('1️⃣')
+                        if idn == 2:
+                            await msg.add_reaction('2️⃣')
+                        if idn == 3:
+                            await msg.add_reaction('3️⃣')
+                        if idn == 4:
+                            await msg.add_reaction('4️⃣')
+                        if idn == 5:
+                            await msg.add_reaction('5️⃣')
+                        if idn == 6:
+                            await msg.add_reaction('6️⃣')
+                        if idn == 7:
+                            await msg.add_reaction('7️⃣')
+                        if idn == 8:
+                            await msg.add_reaction('8️⃣')
+                        if idn == 9:
+                            await msg.add_reaction('9️⃣')
+        else:
+            await ctx.send('no more that 9 options.:P')
 
 
 def setup(bot):

@@ -11,7 +11,8 @@ class CogDisabledException(Exception):
 
 
 def load_extention(bot: commands.Bot, cog: str, json: dict):
-    if json['load_cogs'] and json['cogs'][cog]:
-        bot.load_extension(cog)
-    else:
-        raise CogDisabledException(cog)
+    if json['load_cogs']:
+        if json['cogs'][cog]:
+            bot.load_extension(cog)
+        else:
+            raise CogDisabledException(cog)
