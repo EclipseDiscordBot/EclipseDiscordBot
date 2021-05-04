@@ -143,7 +143,7 @@ class Utility(commands.Cog):
                 await ctx.send('need at least 2 options.')
             else:
                 listl = [opt0, opt1, opt2, opt3, opt4, opt5, opt6, opt7, opt8, opt9]
-                embed = discord.Embed(title=que, description=f'choose one of these options! \n')
+                embed = discord.Embed(title=que, description='choose one of these options! \n')
                 for i in listl:
                     if i is None:
                         pass
