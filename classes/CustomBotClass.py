@@ -27,6 +27,7 @@ class CustomBot(commands.Bot):
             client_id=f['reddit_id'],
             client_secret=f['reddit_secret'],
             user_agent="Eclipse")
+
         self.memes = []
         self.token = f["discord"]
         self.sra_api = f['some_random_api']
