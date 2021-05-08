@@ -16,7 +16,7 @@ discord-py-slash-command==1.1.2
 discord.py==1.7.1
 DiscordUtils==1.2.9.2
 docopt==0.6.2
-humanize
+humanize~=3.5.0
 idna==2.10
 import-expression==1.1.4
 importlib-metadata==3.10.1
@@ -36,6 +36,7 @@ pyparsing==2.4.7
 python-dateutil==2.8.1
 ReactivePy==2.0.0.dev0
 requests==2.25.1
+scipy==1.6.3
 six==1.15.0
 typing-extensions
 update-checker==0.18.0
@@ -43,4 +44,3 @@ urllib3==1.26.4
 yarl==1.6.3
 youtube-dl==2021.4.26
 zipp==3.4.1
-scipy
