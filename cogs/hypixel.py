@@ -145,7 +145,8 @@ class Hypixel(commands.Cog):
 
         self.currentAh = final_ah
         print("proccessed hypixel AH")
-        # self.currentAh = pickle.load(open('data/test.pkl', 'rb')) # a sample AH
+        # self.currentAh = pickle.load(open('data/test.pkl', 'rb')) # a sample
+        # AH
         self.AHDict = await calc_auc(self.hypixel, self.currentAh, self.bot)
 
 
