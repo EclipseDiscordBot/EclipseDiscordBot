@@ -33,7 +33,8 @@ class AltFinder(commands.Cog):
                 counter += 1
         alts.sort(reverse=True, key=check)
         for alt in alts:
-            paginator.add_line(f"*`{(alts.index(alt)) + 1}.`* - {alt.mention} - {humanize.naturaldate(alt.created_at.date())}\n")
+            paginator.add_line(
+                f"*`{(alts.index(alt)) + 1}.`* - {alt.mention} - {humanize.naturaldate(alt.created_at.date())}\n")
         for page in paginator.pages:
             embed = discord.Embed(
                 title=f"New accounts in {ctx.guild.name}",

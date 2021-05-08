@@ -146,14 +146,26 @@ class Utility(commands.Cog):
             elif opt0 is None or opt1 is None:
                 await ctx.send('need at least 2 options.')
             else:
-                listl = [opt0, opt1, opt2, opt3, opt4, opt5, opt6, opt7, opt8, opt9]
-                embed = discord.Embed(title=que, description='choose one of these options! \n')
+                listl = [
+                    opt0,
+                    opt1,
+                    opt2,
+                    opt3,
+                    opt4,
+                    opt5,
+                    opt6,
+                    opt7,
+                    opt8,
+                    opt9]
+                embed = discord.Embed(
+                    title=que, description='choose one of these options! \n')
                 for i in listl:
                     if i is None:
                         pass
                     else:
                         idn = listl.index(i) + 1
-                        embed.add_field(name=':' + num2words(idn) + ':', value=i, inline=False)
+                        embed.add_field(
+                            name=':' + num2words(idn) + ':', value=i, inline=False)
                 msg = await ctx.send(embed=embed)
                 for i in listl:
                     if i is None:
