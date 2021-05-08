@@ -1,9 +1,7 @@
-import asyncio
 import json
 import os
 import discord
 from classes import CustomBotClass
-import sys
 import pickle
 from discord.ext import commands
 

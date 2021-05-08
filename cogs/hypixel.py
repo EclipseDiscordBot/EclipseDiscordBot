@@ -117,7 +117,6 @@ class Hypixel(commands.Cog):
             for attempt in range(100):
                 try:
                     page = await self.hypixel.auctions(page_no)
-                    pass
                 except asyncpixel.exceptions.exceptions.ApiNoSuccess:
                     print(f"Attempt {attempt} Failed for page {page_no}")
                 else:

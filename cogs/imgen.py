@@ -1,11 +1,9 @@
 import random
 import urllib
-import os
 import aiofiles
 import aiohttp
 from classes import CustomBotClass
 import discord
-import asyncio
 from discord.ext import commands
 
 
@@ -59,5 +57,5 @@ class ImageGeneration(commands.Cog):
         # os.system(f"rm data/amongus.{rand}.gif")
 
 
-def setup(bot: commands.Bot):
+def setup(bot):
     bot.add_cog(ImageGeneration(bot))

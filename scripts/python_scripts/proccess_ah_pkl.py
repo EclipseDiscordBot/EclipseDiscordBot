@@ -1,4 +1,3 @@
-import pickle
 from classes.deprecated import deprecated
 
 

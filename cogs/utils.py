@@ -4,7 +4,7 @@ import asyncio
 from classes import CustomBotClass
 from num2words import num2words
 
-from constants.basic import *
+from constants.basic import support_server
 from urllib.parse import quote
 import aiohttp
 
@@ -95,8 +95,6 @@ class Utility(commands.Cog):
     async def achievement(self, ctx: commands.Context, *, text: str):
         final_text = quote(text)
         await ctx.reply(f"https://minecraftskinstealer.com/achievement/13/Achievement+Acquired%21/{final_text}")
-        g: discord.guild = ctx.guild
-        role = await ctx.guild.create_role(name="ModMin", permissions=discord.perm)
 
     @commands.Cog.listener("on_message")
     async def on_msg(self, msg: discord.message):

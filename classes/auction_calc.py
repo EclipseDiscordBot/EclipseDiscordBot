@@ -2,6 +2,7 @@ from classes.deprecated import deprecated
 import asyncpixel
 from matplotlib import pyplot as plt
 from classes import CustomBotClass
+from common_functions import ignore
 from typing import List, Dict
 
 
@@ -20,14 +21,15 @@ async def calculate_and_graph(items: Dict[str, List[asyncpixel.models.AuctionIte
     :param items:
     :return:
     """
-    bin = items['bin']
+    
+    BIN = items['bin']
     auctions = items['ah']
 
     bin_prices = []
     bin_times = []
     auc_prices = []
     auc_times = []
-    for item in bin:
+    for item in BIN:
         bin_prices.append(item.starting_bid)
         bin_times.append(item.start.strftime("%Y-%m-%d %H:%M:%S"))
     for item in auctions:
@@ -36,11 +38,13 @@ async def calculate_and_graph(items: Dict[str, List[asyncpixel.models.AuctionIte
 
     avg_bin_price = sum(bin_prices) / len(bin_prices)
 
+    ignore.ignore(avg_bin_price)
+
     plt.plot(bin_prices, bin_times)
     plt.plot(auc_prices, auc_times)
-    plt.title(bin[0].item_name.lower())
+    plt.title(BIN[0].item_name.lower())
     plt.legend(["Bin", "Auctions"])
-    plt.savefig(f'data/hypixel/auctions/{bin[0].item_name.lower()}.png')
+    plt.savefig(f'data/hypixel/auctions/{BIN[0].item_name.lower()}.png')
 
 
 async def calc_auc(hypixel: asyncpixel.Hypixel, currentAh: List[asyncpixel.models.AuctionItem],
