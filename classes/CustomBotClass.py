@@ -40,4 +40,3 @@ class CustomBot(commands.Bot):
         with open("config/config.json", "r") as read_file:
             data = json.load(read_file)
             self.config = data
-
