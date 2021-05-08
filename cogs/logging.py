@@ -1,11 +1,12 @@
 import discord
 from discord.ext import commands
+from classes import CustomBotClass
 from discord import Embed
 import datetime
 
 
 class Logging(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.command(name="log",
@@ -77,7 +78,7 @@ class Logging(commands.Cog):
         e = Embed(
             title="Message Edited",
             description=f"Message Edited in {channel.mention}")
-        e.add_field(name="New message: ", value=(new_edited_msg_content.content if new_edited_msg_content != "" else "Empty MSG"))
+        e.add_field(name="New message: ", value=(new_edited_msg_content.content if new_edited_msg_content.content else "Empty MSG"))
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)

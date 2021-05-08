@@ -3,13 +3,14 @@ import urllib
 import os
 import aiofiles
 import aiohttp
+from classes import CustomBotClass
 import discord
 import asyncio
 from discord.ext import commands
 
 
 class ImageGeneration(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.command(name="youtube", aliases=['yt'], brief="Fakes a youtube comment")

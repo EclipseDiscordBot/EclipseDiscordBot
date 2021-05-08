@@ -1,12 +1,13 @@
 import asyncio
 import random
+from classes import CustomBotClass
 import aiohttp
 from discord.ext import commands
 
 
 class Fun(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.command(brief="Chooses a random object from specified options",

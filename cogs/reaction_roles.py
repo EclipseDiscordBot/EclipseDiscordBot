@@ -1,11 +1,12 @@
 from discord.ext import commands
 import discord
+from classes import CustomBotClass
 import asyncio
 
 
 class ReactionRoles(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
         self.pool = bot.pool
 
@@ -116,7 +117,10 @@ class ReactionRoles(commands.Cog):
                     role: discord.Role = self.bot.get_guild(
                         payload.guild_id).get_role(row['role_id'])
                     member: discord.Member = payload.member
-                    await member.add_roles(role, reason=f"Self-Role. MSG_ID:{row['msg_id']}")
+                    try:
+                        await member.add_roles(role, reason=f"Self-Role. MSG_ID:{row['msg_id']}")
+                    except discord.errors.Forbidden:
+                        return
                     try:
                         await member.send(f"Gave you the `{role.name}` Role in `{self.bot.get_guild(payload.guild_id).name}`")
                     except discord.Forbidden:

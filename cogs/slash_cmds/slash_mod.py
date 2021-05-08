@@ -1,13 +1,12 @@
 import discord
-
-
+from classes import CustomBotClass
 from discord.ext import commands
 from discord_slash import cog_ext, SlashContext
 
 
 class Moderation(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.guild_only()

@@ -1,11 +1,12 @@
 import constants.basic as basicC
 from discord.ext import commands
+from classes import CustomBotClass
 from discord_slash import cog_ext, SlashContext
 
 
 class Basic(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @cog_ext.cog_slash(name="invite")

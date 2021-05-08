@@ -1,14 +1,10 @@
-import asyncpraw as apraw
 import discord
 from discord.ext import commands
 import datetime
-import json
 from discord_slash import SlashCommand
+from classes import CustomBotClass
 import os
 from classes.LoadCog import load_extension
-import pickle
-import asyncpg
-import asyncio
 from discord.ext import tasks
 import random
 
@@ -40,7 +36,7 @@ mentions = discord.AllowedMentions(
     replied_user=False,
     roles=False)
 
-bot = commands.Bot(
+bot = CustomBotClass.CustomBot(
     command_prefix=get_prefix,
     intents=intents,
     allowed_mentions=mentions,
@@ -48,22 +44,15 @@ bot = commands.Bot(
 
 slash = SlashCommand(bot, override_type=True)
 
-bot.launch_time = datetime.datetime.utcnow()
-
-bot.color = discord.Color.from_rgb(156, 7, 241)
-
 
 @bot.event
 async def on_ready():
     bot.load_extension('jishaku')
     exceptions = ""
-    with open("config/config.json", "r") as read_file:
-        data = json.load(read_file)
-        bot.config = data
     for file in os.listdir("./cogs"):
         if file.endswith('.py'):
             try:
-                load_extension(bot, f'cogs.{file[:-3]}', data)
+                load_extension(bot, f'cogs.{file[:-3]}', bot.config)
                 print(f"loaded cogs.{file[:-3]}")
             except Exception as e:
                 exceptions += f"- {file} failed to load [{e}]\n"
@@ -73,7 +62,7 @@ async def on_ready():
     for file in os.listdir("./cogs/slash_cmds"):
         if file.endswith('.py'):
             try:
-                load_extension(bot, f'cogs.slash_cmds.{file[:-3]}', data)
+                load_extension(bot, f'cogs.slash_cmds.{file[:-3]}', bot.config)
                 print(f"loaded cogs.slash_cmds.{file[:-3]}")
             except Exception as e:
                 exceptions += f"- {file} failed to load [{e}]\n"
@@ -86,7 +75,7 @@ async def on_ready():
         color=bot.color)
     embed.timestamp = bot.launch_time
     embed.set_footer(text="Bot online since:")
-    c = bot.get_channel(827737123704143890)
+    c = bot.get_channel(840528237846331432)
     await c.send(embed=embed)
 
 
@@ -198,24 +187,4 @@ async def end_gws():
             await gend(row)
 
 
-loop = asyncio.get_event_loop()
-f = pickle.load(open('credentials.pkl', 'rb'))
-bot.pool = loop.run_until_complete(
-    asyncpg.create_pool(
-        dsn=f["postgres_uri"],
-        host=f["postgres_host"],
-        user=f["postgres_user"],
-        port=f["postgres_port"],
-        password=f["postgres_password"],
-        database=f["postgres_database"]))
-
-bot.reddit = apraw.Reddit(
-    client_id=f['reddit_id'],
-    client_secret=f['reddit_secret'],
-    user_agent="Eclipse")
-bot.memes = []
-
-
-bot.sra_api = f['some_random_api']
-
-bot.run(f["discord"])
+bot.run(bot.token)

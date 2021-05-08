@@ -1,6 +1,7 @@
 import random
 import string
 import discord
+from classes import CustomBotClass
 import traceback
 from discord.ext import commands
 import datetime
@@ -8,7 +9,7 @@ import humanize
 
 class ErrorHandler(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -158,7 +159,7 @@ class ErrorHandler(commands.Cog):
 
         stacktrace = traceback.format_tb(error.__traceback__)
 
-        log_channel = self.bot.get_channel(830069392976773120)
+        log_channel = self.bot.get_channel(840528247708057620)
         embed = discord.Embed(
             title=f"Unknown Exception caught in command {ctx.command}",
             description=f"Traceback: \n ```py\n{stacktrace[0]}```",
@@ -179,7 +180,7 @@ class ErrorHandler(commands.Cog):
                       brief="Mark an error as an emergency to prioritize its fixing")
     @commands.cooldown(1, 86400, commands.BucketType.member)
     async def emergency(self, ctx, error_code):
-        log_channel = self.bot.get_channel(830069392976773120)
+        log_channel = self.bot.get_channel(840528247708057620)
         async for msg in log_channel.history(limit=50):
             if error_code in msg.content:
                 await msg.reply(

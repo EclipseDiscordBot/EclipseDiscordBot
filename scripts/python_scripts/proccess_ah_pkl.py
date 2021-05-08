@@ -1,18 +1,19 @@
 import pickle
+from classes.deprecated import deprecated
 
-data = pickle.load(open('data/hypixelCog/ah_names.pkl', 'rb'))
 
-
+@deprecated
 def stage_1(input_list: list):
     for item in input_list:
-        if not is_ascii(item):
+        if not item:
             input_list.pop(input_list.index(item))
-    pickle.dump(input_list, open("data/hypixelCog/stage_1.pkl", 'wb'))
     return input_list
 
 
+@deprecated
 def is_ascii(s):
     return all(ord(c) < 128 for c in s)
 
 
-stage_1(data)
+if __name__ == '__main__':
+    stage_1(["test","test"])

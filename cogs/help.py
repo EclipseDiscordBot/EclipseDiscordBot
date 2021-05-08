@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from classes import CustomBotClass
 
 
 class EclipseHelpCommand(commands.HelpCommand):
@@ -60,7 +61,7 @@ class EclipseHelpCommand(commands.HelpCommand):
 
 
 class help(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self._original_help_command = bot.help_command
         bot.help_command = EclipseHelpCommand()
         bot.help_command.cog = self

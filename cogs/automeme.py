@@ -1,12 +1,12 @@
 import random
-
+from classes import CustomBotClass
 import asyncpraw as apraw
 import discord
 from discord.ext import commands, tasks
 
 
 class AutoMeme(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
         self.reddit: apraw.Reddit = self.bot.reddit
         self._automeme.start()
@@ -44,8 +44,11 @@ class AutoMeme(commands.Cog):
                             id=row['server_id'])
                         channel: discord.TextChannel = guild.get_channel(
                             row['channel_id'])
-                        await channel.send(embed=random_post)
+                        try:
+                            await channel.send(embed=random_post)
+                        except AttributeError:
+                            pass
 
 
-def setup(bot: commands.Bot):
+def setup(bot):
     bot.add_cog(AutoMeme(bot))

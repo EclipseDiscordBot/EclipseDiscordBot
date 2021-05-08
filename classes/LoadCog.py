@@ -12,7 +12,10 @@ class CogDisabledException(Exception):
 
 def load_extension(bot: commands.Bot, cog: str, json: dict):
     if json['load_cogs']:
-        if json['cogs'][cog]:
-            bot.load_extension(cog)
-        else:
+        try:
+            if json['cogs'][cog]:
+                bot.load_extension(cog)
+            else:
+                raise CogDisabledException(cog)
+        except KeyError:
             raise CogDisabledException(cog)

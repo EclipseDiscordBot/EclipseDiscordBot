@@ -1,15 +1,16 @@
+import sys
 import aiohttp
 import asyncpixel.exceptions.exceptions
 import discord
 from discord import Embed
 import pickle
 from constants import bz_ids
-from classes.auction_calc import *
+from classes import CustomBotClass
 from discord.ext import commands, tasks
 
 
 class Hypixel(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
         self.hypixel = asyncpixel.Hypixel(pickle.load(
             open("credentials.pkl", 'rb'))['hypixel'])
@@ -17,7 +18,7 @@ class Hypixel(commands.Cog):
         self.currentAh = None
         self.AHDict = None
         self.bazaar_loop.start()
-        self.auction_loop.start()
+        # self.auction_loop.start()
         self.bz_id_item = bz_ids.id_name
         self.bz_item_id = bz_ids.name_id
 
@@ -106,39 +107,26 @@ class Hypixel(commands.Cog):
 
         self.currentBazaar = formattedbz
 
-    @tasks.loop(minutes=15)
+    @tasks.loop(hours=1)
     async def auction_loop(self):
         pages = []
         final_ah = []
         ah = await self.hypixel.auctions()
         print(f'Total pages: {ah.total_pages}')
         for page_no in range(ah.total_pages):
-            try:
-                page = await self.hypixel.auctions(page_no)
-            except asyncpixel.exceptions.exceptions.ApiNoSuccess:
+            for attempt in range(100):
                 try:
                     page = await self.hypixel.auctions(page_no)
+                    pass
                 except asyncpixel.exceptions.exceptions.ApiNoSuccess:
-                    try:
-                        page = await self.hypixel.auctions(page_no)
-                    except asyncpixel.exceptions.exceptions.ApiNoSuccess:
-                        try:
-                            page = await self.hypixel.auctions(page_no)
-                        except asyncpixel.exceptions.exceptions.ApiNoSuccess:
-                            try:
-                                page = await self.hypixel.auctions(page_no)
-                            except asyncpixel.exceptions.exceptions.ApiNoSuccess:
-                                try:
-                                    page = await self.hypixel.auctions(page_no)
-                                except asyncpixel.exceptions.exceptions.ApiNoSuccess:
-                                    try:
-                                        page = await self.hypixel.auctions(page_no)
-                                    except asyncpixel.exceptions.exceptions.ApiNoSuccess:
-                                        try:
-                                            page = await self.hypixel.auctions(page_no)
-                                        except asyncpixel.exceptions.exceptions.ApiNoSuccess:
-                                            page = await self.hypixel.auctions(page_no)
+                    print(f"Attempt {attempt} Failed for page {page_no}")
+                else:
+                    break
+            else:
+                print("Failed getting page ", page_no)
+                sys.exit(54)
             pages.append(page)
+            print("appended page:", page_no)
             for page in pages:
                 for auction in page.auctions:
                     final_ah.append(auction)
@@ -146,7 +134,7 @@ class Hypixel(commands.Cog):
         self.currentAh = final_ah
         print("proccessed hypixel AH")
         # self.currentAh = pickle.load(open('data/test.pkl', 'rb')) # a sample AH
-        self.AHDict = await calc_auc(self.hypixel, self.currentAh, self.bot)
+        # self.AHDict = await calc_auc(self.hypixel, self.currentAh, self.bot)
 
 
 def setup(bot):

@@ -1,4 +1,5 @@
 import discord
+from classes import CustomBotClass
 import datetime
 import random
 from common_functions import ignore
@@ -6,7 +7,7 @@ from discord.ext import commands
 
 
 class Giveaway(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     async def force_gend(self, gw):

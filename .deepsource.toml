@@ -5,7 +5,7 @@ name = "python"
 enabled = true
 
   [analyzers.meta]
-  runtime_version = "3.x.x"
+  runtime_version = "3.7.x"
 
 [[analyzers]]
 name = "secrets"

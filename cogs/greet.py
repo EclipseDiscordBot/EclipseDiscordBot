@@ -1,9 +1,10 @@
 import discord
 from discord.ext import commands
+from classes import CustomBotClass
 
 
 class Greet(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.group(invoke_without_command=True)

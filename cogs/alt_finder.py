@@ -2,11 +2,12 @@ import discord
 from discord.ext import commands
 import datetime
 import humanize
+from classes import CustomBotClass
 
 
 class AltFinder(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.command()
