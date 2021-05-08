@@ -16,4 +16,4 @@ def is_ascii(s):
 
 
 if __name__ == '__main__':
-    stage_1(["test","test"])
+    stage_1(["test", "test"])
