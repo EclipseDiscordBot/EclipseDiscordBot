@@ -1,4 +1,4 @@
-[![Discord](https://img.shields.io/badge/chat-on%20discord-brightgreen.svg)](https://discord.gg/MaDHu4KuZG)
+[![Discord](https://img.shields.io/badge/chat-on%20discord-brightgreen.svg)](https://discord.gg/cMejEhNUj6)
 
 # Eclipse
  A useful Discord Bot that can provide various utilities and stuff to make your Discord experience better!

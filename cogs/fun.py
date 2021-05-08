@@ -27,7 +27,9 @@ class Fun(commands.Cog):
         random_post = self.bot.memes[random.randint(0, len(self.bot.memes))]
         await ctx.reply(embed=random_post)
 
-    @commands.command(name="dbt", aliases=['discord_bot_token'], brief="Gives a fake random discord bot token")
+    @commands.command(name="dbt",
+                      aliases=['discord_bot_token'],
+                      brief="Gives a fake random discord bot token")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def dbt(self, ctx):
         async with aiohttp.ClientSession() as cs:
@@ -36,10 +38,6 @@ class Fun(commands.Cog):
                 await ctx.reply(res['token'])
                 await asyncio.sleep(2)
                 await ctx.reply("lol thats a fake bot token :P")
-
-
-
-
 
 
 def setup(bot):
