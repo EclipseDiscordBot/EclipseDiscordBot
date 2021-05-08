@@ -50,7 +50,10 @@ class Logging(commands.Cog):
     async def msg_edit(self, msg: discord.RawMessageUpdateEvent):
         channel: discord.TextChannel = self.bot.get_guild(
             msg.guild_id).get_channel(msg.channel_id)
-        new_edited_msg_content = await channel.fetch_message(msg.message_id)
+        try:
+            new_edited_msg_content = await channel.fetch_message(msg.message_id)
+        except discord.errors.NotFound:
+            new_edited_msg_content = "Message was deleted through an edit"
         e = Embed(
             title="Message Edited",
             description=f"Message Edited in {channel.mention}")
