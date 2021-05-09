@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import datetime
 import humanize
+from classes import checks
 from classes import CustomBotClass
 
 
@@ -20,8 +21,7 @@ class AltFinder(commands.Cog):
         delta = datetime.timedelta(days=int(dur[:-1]))
         alts = []
 
-        def check(mem: discord.User):
-            return mem.created_at
+
 
         paginator = commands.Paginator()
         counter = 0
@@ -31,7 +31,7 @@ class AltFinder(commands.Cog):
                     break
                 alts.append(member)
                 counter += 1
-        alts.sort(reverse=True, key=check)
+        alts.sort(reverse=True, key=checks.created_at)
         for alt in alts:
             paginator.add_line(
                 f"*`{(alts.index(alt)) + 1}.`* - {alt.mention} - {humanize.naturaldate(alt.created_at.date())}\n")

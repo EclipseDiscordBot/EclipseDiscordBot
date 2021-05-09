@@ -1,8 +1,7 @@
 from classes.deprecated import deprecated
 import asyncpixel
 from matplotlib import pyplot as plt
-from classes import CustomBotClass
-from common_functions import ignore
+from classes import CustomBotClass, ignore
 from typing import List, Dict
 
 

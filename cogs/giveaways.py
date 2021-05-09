@@ -1,8 +1,7 @@
 import discord
-from classes import CustomBotClass
+from classes import CustomBotClass, ignore
 import datetime
 import random
-from common_functions import ignore
 from discord.ext import commands
 
 
