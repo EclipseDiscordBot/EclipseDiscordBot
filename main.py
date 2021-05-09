@@ -186,5 +186,5 @@ async def end_gws():
         if datetime.datetime.now() - end_time < datetime.timedelta(seconds=5):
             await gend(row)
 
-
-bot.run(bot.token)
+if __name__ == "__main__":
+    bot.run(bot.token)
