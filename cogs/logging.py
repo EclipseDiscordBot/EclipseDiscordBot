@@ -57,7 +57,12 @@ class Logging(commands.Cog):
         e = Embed(
             title="Message Edited",
             description=f"Message Edited in {channel.mention}")
-        e.add_field(name="New message: ", value=(new_edited_msg_content.content if not isinstance(new_edited_msg_content, str) else new_edited_msg_content))
+        e.add_field(
+            name="New message: ",
+            value=(
+                new_edited_msg_content.content if not isinstance(
+                    new_edited_msg_content,
+                    str) else new_edited_msg_content))
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
