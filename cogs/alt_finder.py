@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import datetime
 import humanize
+import DiscordUtils
 
 
 class AltFinder(commands.Cog):
@@ -22,7 +23,7 @@ class AltFinder(commands.Cog):
         def check(mem: discord.User):
             return mem.created_at
 
-        paginator = commands.Paginator()
+        paginator = DiscordUtils.pagination.AutoEmbedPaginator(ctx)
         counter = 0
         for member in ctx.guild.members:
             if (datetime.datetime.now() - member.created_at) < delta:
@@ -31,16 +32,15 @@ class AltFinder(commands.Cog):
                 alts.append(member)
                 counter += 1
         alts.sort(reverse=True, key=check)
-        for alt in alts:
-            paginator.add_line(f"*`{(alts.index(alt)) + 1}.`* - {alt.mention} - {humanize.naturaldate(alt.created_at.date())}\n")
-        for page in paginator.pages:
-            embed = discord.Embed(
-                title=f"New accounts in {ctx.guild.name}",
-                description=page,
-                color=self.bot.color)
-            embed.set_footer(
-                text=f"Showing {size} alts less than {humanize.precisedelta(delta)} old")
-            await ctx.send(embed=embed)
+
+
+
+
+
+    
+
+
+
 
 
 def setup(bot):
