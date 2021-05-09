@@ -3,6 +3,11 @@ from classes import CustomBotClass
 from discord.ext import commands
 
 
+class PurgeFlags(commands.FlagConverter):
+    bots: bool
+    content: str
+
+
 class Moderation(commands.Cog):
 
     def __init__(self, bot: CustomBotClass.CustomBot):
@@ -44,7 +49,7 @@ class Moderation(commands.Cog):
         embed = discord.Embed(
             title="Kick Successful",
             description=f"Kicked {member} from {ctx.guild.name} with "
-            f"reason ```{reason}```",
+                        f"reason ```{reason}```",
             footer=ctx.message.created_at,
             color=self.bot.color)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
@@ -90,6 +95,28 @@ class Moderation(commands.Cog):
         await channel.send(f"{channel.mention} is now unlocked for everyone.")
         if channel != ctx.channel:
             await ctx.reply(f"{channel.mention} is now unlocked for everyone.")
+
+    @commands.command(name="purge",
+                      brief="Bulk deletes messages")
+    @commands.has_permissions(manage_messages=True)
+    @commands.guild_only()
+    async def purge(self, ctx, amount: int = 20, *, flags: PurgeFlags):
+        if flags.bots is True:
+            def check(m):
+                return m.author.bot
+
+            await ctx.message.delete()
+            await ctx.channel.purge(limit=amount, check=check)
+
+        if flags.content:
+            content = flags.content
+
+            def check(m):
+                return content in m.content
+
+            await ctx.message.delete()
+            await ctx.channel.purge(limit=amount, check=check)
+
 
 
 def setup(bot):
