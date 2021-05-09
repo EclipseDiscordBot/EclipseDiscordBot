@@ -5,9 +5,6 @@ from classes import CustomBotClass
 from num2words import num2words
 
 from constants.basic import support_server
-from urllib.parse import quote
-import aiohttp
-
 
 class Utility(commands.Cog):
     def __init__(self, bot: CustomBotClass.CustomBot):
@@ -79,22 +76,6 @@ class Utility(commands.Cog):
         await suggestion_msg.add_reaction('✅')
         await suggestion_msg.add_reaction('🚫')
         await ctx.reply(f"Done! you can check the your suggestion's reviews in {support_server} <#834442086513508363>")
-
-    @commands.command(description="QRifies your text")
-    @commands.cooldown(15, 15, commands.BucketType.user)
-    async def qr(self, ctx, *, text: str):
-        final_text = quote(text)
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                    f"https://chart.googleapis.com/chart?chl={final_text}&chs=200x200&cht=qr&chld=H%7C0") as res:
-                await ctx.reply(res.url)
-
-    @commands.command(description="MINECRAFTifies your text",
-                      aliases=["achievements"])
-    @commands.cooldown(15, 15, commands.BucketType.user)
-    async def achievement(self, ctx: commands.Context, *, text: str):
-        final_text = quote(text)
-        await ctx.reply(f"https://minecraftskinstealer.com/achievement/13/Achievement+Acquired%21/{final_text}")
 
     @commands.Cog.listener("on_message")
     async def on_msg(self, msg: discord.message):

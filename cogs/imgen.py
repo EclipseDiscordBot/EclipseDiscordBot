@@ -1,5 +1,7 @@
 import random
 import urllib
+from urllib.parse import quote
+
 import aiofiles
 import aiohttp
 from classes import CustomBotClass
@@ -25,6 +27,22 @@ class ImageGeneration(commands.Cog):
         url = (ctx.author.avatar_url if not user else user.avatar_url)
         await ctx.reply(
             f"https://some-random-api.ml/canvas/youtube-comment?avatar={url}&username={uname}&comment={comment}")
+
+    @commands.command(description="MINECRAFTifies your text",
+                      aliases=["achievements"])
+    @commands.cooldown(15, 15, commands.BucketType.user)
+    async def achievement(self, ctx: commands.Context, *, text: str):
+        final_text = quote(text)
+        await ctx.reply(f"https://minecraftskinstealer.com/achievement/13/Achievement+Acquired%21/{final_text}")
+
+    @commands.command(description="QRifies your text")
+    @commands.cooldown(15, 15, commands.BucketType.user)
+    async def qr(self, ctx, *, text: str):
+        final_text = quote(text)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                    f"https://chart.googleapis.com/chart?chl={final_text}&chs=200x200&cht=qr&chld=H%7C0") as res:
+                await ctx.reply(res.url)
 
     @commands.command(name="amongus",
                       aliases=['amoongus',
