@@ -1,11 +1,6 @@
 import discord
 from classes import CustomBotClass
-from discord.ext import commands
-
-
-class PurgeFlags(commands.FlagConverter):
-    bots: bool
-    content: str
+from discord.ext import commands, flags
 
 
 class Moderation(commands.Cog):
@@ -100,23 +95,33 @@ class Moderation(commands.Cog):
                       brief="Bulk deletes messages")
     @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
-    async def purge(self, ctx, amount: int = 20, *, flags: PurgeFlags):
-        if flags.bots is True:
+    async def purge(self, ctx, amount: int = 20, *, full=None):
+        if not full:
+            await ctx.message.delete()
+            await ctx.channel.purge(limit=amount)
+            return
+        if "--bots" in full:
             def check(m):
                 return m.author.bot
 
             await ctx.message.delete()
             await ctx.channel.purge(limit=amount, check=check)
+            return
+        elif "--content" in full:
+            key_msg = await ctx.send("What should be in the messages to be deleted?")
 
-        if flags.content:
-            content = flags.content
+            def check_for(m):
+                return m.author == ctx.author and m.channel.id == ctx.channel.id
+
+            keyword_msg = await self.bot.wait_for('message', check=check_for)
 
             def check(m):
-                return content in m.content
+                return keyword_msg.content in m.content
 
             await ctx.message.delete()
+            await key_msg.delete()
+            await keyword_msg.delete()
             await ctx.channel.purge(limit=amount, check=check)
-
 
 
 def setup(bot):
