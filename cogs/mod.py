@@ -1,11 +1,11 @@
 import discord
-
+from classes import CustomBotClass
 from discord.ext import commands
 
 
 class Moderation(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.guild_only()

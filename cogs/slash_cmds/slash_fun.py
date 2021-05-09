@@ -1,3 +1,4 @@
+from classes import CustomBotClass
 import random
 from discord.ext import commands
 from discord_slash import cog_ext, SlashContext
@@ -5,7 +6,7 @@ from discord_slash import cog_ext, SlashContext
 
 class Fun(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @cog_ext.cog_slash(name="choose")

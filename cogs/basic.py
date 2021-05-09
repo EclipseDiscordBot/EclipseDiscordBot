@@ -1,10 +1,11 @@
 import constants.basic as basicC
+from classes import CustomBotClass
 from discord.ext import commands
 
 
 class Basic(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
         filee = open("constants/version.txt", 'r')
         self.version = filee.read()

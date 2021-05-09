@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from classes import CustomBotClass
 
 
 class EclipseHelpCommand(commands.HelpCommand):
@@ -13,8 +14,8 @@ class EclipseHelpCommand(commands.HelpCommand):
             title="Help",
             description=f"Type *`{bot_prefix}help <category>`* for more info on a category.",
             color=ctx.bot.color)
-        for cog, commands in mapping.items():
-            all_cmds = [f"`{c.qualified_name}`" for c in commands]
+        for cog, command in mapping.items():
+            all_cmds = [f"`{c.qualified_name}`" for c in command]
             if all_cmds:
                 cog_name = getattr(cog, "qualified_name", "No Category")
                 embed.add_field(
@@ -37,7 +38,7 @@ class EclipseHelpCommand(commands.HelpCommand):
 
     async def send_command_help(self, command):
         ctx = self.context
-        prefix = self.clean_prefix
+        # prefix = self.clean_prefix
         embed = discord.Embed(
             title=command.qualified_name,
             color=ctx.bot.color)
@@ -59,8 +60,8 @@ class EclipseHelpCommand(commands.HelpCommand):
         await ctx.send(embed=embed)
 
 
-class help(commands.Cog):
-    def __init__(self, bot):
+class _Help(commands.Cog):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self._original_help_command = bot.help_command
         bot.help_command = EclipseHelpCommand()
         bot.help_command.cog = self
@@ -71,4 +72,4 @@ class help(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(help(bot))
+    bot.add_cog(_Help(bot))

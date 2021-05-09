@@ -1,13 +1,16 @@
 import discord
 from discord.ext import commands
 import asyncio
-from constants.basic import *
+from classes import CustomBotClass
+from num2words import num2words
+
+from constants.basic import support_server
 from urllib.parse import quote
 import aiohttp
 
 
 class Utility(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.command(aliases=['av'],
@@ -57,7 +60,7 @@ class Utility(commands.Cog):
         else:
             brief = "Not specified"
             detailed = suggestion
-        suggestion_channel = self.bot.get_channel(834442086513508363)
+        suggestion_channel = self.bot.get_channel(840528236597477377)
         dsc = f"""
 
 
@@ -89,7 +92,7 @@ class Utility(commands.Cog):
     @commands.command(description="MINECRAFTifies your text",
                       aliases=["achievements"])
     @commands.cooldown(15, 15, commands.BucketType.user)
-    async def achievement(self, ctx, *, text: str):
+    async def achievement(self, ctx: commands.Context, *, text: str):
         final_text = quote(text)
         await ctx.reply(f"https://minecraftskinstealer.com/achievement/13/Achievement+Acquired%21/{final_text}")
 
@@ -100,6 +103,8 @@ class Utility(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 data = await conn.fetch("SELECT * FROM config WHERE server_id=$1", msg.guild.id)
+                if not data:
+                    return
                 if not data[0]['math']:
                     return
         if msg.author == self.bot.user:
@@ -127,6 +132,66 @@ class Utility(commands.Cog):
                     await ctx.reply("unknown cmd!")
                     return
         await ctx.reply("done!")
+
+    @commands.command()
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    async def poll(self, ctx, que=None, opt0=None, opt1=None, opt2=None, opt3=None, opt4=None, opt5=None, opt6=None,
+                   opt7=None,
+                   opt8=None, opt9=None, test=None):
+        if test is None:
+            if que is None:
+                await ctx.send('Tell me a question.')
+            elif opt0 is None or opt1 is None:
+                await ctx.send('need at least 2 options.')
+            else:
+                listl = [
+                    opt0,
+                    opt1,
+                    opt2,
+                    opt3,
+                    opt4,
+                    opt5,
+                    opt6,
+                    opt7,
+                    opt8,
+                    opt9]
+                embed = discord.Embed(
+                    title=que, description='choose one of these options! \n')
+                for i in listl:
+                    if i is None:
+                        pass
+                    else:
+                        idn = listl.index(i) + 1
+                        embed.add_field(
+                            name=':' + num2words(idn) + ':', value=i, inline=False)
+                msg = await ctx.send(embed=embed)
+                for i in listl:
+                    if i is None:
+                        pass
+                    else:
+                        idn = listl.index(i) + 1
+                        if idn == 10:
+                            await msg.add_reaction('0️⃣')
+                        if idn == 1:
+                            await msg.add_reaction('1️⃣')
+                        if idn == 2:
+                            await msg.add_reaction('2️⃣')
+                        if idn == 3:
+                            await msg.add_reaction('3️⃣')
+                        if idn == 4:
+                            await msg.add_reaction('4️⃣')
+                        if idn == 5:
+                            await msg.add_reaction('5️⃣')
+                        if idn == 6:
+                            await msg.add_reaction('6️⃣')
+                        if idn == 7:
+                            await msg.add_reaction('7️⃣')
+                        if idn == 8:
+                            await msg.add_reaction('8️⃣')
+                        if idn == 9:
+                            await msg.add_reaction('9️⃣')
+        else:
+            await ctx.send('no more that 9 options.:P')
 
 
 def setup(bot):

@@ -1,4 +1,5 @@
 import discord
+from classes import CustomBotClass
 import datetime
 import random
 from common_functions import ignore
@@ -6,7 +7,7 @@ from discord.ext import commands
 
 
 class Giveaway(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     async def force_gend(self, gw):
@@ -101,18 +102,18 @@ class Giveaway(commands.Cog):
                     gw_msg.id, ctx.channel.id, ctx.guild.id, ctx.author.id, int(winners[:-1]), end_timestamp, prize)
 
     @commands.command(name="gend", brief="Ends an ongoing giveaway")
-    async def gend(self, ctx, id: int = None):
+    async def gend(self, ctx, uid: int = None):
         msg_id = 0
-        if not id:
+        if not uid:
             async for msg in ctx.channel.history(limit=50):
                 if msg.author == self.bot.user and "🎉" in msg.content and msg.embeds:
                     msg_id += msg.id
                     break
         if msg_id == 0:
-            if not id:
+            if not uid:
                 await ctx.send("I couldn't find any recent giveaways!")
                 return
-            msg_id += id
+            msg_id += uid
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 gw = await conn.fetch("SELECT 1 FROM giveaways WHERE msg_id = $1", msg_id)

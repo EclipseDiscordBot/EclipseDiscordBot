@@ -1,12 +1,13 @@
 import asyncio
 import random
+from classes import CustomBotClass
 import aiohttp
 from discord.ext import commands
 
 
 class Fun(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.command(brief="Chooses a random object from specified options",
@@ -27,7 +28,9 @@ class Fun(commands.Cog):
         random_post = self.bot.memes[random.randint(0, len(self.bot.memes))]
         await ctx.reply(embed=random_post)
 
-    @commands.command(name="dbt", aliases=['discord_bot_token'], brief="Gives a fake random discord bot token")
+    @commands.command(name="dbt",
+                      aliases=['discord_bot_token'],
+                      brief="Gives a fake random discord bot token")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def dbt(self, ctx):
         async with aiohttp.ClientSession() as cs:
@@ -36,10 +39,6 @@ class Fun(commands.Cog):
                 await ctx.reply(res['token'])
                 await asyncio.sleep(2)
                 await ctx.reply("lol thats a fake bot token :P")
-
-
-
-
 
 
 def setup(bot):

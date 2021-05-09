@@ -4,12 +4,13 @@ import random
 from discord_slash import cog_ext, SlashContext
 import discord
 import humanize
+from classes import CustomBotClass
 from discord.ext import commands
 
 
 class Giveaway(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @cog_ext.cog_slash(name="giveaway")
@@ -68,5 +69,5 @@ class Giveaway(commands.Cog):
         await ctx.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {new_msg.jump_url}")
 
 
-def setup(bot: commands.Bot):
+def setup(bot: CustomBotClass.CustomBot):
     bot.add_cog(Giveaway(bot))

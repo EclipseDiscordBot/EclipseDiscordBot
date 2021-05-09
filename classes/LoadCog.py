@@ -10,8 +10,12 @@ class CogDisabledException(Exception):
         return f'{self.cog_name} is not allowed to load according to the config'
 
 
-def load_extention(bot: commands.Bot, cog: str, json: dict):
-    if json['load_cogs'] and json['cogs'][cog]:
-        bot.load_extension(cog)
-    else:
-        raise CogDisabledException(cog)
+def load_extension(bot: commands.Bot, cog: str, json: dict):
+    if json['load_cogs']:
+        try:
+            if json['cogs'][cog]:
+                bot.load_extension(cog)
+            else:
+                raise CogDisabledException(cog)
+        except KeyError:
+            raise CogDisabledException(cog)

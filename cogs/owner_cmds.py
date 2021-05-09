@@ -1,14 +1,13 @@
-import asyncio
 import json
 import os
 import discord
-import sys
+from classes import CustomBotClass
 import pickle
 from discord.ext import commands
 
 
 class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.command(hidden=True,
