@@ -70,10 +70,10 @@ class Logging(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute(
-                    "INSERT INTO logs(server_id,channel_id,msg_id,reason,timestamp,type,mod_id,punished_id)"
-                    "VALUES($1,$2,$3,$4,$5,$6,$7,$8)", msg.guild_id, msg.channel_id, msg.message_id,
+                    "INSERT INTO logs(server_id,channel_id,msg_id,reason,timestamp,type,mod_id,punished_id,msg)"
+                    "VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)", msg.guild_id, msg.channel_id, msg.message_id,
                     f"Message Edited by {new_edited_msg_content.author}",
-                    datetime.datetime.now().timestamp(), 1, 0, 0)
+                    datetime.datetime.now().timestamp(), 1, 0, 0, new_edited_msg_content.content)
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
                 log_channel_id = log_channel_ids[0]['channel_id']
                 log_chnl = self.bot.get_guild(

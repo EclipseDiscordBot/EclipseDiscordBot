@@ -2,4 +2,4 @@ name = "Eclipse"
 invite = "http://bit.ly/EclipseBotInviteWithSlashCommandsSupport"
 support_server = "https://discord.gg/DPwGRxWmxW"
 
-owners = [694839986763202580]
+owners = [694839986763202580, 605364556465963018]

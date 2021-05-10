@@ -194,14 +194,33 @@ class Utility(commands.Cog):
             channel = ctx.channel
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                data2 = await conn.fetch("SELECT * FROM logs WHERE channel_id=$1", channel.id)
+                data2 = await conn.fetch("SELECT * FROM logs WHERE channel_id=$1 AND TYPE=0", channel.id)
                 try:
                     select_number = -index
                     select = data2[select_number]
                 except IndexError:
                     await ctx.reply(f"Too big or Too small index `{index}`")
                     return
-                e = discord.Embed(title=select['reason'][19:len(select['reason'])], description=select['msg'],
+                e = discord.Embed(title=select['reason'][18:len(select['reason'])], description=select['msg'],
+                                  colour=discord.Color.random())
+                await ctx.reply(embed=e)
+
+    @commands.command(aliases=['esnipe', 'esniper'])
+    @commands.guild_only()
+    @indev_check.command_in_development()
+    async def editsnipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
+        if channel is None:
+            channel = ctx.channel
+        async with self.bot.pool.acquire() as conn:
+            async with conn.transaction():
+                data2 = await conn.fetch("SELECT * FROM logs WHERE channel_id=$1 AND TYPE=1", channel.id)
+                try:
+                    select_number = -index
+                    select = data2[select_number]
+                except IndexError:
+                    await ctx.reply(f"Too big or Too small index `{index}`")
+                    return
+                e = discord.Embed(title=select['reason'][18:len(select['reason'])], description=select['msg'],
                                   colour=discord.Color.random())
                 await ctx.reply(embed=e)
 
