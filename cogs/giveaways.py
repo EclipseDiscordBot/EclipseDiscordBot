@@ -51,7 +51,7 @@ class Giveaways(commands.Cog):
             return None
 # (msg_id BIGINT, ch_id BIGINT, g_id BIGINT, end_timestamp BIGINT, winners BIGINT, host_id BIGINT, prize TEXT)
     @commands.command()
-    async def gstart(self, ctx, time, winners, *, prize):
+    async def gstart(self, ctx, time, winners:int, *, prize):
         duration = self.time_converter(time)
         if not duration:
             await ctx.send("Invalid time format. Example time usage: `5d`, `2m`, `30s`, `2h`")
