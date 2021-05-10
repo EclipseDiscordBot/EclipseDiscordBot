@@ -5,7 +5,7 @@ import random
 
 
 class Giveaways(commands.Cog):
-    def __init__(self):
+    def __init__(self, bot):
         self.bot = bot
 # # (msg_id BIGINT, ch_id BIGINT, g_id BIGINT, end_timestamp BIGINT, winners BIGINT, host_id BIGINT, prize TEXT)
     async def force_end(self, msg_id):
