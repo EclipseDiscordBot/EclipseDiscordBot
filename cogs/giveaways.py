@@ -40,13 +40,13 @@ class Giveaways(commands.Cog):
     def time_converter(self, time):
         time = time.lower()
         if time.endswith('s'):
-            return datetime.timedelta(seconds=time[:-1])
+            return datetime.timedelta(seconds=int(time[:-1]))
         if time.endswith('m'):
-            return datetime.timedelta(minutes=time[:-1])
+            return datetime.timedelta(minutes=int(time[:-1]))
         if time.endswith('h'):
-            return datetime.timedelta(hours=time[:-1])
+            return datetime.timedelta(hours=int(time[:-1]))
         if time.endswith('d'):
-            return datetime.timedelta(days=time[:-1])
+            return datetime.timedelta(days=int(time[:-1]))
         else:
             return None
 # (msg_id BIGINT, ch_id BIGINT, g_id BIGINT, end_timestamp BIGINT, winners BIGINT, host_id BIGINT, prize TEXT)
