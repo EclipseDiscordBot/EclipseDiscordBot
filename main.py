@@ -1,12 +1,9 @@
 import discord
 from discord.ext import commands
-import datetime
 from discord_slash import SlashCommand
 from classes import CustomBotClass
 import os
 from classes.LoadCog import load_extension
-from discord.ext import tasks
-import random
 
 intents = discord.Intents.all()
 
@@ -34,7 +31,7 @@ mentions = discord.AllowedMentions(
     everyone=False,
     users=True,
     replied_user=False,
-    roles=False)
+    roles=True)
 
 bot = CustomBotClass.CustomBot(
     command_prefix=get_prefix,
