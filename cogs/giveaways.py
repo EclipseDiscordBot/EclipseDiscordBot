@@ -94,6 +94,9 @@ class Giveaways(commands.Cog):
         await self.force_end(msg_id)
 
 
+def setup(bot):
+    bot.add_cog(Giveaways(bot))
+
 
 
 
