@@ -77,7 +77,7 @@ class Giveaways(commands.Cog):
     async def gend(self, ctx, message_id:int=None):
         msg_id = 0
         if not message_id:
-            all_gws_in_channel = await self.bot.fetch("SELECT * FROM giveaways WHERE ch_id = $1", ctx.channel.id)
+            all_gws_in_channel = await self.bot.pool.fetch("SELECT * FROM giveaways WHERE ch_id = $1", ctx.channel.id)
             async for msg in ctx.channel.history(limit=50):
                 if msg.id in all_gws_in_channel[0]:
                     msg_id += msg.id
