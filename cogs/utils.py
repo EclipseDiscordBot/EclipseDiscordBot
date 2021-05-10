@@ -37,6 +37,7 @@ class Utility(commands.Cog):
         if suggestion is None:
             def chek(u1):
                 return u1.author == ctx.author
+
             await ctx.reply(
                 "Great! your suggestion is valuable! Now send what the new suggestion will do in brief in **1 SINGLE MESSAGE** \n\n **Pro tip: using shift+enter creates a new line without sending the message**")
             try:
@@ -99,7 +100,7 @@ class Utility(commands.Cog):
                     return
             result = eval(code, {"__builtins__": {}}, allowed_names)
             await msg.reply(result)
-        except Exception:
+        except BaseException:
             return
 
     @commands.command(name="ar", aliases=['autoresponse'])
@@ -174,6 +175,34 @@ class Utility(commands.Cog):
                             await msg.add_reaction('9️⃣')
         else:
             await ctx.send('no more that 9 options.:P')
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    @commands.guild_only()
+    async def prefix(self, ctx, prefix):
+        async with self.bot.pool.acquire() as conn:
+            async with conn.transaction():
+                await conn.execute("UPDATE prefixes SET prefix = $1 WHERE guild_id = $2", prefix, ctx.guild.id)
+        await ctx.send(f"My prefix in this server has successfully been changed to {prefix}\n\n **TIP:** To include "
+                       f"spaces in the prefix do use quotes like {prefix}prefix \"hey \"")
+
+    @commands.command(aliases=['sniper'])
+    @commands.guild_only()
+    async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
+        if channel is None:
+            channel = ctx.channel
+        async with self.bot.pool.acquire() as conn:
+            async with conn.transaction():
+                data2 = await conn.fetch("SELECT * FROM logs WHERE channel_id=$1", channel.id)
+                try:
+                    select_number = -index
+                    select = data2[select_number]
+                except IndexError:
+                    await ctx.reply(f"Too big or Too small index `{index}`")
+                    return
+                e = discord.Embed(title=select['reason'][19:len(select['reason'])], description=select['msg'],
+                                  colour=discord.Color.random())
+                await ctx.reply(embed=e)
 
 
 def setup(bot):
