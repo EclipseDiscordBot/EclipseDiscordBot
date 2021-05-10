@@ -2,7 +2,7 @@ import discord
 from classes import CustomBotClass, ignore
 import datetime
 import random
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 
 class Giveaway(commands.Cog):
@@ -24,7 +24,7 @@ class Giveaway(commands.Cog):
             try:
                 winner = random.choice(raffle)
                 winner_str = winner.mention
-            except Exception:
+            except IndexError:
                 await ch.send(f"There were no entrants to the giveaway lol\n {msg.jump_url}")
                 return
         else:
@@ -64,7 +64,7 @@ class Giveaway(commands.Cog):
                 return -1
             try:
                 val = int(time[:-1])
-            except BaseException:
+            except ValueError:
                 return -2
 
             return val * time_dict[unit]
@@ -120,9 +120,9 @@ class Giveaway(commands.Cog):
 
     @commands.command(name="greroll", brief="Rerolls a giveaway")
     @commands.cooldown(1, 5, commands.BucketType.member)
-    async def greroll(self, ctx, id=None):
+    async def greroll(self, ctx, uid=None):
         msg_id = 0
-        if not id:
+        if not uid:
             async with self.bot.pool.acquire() as conn:
                 async with conn.transaction():
                     async for msg in ctx.channel.history(limit=50):
@@ -133,10 +133,10 @@ class Giveaway(commands.Cog):
                         ignore.ignore(msg)
                         break
         if msg_id == 0:
-            if not id:
+            if not uid:
                 await ctx.send("I couldn't find any recent giveaways!")
                 return
-            msg_id += id
+            msg_id += uid
 
         gw_msg = await ctx.channel.fetch_message(msg_id)
         if gw_msg is None:
@@ -147,7 +147,7 @@ class Giveaway(commands.Cog):
         raffle.pop(raffle.index(self.bot.user))
         try:
             winner = random.choice(raffle)
-        except Exception:
+        except IndexError:
             await ctx.send(f"There were no entrants to the giveaway lol\n {gw_msg.jump_url}")
             return
         cleaned_prize = ""
@@ -155,6 +155,63 @@ class Giveaway(commands.Cog):
             for i in word:
                 cleaned_prize += f"{i}\u200b"
         await ctx.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {gw_msg.jump_url}")
+
+    async def endgaw(self, gw):
+        guild = self.bot.get_guild(gw["guild_id"])
+        ch = guild.get_channel(gw["channel_id"])
+        msg = await ch.fetch_message(gw["msg_id"])
+        host = guild.get_member(gw["host"])
+        prize = gw["prize"]
+        print(f"ending giveaway id {msg.id}")
+        winners = gw["winners"]
+        new_embed = msg.embeds[0].copy()
+        end_timestamp = gw["end_time"]
+        await discord.utils.sleep_until(datetime.datetime.fromtimestamp(end_timestamp))
+        reactions = msg.reactions[0]
+        raffle = await reactions.users().flatten()
+        raffle.pop(raffle.index(self.bot.user))
+        if winners > 1:
+            try:
+                winner = random.choice(raffle)
+                winner_str = winner.mention
+            except IndexError:
+                await ch.send(f"There were no entrants to the giveaway lol\n {msg.jump_url}")
+                return
+        else:
+            new_list = []
+            for entrant in raffle:
+                new_list.append(entrant.mention)
+            final_set = set(new_list)
+            winner_list = random.sample(final_set, winners)
+            winner_str = ""
+            for win in winner_list:
+                winner_str += f"{win.mention}, "
+
+        new_embed.description = f"Winner(s): {winner_str}\n Hosted by: {host.mention}"
+        new_embed.timestamp = datetime.datetime.now()
+        if winners > 1:
+            new_embed.set_footer(text=f"{winners} winners • Ended at")
+        else:
+            new_embed.set_footer(text="Ended at")
+        cleaned_prize = ""
+        for word in prize:
+            for i in word:
+                cleaned_prize += f"{i}\u200b"
+        await ch.send(f"🎉 Congratulations {winner_str}! You won **{cleaned_prize}**! \n {msg.jump_url}")
+        async with self.bot.pool.acquire() as conn:
+            async with conn.transaction():
+                await self.bot.pool.execute("DELETE FROM giveaways WHERE msg_id = $1", gw["msg_id"])
+
+    @tasks.loop(seconds=5)
+    async def end_gws(self):
+        await self.bot.wait_until_ready()
+        async with self.bot.pool.acquire() as conn:
+            async with conn.transaction():
+                res = await conn.fetch("SELECT * FROM giveaways")
+        for row in res:
+            end_time = datetime.datetime.fromtimestamp(row["end_time"])
+            if datetime.datetime.now() - end_time < datetime.timedelta(seconds=5):
+                await self.endgaw(row)
 
 
 def setup(bot):

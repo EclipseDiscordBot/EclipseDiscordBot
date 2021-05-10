@@ -48,7 +48,7 @@ class AutoMeme(commands.Cog):
                         try:
                             await channel.send(embed=random_post)
                         except AttributeError:
-                            pass
+                            await conn.execute("DELETE FROM automeme WHERE server_id=$1", row['server_id'])
 
 
 def setup(bot):

@@ -1,6 +1,6 @@
 import discord
-from classes import CustomBotClass
-from discord.ext import commands, flags
+from classes import CustomBotClass, checks
+from discord.ext import commands
 
 
 class Moderation(commands.Cog):
@@ -101,27 +101,19 @@ class Moderation(commands.Cog):
             await ctx.channel.purge(limit=amount)
             return
         if "--bots" in full:
-            def check(m):
-                return m.author.bot
 
             await ctx.message.delete()
-            await ctx.channel.purge(limit=amount, check=check)
+            await ctx.channel.purge(limit=amount, check=checks.bot)
             return
         elif "--content" in full:
             key_msg = await ctx.send("What should be in the messages to be deleted?")
 
-            def check_for(m):
-                return m.author == ctx.author and m.channel.id == ctx.channel.id
-
-            keyword_msg = await self.bot.wait_for('message', check=check_for)
-
-            def check(m):
-                return keyword_msg.content in m.content
+            keyword_msg = await self.bot.wait_for('message', check=checks.author_channel(ctx))
 
             await ctx.message.delete()
             await key_msg.delete()
             await keyword_msg.delete()
-            await ctx.channel.purge(limit=amount, check=check)
+            await ctx.channel.purge(limit=amount, check=checks.keyword(keyword_msg))
 
 
 def setup(bot):
