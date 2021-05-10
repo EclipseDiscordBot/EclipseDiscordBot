@@ -21,8 +21,6 @@ class AltFinder(commands.Cog):
         delta = datetime.timedelta(days=int(dur[:-1]))
         alts = []
 
-
-
         paginator = commands.Paginator()
         counter = 0
         for member in ctx.guild.members:

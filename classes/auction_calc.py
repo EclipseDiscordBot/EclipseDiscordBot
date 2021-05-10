@@ -20,7 +20,7 @@ async def calculate_and_graph(items: Dict[str, List[asyncpixel.models.AuctionIte
     :param items:
     :return:
     """
-    
+
     BIN = items['bin']
     auctions = items['ah']
 
