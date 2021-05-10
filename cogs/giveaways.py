@@ -67,7 +67,7 @@ class Giveaways(commands.Cog):
         embed.set_footer(text="Ends at")
         msg = await ctx.send(embed=embed)
         msg.add_reaction("🎉")
-        end_timestamp = datetime.timestamp(end_time)
+        end_timestamp = datetime.datetime.timestamp(end_time)
 
         await self.bot.pool.execute("INSERT INTO giveaways (msg_id, ch_id, g_id, end_timestamp, host_id, prize) "
                                     "VALUES $1, $2, $3, $4, $5, $6)", msg.id, ctx.channel.id, ctx.guild.id,
