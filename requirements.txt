@@ -6,7 +6,7 @@ asyncpg
 asyncpixel==1.0.8
 asyncpraw==7.2.0
 asyncprawcore==2.0.1
-attrs==20.3.0
+attrs==21.2.0
 braceexpand==0.1.6
 certifi==2020.12.5
 cffi==1.14.5
