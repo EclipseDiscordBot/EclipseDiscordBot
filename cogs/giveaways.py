@@ -1,218 +1,99 @@
 import discord
-from classes import CustomBotClass, ignore
+from discord.ext import commands
 import datetime
 import random
-from discord.ext import commands, tasks
 
 
-class Giveaway(commands.Cog):
-    def __init__(self, bot: CustomBotClass.CustomBot):
+class Giveaways(commands.Cog):
+    def __init__(self):
         self.bot = bot
+# # (msg_id BIGINT, ch_id BIGINT, g_id BIGINT, end_timestamp BIGINT, winners BIGINT, host_id BIGINT, prize TEXT)
+    async def force_end(self, msg_id):
+        g_rows = await self.bot.pool.fetch("SELECT * FROM giveaways WHERE msg_id = $1", msg_id)
+        await self.bot.pool.execute("DELETE FROM giveaways WHERE msg_id = $1", g_rows[0][0])
+        g_row = g_rows[0]
+        message_id = g_row['msg_id']
+        channel = self.bot.get_channel(g_row['ch_id'])
+        prize = g_row['prize']
+        num_winners = int(g_row['winners'])
+        if not channel:
+            return
+        message = await channel.fetch_message(message_id)
+        if not message:
+            return
+        reaction = message.reactions[0]
+        entries = await reaction.users().flatten()
+        winners = random.choices(entries, k=num_winners)
+        win_str = "Congratulations!, "
+        for winner in winners:
+            win_str += f"{winner.mention}, "
+        win_str += f"you won {prize}!\n{message.jump_url}"
+        await channel.send(win_str)
 
-    async def force_gend(self, gw):
-        guild = self.bot.get_guild(gw["guild_id"])
-        ch = guild.get_channel(gw["channel_id"])
-        msg = await ch.fetch_message(gw["msg_id"])
-        host = guild.get_member(gw["host"])
-        prize = gw["prize"]
-        winners = gw["winners"]
-        new_embed = msg.embeds[0].copy()
-        reactions = msg.reactions[0]
-        raffle = await reactions.users().flatten()
-        raffle.pop(raffle.index(self.bot.user))
-        if winners > 1:
-            try:
-                winner = random.choice(raffle)
-                winner_str = winner.mention
-            except IndexError:
-                await ch.send(f"There were no entrants to the giveaway lol\n {msg.jump_url}")
-                return
+
+
+
+
+
+
+
+    def time_converter(self, time):
+        time = time.lower()
+        if time.endswith('s'):
+            return datetime.timedelta(seconds=time[:-1])
+        if time.endswith('m'):
+            return datetime.timedelta(minutes=time[:-1])
+        if time.endswith('h'):
+            return datetime.timedelta(hours=time[:-1])
+        if time.endswith('d'):
+            return datetime.timedelta(days=time[:-1])
         else:
-            new_list = []
-            for entrant in raffle:
-                new_list.append(entrant.mention)
-            final_set = set(new_list)
-            winner_list = random.sample(final_set, winners)
-            winner_str = ""
-            for win in winner_list:
-                winner_str += f"{win.mention}, "
-
-        new_embed.description = f"Winner(s): {winner_str}\n Hosted by: {host.mention}"
-        new_embed.timestamp = datetime.datetime.now()
-        if winners > 1:
-            new_embed.set_footer(text=f"{winners} winners • Ended at")
-        else:
-            new_embed.set_footer(text="Ended at")
-        cleaned_prize = ""
-        for word in prize:
-            for i in word:
-                cleaned_prize += f"{i}\u200b"
-        await ch.send(f"🎉 Congratulations {winner_str}! You won **{cleaned_prize}**! \n {msg.jump_url}")
-        await self.bot.pool.execute("DELETE FROM giveaways WHERE msg_id = $1", gw["msg_id"])
-
-    @commands.command(name="gstart", brief="Starts a GIVEAWAY")
-    @commands.cooldown(1, 15, commands.BucketType.member)
+            return None
+# (msg_id BIGINT, ch_id BIGINT, g_id BIGINT, end_timestamp BIGINT, winners BIGINT, host_id BIGINT, prize TEXT)
+    @commands.command()
     async def gstart(self, ctx, time, winners, *, prize):
-        def convert(t):
-            pos = ["s", "m", "h", "d"]
-
-            time_dict = {"s": 1, "m": 60, "h": 3600, "d": 3600 * 24}
-
-            unit = t[-1]
-
-            if unit not in pos:
-                return -1
-            try:
-                val = int(time[:-1])
-            except ValueError:
-                return -2
-
-            return val * time_dict[unit]
-
-        seconds_duration = convert(time)
-        if seconds_duration == -1:
-            await ctx.send("Failed to parse time. Please try again")
+        duration = self.time_converter(time)
+        if not duration:
+            await ctx.send("Invalid time format. Example time usage: `5d`, `2m`, `30s`, `2h`")
             return
-        if seconds_duration == -2:
-            await ctx.send("Failed to parse time. Please try again")
-            return
-        duration = datetime.timedelta(seconds=seconds_duration)
         if duration > datetime.timedelta(days=30):
-            await ctx.send("Time too long, maximum value is 30 days")
+            await ctx.send("Time shouldn't be bigger than 30 days!")
             return
-
-        start_time = datetime.datetime.now()
-        end_time = start_time + duration
-        # duration_humanized = humanize.naturaldelta(duration)
-        iso = end_time.isoformat()
-        embed = discord.Embed(
-            title=prize,
-            description=f"React with 🎉 to enter!\nTime Left: [Timer](https://www.timeanddate.com/countdown/generic?iso={iso}Z&p0=%3A&msg=test&font=sanserif&csz=1\nWinners: **{winners[:-1]} winners**\nHosted By: {ctx.author.mention}",
-            color=discord.Color.random())
+        end_time = datetime.datetime.now() + duration
+        embed=discord.Embed(title=prize,
+                            description=f"React with 🎉 to enter!\nHosted by: {ctx.author.mention}",
+                            color=self.bot.user.color)
         embed.timestamp = end_time
-        embed.set_footer(text="Ending Time:")
-        gw_msg = await ctx.send("🎉 **GIVEAWAY** 🎉", embed=embed)
-        await gw_msg.add_reaction("🎉")
-        end_timestamp = end_time.timestamp()
-        async with self.bot.pool.acquire() as conn:
-            async with conn.transaction():
-                await conn.execute(
-                    "INSERT INTO giveaways (msg_id, channel_id, guild_id, host, winners, end_time, prize) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-                    gw_msg.id, ctx.channel.id, ctx.guild.id, ctx.author.id, int(winners[:-1]), end_timestamp, prize)
+        embed.set_footer(text="Ends at")
+        msg = await ctx.send(embed=embed)
+        embed.add_reaction("🎉")
+        end_timestamp = datetime.timestamp(end_time)
 
-    @commands.command(name="gend", brief="Ends an ongoing giveaway")
-    async def gend(self, ctx, uid: int = None):
+        await self.bot.pool.execute("INSERT INTO giveaways (msg_id, ch_id, g_id, end_timestamp, host_id, prize) "
+                                    "VALUES $1, $2, $3, $4, $5, $6)", msg.id, ctx.channel.id, ctx.guild.id,
+                                    end_timestamp, ctx.author.id, prize)
+
+
+    @commands.command()
+    async def gend(self, message_id:int=None):
         msg_id = 0
-        if not uid:
+        if not message_id:
+            all_gws_in_channel = await self.bot.fetch("SELECT * FROM giveaways WHERE ch_id = $1", ctx.channel.id)
             async for msg in ctx.channel.history(limit=50):
-                if msg.author == self.bot.user and "🎉" in msg.content and msg.embeds:
+                if msg.id in all_gws_in_channel[0]:
                     msg_id += msg.id
-                    break
+
         if msg_id == 0:
-            if not uid:
+            if not message_id:
                 await ctx.send("I couldn't find any recent giveaways!")
                 return
-            msg_id += uid
-        async with self.bot.pool.acquire() as conn:
-            async with conn.transaction():
-                gw = await conn.fetch("SELECT 1 FROM giveaways WHERE msg_id = $1", msg_id)
-                await self.force_gend(gw)
-
-    @commands.command(name="greroll", brief="Rerolls a giveaway")
-    @commands.cooldown(1, 5, commands.BucketType.member)
-    async def greroll(self, ctx, uid=None):
-        msg_id = 0
-        if not uid:
-            async with self.bot.pool.acquire() as conn:
-                async with conn.transaction():
-                    async for msg in ctx.channel.history(limit=50):
-                        res = await conn.fetch("SELECT * FROM giveaways WHERE msg_id = $1", msg_id)
-                        if res is None:
-                            continue
-                        msg_id += res[0]["msg_id"]
-                        ignore.ignore(msg)
-                        break
-        if msg_id == 0:
-            if not uid:
-                await ctx.send("I couldn't find any recent giveaways!")
+            elif message_id:
+                await ctx.send("The giveaway doesn't exist :/")
                 return
-            msg_id += uid
-
-        gw_msg = await ctx.channel.fetch_message(msg_id)
-        if gw_msg is None:
-            await ctx.send("I couldn't find the giveaway :/")
-            return
-        reactions = gw_msg.reactions[0]
-        raffle = await reactions.users().flatten()
-        raffle.pop(raffle.index(self.bot.user))
-        try:
-            winner = random.choice(raffle)
-        except IndexError:
-            await ctx.send(f"There were no entrants to the giveaway lol\n {gw_msg.jump_url}")
-            return
-        cleaned_prize = ""
-        for word in gw_msg.embeds[0].title:
-            for i in word:
-                cleaned_prize += f"{i}\u200b"
-        await ctx.send(f"🎉 Congratulations {winner.mention}!, you won **{cleaned_prize}**! \n {gw_msg.jump_url}")
-
-    async def endgaw(self, gw):
-        guild = self.bot.get_guild(gw["guild_id"])
-        ch = guild.get_channel(gw["channel_id"])
-        msg = await ch.fetch_message(gw["msg_id"])
-        host = guild.get_member(gw["host"])
-        prize = gw["prize"]
-        print(f"ending giveaway id {msg.id}")
-        winners = gw["winners"]
-        new_embed = msg.embeds[0].copy()
-        end_timestamp = gw["end_time"]
-        await discord.utils.sleep_until(datetime.datetime.fromtimestamp(end_timestamp))
-        reactions = msg.reactions[0]
-        raffle = await reactions.users().flatten()
-        raffle.pop(raffle.index(self.bot.user))
-        if winners > 1:
-            try:
-                winner = random.choice(raffle)
-                winner_str = winner.mention
-            except IndexError:
-                await ch.send(f"There were no entrants to the giveaway lol\n {msg.jump_url}")
-                return
-        else:
-            new_list = []
-            for entrant in raffle:
-                new_list.append(entrant.mention)
-            final_set = set(new_list)
-            winner_list = random.sample(final_set, winners)
-            winner_str = ""
-            for win in winner_list:
-                winner_str += f"{win.mention}, "
-
-        new_embed.description = f"Winner(s): {winner_str}\n Hosted by: {host.mention}"
-        new_embed.timestamp = datetime.datetime.now()
-        if winners > 1:
-            new_embed.set_footer(text=f"{winners} winners • Ended at")
-        else:
-            new_embed.set_footer(text="Ended at")
-        cleaned_prize = ""
-        for word in prize:
-            for i in word:
-                cleaned_prize += f"{i}\u200b"
-        await ch.send(f"🎉 Congratulations {winner_str}! You won **{cleaned_prize}**! \n {msg.jump_url}")
-        async with self.bot.pool.acquire() as conn:
-            async with conn.transaction():
-                await self.bot.pool.execute("DELETE FROM giveaways WHERE msg_id = $1", gw["msg_id"])
-
-    @tasks.loop(seconds=5)
-    async def end_gws(self):
-        await self.bot.wait_until_ready()
-        async with self.bot.pool.acquire() as conn:
-            async with conn.transaction():
-                res = await conn.fetch("SELECT * FROM giveaways")
-        for row in res:
-            end_time = datetime.datetime.fromtimestamp(row["end_time"])
-            if datetime.datetime.now() - end_time < datetime.timedelta(seconds=5):
-                await self.endgaw(row)
+        msg_id += message_id
+        await self.force_end(msg_id)
 
 
-def setup(bot):
-    bot.add_cog(Giveaway(bot))
+
+
+
