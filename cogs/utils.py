@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from classes import indev_check
 import asyncio
 from classes import CustomBotClass
 from num2words import num2words
