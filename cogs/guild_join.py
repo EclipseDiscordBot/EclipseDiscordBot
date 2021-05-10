@@ -1,6 +1,7 @@
 from discord.ext import commands
 from classes import CustomBotClass
 
+
 class GuildJoin(commands.Cog):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
@@ -30,3 +31,7 @@ class GuildJoin(commands.Cog):
                 await conn.execute("DELETE FROM logging WHERE server_id=$1", guild.id)
                 await conn.execute("DELETE FROM automeme WHERE server_id=$1", guild.id)
                 await conn.execute("DELETE FROM config WHERE server_id=$1", guild.id)
+
+
+def setup(bot):
+    bot.add_cog(GuildJoin(bot))

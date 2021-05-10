@@ -4,6 +4,7 @@ import discord
 from classes import CustomBotClass
 import traceback
 from discord.ext import commands
+from classes import indev_check
 import datetime
 import humanize
 
@@ -145,6 +146,10 @@ class ErrorHandler(commands.Cog):
                         name="Think its needs to be fixed very quick?",
                         value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                     await ctx.reply(embed=embed)
+
+        elif isinstance(error, indev_check.CommandInDevException):
+            await ctx.reply(str(error))
+            return
 
         else:
             title = "Unknown exception"
