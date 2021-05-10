@@ -11,7 +11,7 @@ import random
 intents = discord.Intents.all()
 
 
-async def get_prefix(bot, message):
+async def get_prefix(eclipse, message):
     base = [
         "<@827566012467380274>",
         "<@!827566012467380274>",
@@ -23,10 +23,10 @@ async def get_prefix(bot, message):
         base.append("e! ")
         base.append("e!")
         return base
-    async with bot.pool.acquire() as conn:
+    async with eclipse.pool.acquire() as conn:
         async with conn.transaction():
-            prefix = await conn.fetchval("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
-            base.append(prefix)
+            prefixes = await conn.fetchval("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
+            base.append(prefixes)
     return base
 
 
