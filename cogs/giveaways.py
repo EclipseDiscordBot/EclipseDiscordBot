@@ -66,31 +66,15 @@ class Giveaways(commands.Cog):
         embed.timestamp = end_time
         embed.set_footer(text="Ends at")
         msg = await ctx.send(embed=embed)
-        msg.add_reaction("🎉")
+        await msg.add_reaction("🎉")
         end_timestamp = datetime.datetime.timestamp(end_time)
 
         await self.bot.pool.execute("INSERT INTO giveaways (msg_id, ch_id, g_id, end_timestamp, host_id, prize, winners) VALUES ($1, $2, $3, $4, $5, $6, $7)", msg.id, ctx.channel.id, ctx.guild.id,
                                     end_timestamp, ctx.author.id, prize, winners)
 
 
-    @commands.command()
-    async def gend(self, ctx, message_id:int=None):
-        msg_id = 0
-        if not message_id:
-            all_gws_in_channel = await self.bot.pool.fetch("SELECT * FROM giveaways WHERE ch_id = $1", ctx.channel.id)
-            async for msg in ctx.channel.history(limit=50):
-                if msg.id in all_gws_in_channel[0]:
-                    msg_id += msg.id
 
-        if msg_id == 0:
-            if not message_id:
-                await ctx.send("I couldn't find any recent giveaways!")
-                return
-            elif message_id:
-                await ctx.send("The giveaway doesn't exist :/")
-                return
-        msg_id += message_id
-        await self.force_end(msg_id)
+
 
 
 def setup(bot):
