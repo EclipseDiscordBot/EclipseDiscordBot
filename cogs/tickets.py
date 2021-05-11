@@ -8,7 +8,6 @@ class TicketingSystem(commands.Cog):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
-    # TODO Finish this
 
     @commands.command()
     @indev_check.command_in_development()
