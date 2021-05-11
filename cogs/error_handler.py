@@ -184,7 +184,7 @@ class ErrorHandler(commands.Cog):
     @commands.command(name="emergency",
                       aliases=["error"],
                       brief="Mark an error as an emergency to prioritize its fixing")
-    @commands.cooldown(1, 86400, commands.BucketType.member)
+    @commands.cooldown(1, 300, commands.BucketType.user)
     async def emergency(self, ctx, error_code):
         log_channel = self.bot.get_channel(840528247708057620)
         async for msg in log_channel.history(limit=50):

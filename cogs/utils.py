@@ -2,9 +2,9 @@ import discord
 from discord.ext import commands
 from classes import indev_check
 import asyncio
-from classes import CustomBotClass
+from classes import CustomBotClass, checks
 from num2words import num2words
-
+from constants import emojis
 from constants.basic import support_server
 
 
@@ -76,8 +76,8 @@ class Utility(commands.Cog):
         embed.set_footer(text=f"From {ctx.guild if ctx.guild else None}")
         embed.timestamp = ctx.message.created_at
         suggestion_msg = await suggestion_channel.send(embed=embed)
-        await suggestion_msg.add_reaction('✅')
-        await suggestion_msg.add_reaction('🚫')
+        await suggestion_msg.add_reaction(emojis.white_check_mark)
+        await suggestion_msg.add_reaction(emojis.no_entry_sign)
         await ctx.reply(f"Done! you can check the your suggestion's reviews in {support_server} <#834442086513508363>")
 
     @commands.Cog.listener("on_message")
@@ -175,17 +175,120 @@ class Utility(commands.Cog):
                         if idn == 9:
                             await msg.add_reaction('9️⃣')
         else:
-            await ctx.send('no more that 9 options.:P')
+            await ctx.send('no more than 9 options.:P')
 
     @commands.command()
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
-    async def prefix(self, ctx, prefix):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.transaction():
-                await conn.execute("UPDATE prefixes SET prefix = $1 WHERE guild_id = $2", prefix, ctx.guild.id)
-        await ctx.send(f"My prefix in this server has successfully been changed to {prefix}\n\n **TIP:** To include "
-                       f"spaces in the prefix do use quotes like {prefix}prefix \"hey \"")
+    async def prefix(self, ctx: commands.Context):
+        e = discord.Embed(title=f'My prefixes in {str(ctx.guild)}')
+        data = await self.bot.pool.fetch("SELECT * FROM prefixes WHERE guild_id=$1", ctx.guild.id)
+        desc = ''
+        for prefix in data:
+            desc = f'{desc}\n:{num2words(data.index(prefix))}: `' + prefix['prefix'] + '`'
+        desc = f'{desc}\n{emojis.heave_plus_sign} adds a new prefix'
+        e.description = desc
+        message: discord.Message = await ctx.reply(embed=e)
+        for prefix in data:
+            await message.add_reaction(emojis.numbers[num2words(data.index(prefix)).lower()])
+
+        if not len(data) == 10:
+            await message.add_reaction(emojis.heave_plus_sign)
+
+        allowed_emojis = [emojis.heave_plus_sign] + list(emojis.numbers.values())
+
+        def check(reactions, users):
+            return users == ctx.author and str(reactions.emoji) in allowed_emojis
+
+        allowed_emojis2 = [emojis.pencil, emojis.no_entry_sign]
+
+        allowed_emojis3 = [emojis.white_check_mark, emojis.no_entry_sign]
+
+
+        def check3(reactions, users):
+            return users == ctx.author and str(reactions.emoji) in allowed_emojis2
+
+        def check4(reactions, users):
+            return users == ctx.author and str(reactions.emoji) in allowed_emojis3
+
+        def check2(message5: discord.Message):
+            return message5.author == ctx.author
+
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+            return
+        else:
+            if reaction.emoji == emojis.heave_plus_sign:
+                await ctx.reply(
+                    'aight send me da prefix mate! remember, if the prefix is a word, add a space after it, '
+                    'and put it in a code block. like: `hey ` or `!`, if you do something like: `hey` then you '
+                    'will have to do something like `heyhelp` not `hey help` so mind the space. How to put in '
+                    'a code block: put a backtick(that one below escape), then your new prefix and then '
+                    'another backtick. easy right?')
+                try:
+                    message2 = await self.bot.wait_for('message', timeout=60.0, check=check2)
+                except asyncio.TimeoutError:
+                    return
+                else:
+                    async with self.bot.pool.acquire() as conn:
+                        async with conn.transaction():
+                            await conn.execute("INSERT INTO prefixes(guild_id,prefix) VALUES($1,$2)", ctx.guild.id,
+                                               message2.content[1:-1])
+                            await ctx.reply("Done! the prefix has been added to my list!")
+                            return
+            emoji = emojis.numbers_inverted[reaction.emoji]
+            prefix = data[emoji]['prefix']
+            if emoji == emojis.heave_plus_sign and len(data) == 10:
+                return
+            desc = f'{emojis.no_entry_sign} Delete this prefix\n{emojis.pencil} Edit this prefix'
+            e = discord.Embed(title="What to do with this prefix?", description=desc)
+            message2 = await ctx.reply(embed=e)
+            await message2.add_reaction(emojis.no_entry_sign)
+            await message2.add_reaction(emojis.pencil)
+            try:
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check3)
+            except asyncio.TimeoutError:
+                return
+            else:
+                if reaction.emoji == emojis.pencil:
+                    await ctx.reply(
+                        'aight send me da prefix mate! remember, if the prefix is a word, add a space after it, '
+                        'and put it in a code block. like: `hey ` or `!`, if you do something like: `hey` then you '
+                        'will have to do something like `heyhelp` not `hey help` so mind the space. How to put in '
+                        'a code block: put a backtick(that one below escape), then your new prefix and then '
+                        'another backtick. easy right?')
+                    try:
+                        message2 = await self.bot.wait_for('message', timeout=60.0, check=check2)
+                    except asyncio.TimeoutError:
+                        return
+                    else:
+                        async with self.bot.pool.acquire() as conn:
+                            async with conn.transaction():
+                                await conn.execute("UPDATE prefixes SET prefix=$1 WHERE guild_id=$2 AND prefix=$3",
+                                                   message2.content[1:-1],
+                                                   ctx.guild.id, prefix)
+                                await ctx.reply("Done! the prefix has been edited!")
+                                return
+                elif reaction.emoji == emojis.no_entry_sign:
+                    e = discord.Embed(title="Sure??", description=f"Are you sure you want to delete the prefix `{prefix}`?")
+                    message3: discord.Message = await ctx.reply(embed=e)
+                    await message3.add_reaction(emojis.white_check_mark)
+                    await message3.add_reaction(emojis.no_entry_sign)
+                    try:
+                        reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check4)
+                    except asyncio.TimeoutError:
+                        return
+                    else:
+                        if reaction.emoji == emojis.no_entry_sign:
+                            await ctx.reply("Ok! I will not delete this prefix")
+                            return
+                        elif reaction.emoji == emojis.white_check_mark:
+                            async with self.bot.pool.acquire() as conn:
+                                async with conn.transaction():
+                                    await conn.execute("DELETE FROM prefixes WHERE guild_id=$1 AND prefix=$2", ctx.guild.id, prefix)
+                                    await ctx.reply("okey! that prefix has been deleted!")
+
 
     @commands.command(aliases=['sniper'])
     @commands.guild_only()

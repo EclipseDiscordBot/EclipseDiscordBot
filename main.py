@@ -19,8 +19,9 @@ async def get_prefix(eclipse, message):
         return base
     async with eclipse.pool.acquire() as conn:
         async with conn.transaction():
-            prefixes = await conn.fetchval("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
-            base.append(prefixes)
+            prefixes = await conn.fetch("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
+            for prefix in prefixes:
+                base.append(prefix['prefix'])
     return base
 
 
@@ -37,7 +38,6 @@ bot = CustomBotClass.CustomBot(
     case_insensitive=True)
 
 slash = SlashCommand(bot, override_type=True)
-
 
 if __name__ == "__main__":
     bot.run(bot.token)
