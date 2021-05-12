@@ -2,8 +2,10 @@ import asyncio
 import random
 from classes import CustomBotClass
 import aiohttp
+from prsaw import RandomStuff
 from discord.ext import commands
 
+rs = RandomStuff()
 
 class Fun(commands.Cog):
 
@@ -39,6 +41,30 @@ class Fun(commands.Cog):
                 await ctx.reply(res['token'])
                 await asyncio.sleep(2)
                 await ctx.reply("lol thats a fake bot token :P")
+
+
+    @commands.command(name="chatbot",
+                      aliases=['chat', 'chatb', 'cb'],
+                      brief="Start a talking session with the bot!")
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    async def _chatbot(self, ctx):
+        session = True
+        await ctx.send("The talking session between you and me started! Why not say something like `hi`\nIf you want to end this talking session, type `Cancel`")
+
+        while session is True:
+            try:
+                message = await self.bot.wait_for('message', timeout = 30, check = lambda m : (ctx.author == m.author and ctx.channel == m.channel))
+            except asyncio.TimeoutError:
+                session = False
+                await ctx.send("Timed out! Talking session with me has automatically ended!")
+            else:
+                if message.content.lower() == "Cancel":
+                    session = False
+                    await ctx.send("Talking session with me has ended!")
+                else:
+                    async with ctx.channel.typing():
+                        response = rs.get_ai_response(message.content)
+                        await ctx.reply(response, mention_author=False)
 
 
 def setup(bot):
