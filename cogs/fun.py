@@ -61,7 +61,10 @@ class Fun(commands.Cog):
             def check(reaction, user):
                 if reaction.message.id == msg.id:
                     if reaction.emoji in list(emoji_name_dict.values()):
-                        return True
+                        if user.id == ctx.author.id:
+                            return True
+                        else:
+                            return False
                     else:
                         return False
                 else:
