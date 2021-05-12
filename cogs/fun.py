@@ -2,8 +2,10 @@ import asyncio
 import random
 from classes import CustomBotClass
 import aiohttp
+from prsaw import RandomStuff
 from discord.ext import commands
 
+rs = RandomStuff()
 
 class Fun(commands.Cog):
 
@@ -84,6 +86,40 @@ class Fun(commands.Cog):
                 if bot_choice == "Paper":
                     await ctx.send("You chose Scissors and I chose Paper, You won!, but I won't let you next time!")
 
+
+    # TODO make a configuration of chatbot. Example: [p]chatbot <#channel> to talk with the chatbot forever in that channel @Mr Potato#3773 will do it
+    @commands.command(name="chatbot",
+                      aliases=['chat', 'chatb', 'cb'],
+                      brief="Start a talking session with the bot!")
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    async def _chatbot(self, ctx):
+        session = True
+        await ctx.send("The talking session between you and me started! Why not say something like `hi`\nIf you want to end this talking session, type `Cancel`")
+
+        while session is True:
+            try:
+                message = await self.bot.wait_for('message', timeout = 30, check = lambda m : (ctx.author == m.author and ctx.channel == m.channel))
+            except asyncio.TimeoutError:
+                session = False
+                await ctx.send("Timed out! Talking session with me has automatically ended!")
+            else:
+                if message.content.lower() == "cancel":
+                    session = False
+                    await ctx.send("Talking session with me has ended!")
+                else:
+                    async with ctx.channel.typing():
+
+                        response = await self._get_response(ctx.author.id, message.content)
+                        await message.reply(response, mention_author=False)
+
+
+    async def _get_response(self, uid, msg):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://api.brainshop.ai/get?bid={self.bot.brain_id}&key={self.bot.brain_api}&uid={uid}&msg={msg}") as resp:
+                if resp.status != 200:
+                    return "Something went wrong while accessing the BrainShop API."
+                js = await resp.json()
+                return js["cnt"]
 
 def setup(bot):
     bot.add_cog(Fun(bot))
