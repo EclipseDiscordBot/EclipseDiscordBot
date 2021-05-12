@@ -182,6 +182,7 @@ class Logging(commands.Cog):
             return
         log_channel_id = self.get_log_channel(after.guild.id)
         log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
+
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
