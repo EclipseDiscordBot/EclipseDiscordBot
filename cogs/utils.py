@@ -139,10 +139,10 @@ class Utility(commands.Cog):
 
             messages.append(options)
 
-            if entry.clean_content.startswith("cancel"):
+            if options.clean_content.startswith("cancel"):
                 break
 
-            answers.append((text_to_emoji(i), entry.clean_content))
+            answers.append((text_to_emoji(i), options.clean_content))
 
         try:
             await ctx.channel.delete_messages(messages)
