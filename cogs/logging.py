@@ -9,10 +9,11 @@ class Logging(commands.Cog):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
+
     async def get_log_channel(self, server_id):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                log_channel_ids = await conn.fetch(
+                await conn.fetch(
                     'SELECT * FROM logging WHERE server_id = $1', server_id
                 )
                 log_channel_id = log_channel_ids[0]['channel_id']
@@ -124,6 +125,7 @@ class Logging(commands.Cog):
             return
         await log_chnl.send(embed=embed)
 
+
     @commands.Cog.listener("on_member_remove")
     async def member_remove(self, member):
         joined = list(str(datetime.datetime.utcnow() - member.joined_at)[:-7])
@@ -158,8 +160,10 @@ class Logging(commands.Cog):
             return
         await log_chnl.send(embed=embed)
 
-    @commands.Cog.listener()
-    async def on_guild_role_update(self, before, after):
+
+
+    @commands.Cog.listener("on_guild_role_update")
+    async def guild_role_update(self, before, after):
         if before.name != after.name:
             e = discord.Embed(title="Role Name Changed", color=discord.Colour.blurple())
             e.add_field(name="Before:", value=before.name)
@@ -181,8 +185,152 @@ class Logging(commands.Cog):
 
         if log_chnl == None:
             return
-        await log_chnl.send(embed=e)
+        await log_chnl.send(embed=embed)
 
+    @commands.Cog.listener("on_guild_update")
+    async def guild_update(self, before, after):
+        if before.name != after.name:
+            embed = discord.Embed(
+                title="Server Changed Name",
+                color=discord.Colour.blurple()
+            )
+            embed.add_field(name="Before:", value=before.name)
+            embed.add_field(name="After:", value=after.name)
+        elif before.owner != after.owner:
+            embed = discord.Embed(
+                title="Server Owner Changed",
+                color=discord.Colour.green()
+            )
+            embed.add_field(name="Before:", value=before.owner)
+            embed.add_field(name="After:", value=after.owner)
+        elif before.afk_channel != after.afk_channel:
+            embed = discord.Embed(
+                title="Server Afk Channel Changed",
+                color=discord.Colour.blue()
+            )
+            embed.add_field(
+                name="Before:",
+                value=before.afk_channel
+            )
+            embed.add_field(
+                name="After:",
+                value=after.afk_channel
+            )
+        elif before.banner_url != after.banner_url:
+            embed = discord.Embed(
+                title="Server Banner Changed",
+                description=f"Before Banner: {before.banner_url}\nAfter Banner: {after.banner_url}"
+            )
+            embed.add_field(
+                name="Before:",
+                value=before.banner_url
+            )
+            embed.add_field(
+                name="After:",
+                value=after.banner_url
+            )
+        else:
+            return
+        log_channel_id = await self.get_log_channel(after.guild.id)
+        log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
+        if log_chnl == None:
+            return
+        await log_chnl.send(embed=embed)
+
+
+    @commands.Cog.listener("on_voice_state_update")
+    async def voice_state_update(self, member, before, after):
+        if before.channel == None:
+            embed = discord.Embed(
+                title="Member joined voice channel",
+                description=f"**{member}** joined `#{after.channel.name}`",
+                color=discord.Colour.green(),
+                timestamp=datetime.datetime.utcnow()
+            )
+        elif after.channel == None:
+            embed = discord.Embed(
+                title="Member left voice channel",
+                description=f"**{member}** left `#{before.channel.name}`",
+                color=discord.Colour.red(),
+                timestamp=datetime.datetime.utcnow()
+            )
+        elif before.channel != after.channel:
+            embed = discord.Embed(
+                title="Member switched voice channel",
+                description=f"**{member}** switched `#{before.channel.name}` --> `#{after.channel.name}`",
+                color=discord.Colour.blue(),
+                timestamp=datetime.datetime.utcnow()
+            )
+        elif after.self_stream:
+            embed = discord.Embed(
+                title="Member started streaming",
+                description=f"**{member}** started streaming in `#{before.channel.name}`",
+                color=discord.Colour.purple(),
+                timestamp=datetime.datetime.utcnow()
+            )
+        elif before.self_stream and after.self_stream == False:
+            embed = discord.Embed(
+                title="Member stopped streaming",
+                description=f"**{member}** stopped streaming in `#{before.channel.name}`",
+                color=discord.Colour.purple(),
+                timestamp=datetime.datetime.utcnow()
+            )
+        else:
+            return
+        embed.set_author(name=member, icon_url=member.avatar_url)
+        embed.set_footer(text=f"ID: {member.id}")
+        log_channel_id = await self.get_log_channel(member.guild.id)
+        log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
+
+        if log_chnl == None:
+            return
+        await log_chnl.send(embed=embed)
+
+
+    @commands.Cog.listener("on_member_update")
+    async def member_update(self, before, after):
+        member = after
+        if before.nick != after.nick:
+            embed = discord.Embed(
+                title="Member updated nickname",
+                color=discord.Colour.blue(),
+                timestamp=datetime.datetime.utcnow()
+            )
+            embed.add_field(name="Before:", value=before.nick)
+            embed.add_field(name="After:", value=after.nick)
+
+        elif before.roles != after.roles:
+            add = list(set(after.roles) - set(before.roles))
+            rem = list(set(before.roles) - set(after.roles))
+            try:
+                if add[0] in after.roles:
+                    embed = discord.Embed(
+                        title="Member updated roles",
+                        color=discord.Colour.blue(),
+                        timestamp=datetime.datetime.utcnow(),
+                        description=f"Added `{add[0].name}` role"
+                    )
+            except IndexError:
+                try:
+                    if rem[0] in before.roles:
+                        embed = discord.Embed(
+                            title="Member updated roles",
+                            color=discord.Colour.blue(),
+                            timestamp=datetime.datetime.utcnow(),
+                            description=f"Removed `{rem[0].name}` role"
+                        )
+                except IndexError:
+                    return
+        else:
+            return
+
+        embed.set_author(name=member, icon_url=member.avatar_url)
+        embed.set_footer(text=f"ID: {member.id}")
+        log_channel_id = await self.get_log_channel(after.guild.id)
+        log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
+        if log_chnl == None:
+            return
+        await log_chnl.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Logging(bot))
