@@ -92,7 +92,7 @@ class Logging(commands.Cog):
                     return
                 await log_chnl.send(embed=e)
 
-    @commands.Cog.listener(on_member_join)
+    @commands.Cog.listener("on_member_join")
     async def member_join(self, member):
         created = list(str(datetime.datetime.utcnow() - member.created_at)[:-7])
 
@@ -127,8 +127,8 @@ class Logging(commands.Cog):
         await log_chnl.send(embed=embed)
 
 
-    @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    @commands.Cog.listener("on_member_remove")
+    async def member_remove(self, member):
         joined = list(str(datetime.datetime.utcnow() - member.joined_at)[:-7])
 
         x = 0
@@ -163,6 +163,31 @@ class Logging(commands.Cog):
         await log_chnl.send(embed=embed)
 
 
+
+    @commands.Cog.listener()
+    async def on_guild_role_update(self, before, after):
+        if before.name != after.name:
+            e = discord.Embed(title="Role Name Changed", color=discord.Colour.blurple())
+            e.add_field(name="Before:", value=before.name)
+            e.add_field(name="After:", value=after.name)
+            e.add_field(name="Role:", value=before.mention)
+        elif before.color != after.color:
+            e = discord.Embed(title="Role Colour Changed", color=discord.Colour.blue())
+            e.add_field(name="Before:", value=before.color)
+            e.add_field(name="After:", value=after.color)
+            e.add_field(name="Role:", value=before.mention)
+        elif before.mentionable != after.mentionable:
+            e = discord.Embed(title="Role Mentionable Changed", color=discord.Colour.green())
+            e.add_field(name="Before:", value=f"{'Yes' if before.mentionable else 'No'}")
+            e.add_field(name="After:", value=f"{'Yes' if after.mentionable else 'No'}")
+        else:
+            return
+        log_channel_id = self.get_log_channel(member.guild.id)
+        log_chnl = self.bot.get_guild(
+            server_id).get_channel(log_channel_id)
+        if log_chnl == None:
+            return
+        await log_chnl.send(embed=embed)
 
 
 def setup(bot):
