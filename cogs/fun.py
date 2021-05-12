@@ -69,7 +69,7 @@ class Fun(commands.Cog):
 
 
     @staticmethod
-    async def _get_response(uid, msg):
+    async def _get_response(self, uid, msg):
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://api.brainshop.ai/get?bid={self.bot.brain_id}&key={self.bot.brain_api}&uid={uid}&msg={msg}") as resp:
                 if resp.status != 200:
