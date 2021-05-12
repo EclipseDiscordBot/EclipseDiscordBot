@@ -68,7 +68,6 @@ class Fun(commands.Cog):
                         await message.reply(response, mention_author=False)
 
 
-    @staticmethod
     async def _get_response(self, uid, msg):
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://api.brainshop.ai/get?bid={self.bot.brain_id}&key={self.bot.brain_api}&uid={uid}&msg={msg}") as resp:
