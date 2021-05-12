@@ -9,11 +9,10 @@ class Logging(commands.Cog):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
-
     async def get_log_channel(self, server_id):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.fetch(
+                log_channel_ids = await conn.fetch(
                     'SELECT * FROM logging WHERE server_id = $1', server_id
                 )
                 log_channel_id = log_channel_ids[0]['channel_id']
@@ -119,12 +118,11 @@ class Logging(commands.Cog):
         )
         embed.set_author(name=member, icon_url=member.avatar_url)
         embed.set_footer(text=f"ID: {member.id}")
-        log_channel_id = self.get_log_channel(member.guild.id)
+        log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
-
 
     @commands.Cog.listener("on_member_remove")
     async def member_remove(self, member):
@@ -154,13 +152,11 @@ class Logging(commands.Cog):
         )
         embed.set_author(name=member, icon_url=member.avatar_url)
         embed.set_footer(text=f"ID: {member.id}")
-        log_channel_id = self.get_log_channel(member.guild.id)
+        log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
-
-
 
     @commands.Cog.listener()
     async def on_guild_role_update(self, before, after):
@@ -180,12 +176,12 @@ class Logging(commands.Cog):
             e.add_field(name="After:", value=f"{'Yes' if after.mentionable else 'No'}")
         else:
             return
-        log_channel_id = self.get_log_channel(after.guild.id)
+        log_channel_id = await self.get_log_channel(after.guild.id)
         log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
 
         if log_chnl == None:
             return
-        await log_chnl.send(embed=embed)
+        await log_chnl.send(embed=e)
 
 
 def setup(bot):
