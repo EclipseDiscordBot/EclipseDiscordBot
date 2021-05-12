@@ -10,7 +10,7 @@ class Logging(commands.Cog):
         self.bot = bot
 
 
-    async def send_log(self, server_id):
+    async def get_log_channel(self, server_id):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.fetch(
