@@ -31,6 +31,8 @@ class CustomBot(commands.Bot):
             client_secret=f['reddit_secret'],
             user_agent="Eclipse")
         self.memes = []
+        self.brain_id = f['brain_id']
+        self.brain_api = f['brain_api']
         self.token = f["discord"]
         self.sra_api = f['some_random_api']
         self.launch_time = datetime.datetime.utcnow()

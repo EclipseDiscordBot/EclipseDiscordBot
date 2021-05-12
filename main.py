@@ -1,6 +1,8 @@
+
 import discord
 from discord_slash import SlashCommand
 from classes import CustomBotClass
+
 
 intents = discord.Intents.all()
 
@@ -41,3 +43,4 @@ slash = SlashCommand(bot, override_type=True)
 
 if __name__ == "__main__":
     bot.run(bot.token)
+
