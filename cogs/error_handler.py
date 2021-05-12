@@ -166,9 +166,13 @@ class ErrorHandler(commands.Cog):
         stacktrace = traceback.format_tb(error.__traceback__)
 
         log_channel = self.bot.get_channel(840528247708057620)
+        e_str = ""
+        for e in stacktrace:
+            e_str += f"{e}\n"
+
         embed = discord.Embed(
             title=f"Unknown Exception caught in command {ctx.command}",
-            description=f"Traceback: \n ```py\n{stacktrace[0]}```",
+            description=f"Traceback: \n ```py\n{e_str}```",
             color=discord.Color.from_rgb(
                 255,
                 0,
