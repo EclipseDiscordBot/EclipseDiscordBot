@@ -4,6 +4,7 @@ from classes import CustomBotClass
 import aiohttp
 from prsaw import RandomStuff
 from discord.ext import commands
+import discord
 
 rs = RandomStuff()
 
