@@ -120,8 +120,7 @@ class Logging(commands.Cog):
         embed.set_author(name=member, icon_url=member.avatar_url)
         embed.set_footer(text=f"ID: {member.id}")
         log_channel_id = self.get_log_channel(member.guild.id)
-        log_chnl = self.bot.get_guild(
-            server_id).get_channel(log_channel_id)
+        log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
@@ -156,8 +155,7 @@ class Logging(commands.Cog):
         embed.set_author(name=member, icon_url=member.avatar_url)
         embed.set_footer(text=f"ID: {member.id}")
         log_channel_id = self.get_log_channel(member.guild.id)
-        log_chnl = self.bot.get_guild(
-            server_id).get_channel(log_channel_id)
+        log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
@@ -182,9 +180,9 @@ class Logging(commands.Cog):
             e.add_field(name="After:", value=f"{'Yes' if after.mentionable else 'No'}")
         else:
             return
-        log_channel_id = self.get_log_channel(member.guild.id)
-        log_chnl = self.bot.get_guild(
-            server_id).get_channel(log_channel_id)
+        log_channel_id = self.get_log_channel(after.guild.id)
+        log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
+
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
