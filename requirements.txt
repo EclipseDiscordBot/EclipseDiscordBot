@@ -17,7 +17,7 @@ discord.py==1.7.1
 DiscordUtils==1.2.9.2
 docopt==0.6.2
 humanize~=3.5.0
-idna==2.10
+idna==3.1
 import-expression==1.1.4
 importlib-metadata==4.0.1
 jishaku==1.20.0.220
