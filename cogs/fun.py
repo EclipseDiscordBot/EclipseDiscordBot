@@ -67,8 +67,13 @@ class Fun(commands.Cog):
                 else:
                     return False
 
-            user_reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout = 60)
-            user_choice = emoji_name_dict[user_reaction.emoji]
+            raw_reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout = 60)
+            if str(raw_reaction) == "\U0001faa8":
+                user_choice = "🪨"
+            elif str(raw_reaction) == "\U0001f4f0":
+                user_choice = "📰"
+            elif str(raw_reaction) == "\U00002702":
+                user_choice = "✂"
             if user_choice == bot_choice:
                 await ctx.send(f"I chose {bot_choice} and you chose {user_choice}! It's a tie!")
             if user_choice == "Rock":
