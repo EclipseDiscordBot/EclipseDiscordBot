@@ -52,15 +52,15 @@ class Fun(commands.Cog):
                 "Paper": "📰",
                 "Scissors": "✂"
             }
-            bot_choice = random.choice(emoji_name_dict.keys())
+            bot_choice = random.choice(list(emoji_name_dict.keys()))
             embed = discord.Embed(title="Rock Paper Scissors", description="", color=self.bot.color)
             msg = await ctx.send(embed=embed)
-            for emo in emoji_name_dict.values():
+            for emo in list(emoji_name_dict.values()):
                 await msg.add_reaction(emo)
 
             def check(reaction, user):
                 if reaction.message.id == msg.id:
-                    if reaction.emoji in emoji_name_dict.values():
+                    if reaction.emoji in list(emoji_name_dict.values()):
                         return True
                     else:
                         return False
