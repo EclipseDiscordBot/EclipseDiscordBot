@@ -122,37 +122,25 @@ class Utility(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 30, commands.BucketType.user)
-    async def poll(self, ctx, *,question):
-        messages = [ctx.message]
-        answers = []
+    async def poll(self, ctx, title, *opts):
+        if len(opts) > 10:
+            await ctx.send("Maximum 10 options!")
+            return
+        embed=discord.Embed(title = title, color=self.bot.color)
+        list_of_emoji = ["kek", ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:", ":ten:"]
+        dsc = ""
+        list_of_emoji_to_react = []
+        for opt in opts:
+            list_of_emoji_to_react.append(list_of_emoji[opts.index(opt)+1])
+            dsc += f"{list_of_emoji[opts.index(opt) + 1]} - {opt}\n"
+        embed.description = dsc
+        msg = await ctx.send(embed=embed)
+        for emoji in list_of_emoji_to_react:
+            await msg.add_reaction(emoji)
 
-        def check(m):
-            return m.author.id == ctx.author.id and m.channel == ctx.channel and len(m.content) <= 100
 
-        for i in range(50):
-            messages.append(await ctx.send(f"Say the poll options or say cancel to publish the poll."))
 
-            try:
-                options = await self.bot.wait_for("message", check=check, timeout=90.0)
-            except asyncio.TimeoutError:
-                break
 
-            messages.append(options)
-
-            if options.clean_content.startswith("cancel"):
-                break
-
-            answers.append((text_to_emoji(i), options.clean_content))
-
-        try:
-            await ctx.channel.delete_messages(messages)
-        except:
-            pass
-
-        answer = "\n".join(f"{keycap}: {content}" for keycap, content in answers)
-        actual_poll = await ctx.send(f"{ctx.author} asks: {question}\n\n{answer}")
-        for emoji, _ in answers:
-            await actual_poll.add_reaction(emoji)
 
     @commands.command()
     async def quickpoll(self, ctx, *questions_and_choices: str):
