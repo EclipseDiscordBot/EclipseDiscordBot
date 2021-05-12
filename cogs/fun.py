@@ -63,6 +63,7 @@ class Fun(commands.Cog):
                     await ctx.send("Talking session with me has ended!")
                 else:
                     async with ctx.channel.typing():
+
                         response = await self._get_response(ctx.author.id, message.content)
                         await message.reply(response, mention_author=False)
 

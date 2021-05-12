@@ -154,6 +154,9 @@ class Utility(commands.Cog):
         for emoji, _ in answers:
             await actual_poll.add_reaction(emoji)
 
+
+
+
     @commands.command()
     async def quickpoll(self, ctx, *questions_and_choices: str):
         if len(questions_and_choices) < 3:

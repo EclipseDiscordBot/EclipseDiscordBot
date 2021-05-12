@@ -73,6 +73,21 @@ class Giveaways(commands.Cog):
                                     end_timestamp, ctx.author.id, prize, winners)
 
 
+    @commands.command()
+    async def gend(self, ctx, id:int = None):
+        if id is None:
+            all_gws = await self.bot.pool.fetch("SELECT msg_id FROM giveaways WHERE ch_id= $1", ctx.channel.id)
+            async for message in ctx.channel.history(limit=50):
+                if message.id in all_gws:
+                    id = message.id
+                    break
+            if id is None:
+                await ctx.send("I couldn't find any recent giveaways!")
+                return
+        await self.force_end(id)
+
+
+
 
 
 
