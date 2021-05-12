@@ -9,11 +9,10 @@ class Logging(commands.Cog):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
-
     async def get_log_channel(self, server_id):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.fetch(
+                log_channel_ids = await conn.fetch(
                     'SELECT * FROM logging WHERE server_id = $1', server_id
                 )
                 log_channel_id = log_channel_ids[0]['channel_id']
@@ -125,7 +124,6 @@ class Logging(commands.Cog):
             return
         await log_chnl.send(embed=embed)
 
-
     @commands.Cog.listener("on_member_remove")
     async def member_remove(self, member):
         joined = list(str(datetime.datetime.utcnow() - member.joined_at)[:-7])
@@ -160,8 +158,6 @@ class Logging(commands.Cog):
             return
         await log_chnl.send(embed=embed)
 
-
-
     @commands.Cog.listener("on_guild_role_update")
     async def guild_role_update(self, before, after):
         if before.name != after.name:
@@ -185,7 +181,7 @@ class Logging(commands.Cog):
 
         if log_chnl == None:
             return
-        await log_chnl.send(embed=embed)
+        await log_chnl.send(embed=e)
 
     @commands.Cog.listener("on_guild_update")
     async def guild_update(self, before, after):
@@ -237,7 +233,6 @@ class Logging(commands.Cog):
             return
         await log_chnl.send(embed=embed)
 
-
     @commands.Cog.listener("on_voice_state_update")
     async def voice_state_update(self, member, before, after):
         if before.channel == None:
@@ -286,7 +281,6 @@ class Logging(commands.Cog):
             return
         await log_chnl.send(embed=embed)
 
-
     @commands.Cog.listener("on_member_update")
     async def member_update(self, before, after):
         member = after
@@ -331,6 +325,7 @@ class Logging(commands.Cog):
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Logging(bot))
