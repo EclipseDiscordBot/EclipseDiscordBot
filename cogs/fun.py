@@ -63,11 +63,19 @@ class Fun(commands.Cog):
                     await ctx.send("Talking session with me has ended!")
                 else:
                     async with ctx.channel.typing():
-                        response = rs.get_ai_response(message.content)
-                        await ctx.reply(response, mention_author=False)
+
+                        response = await self._get_response(ctx.author.id, message.content)
+                        await message.reply(response, mention_author=False)
 
 
-
+    @staticmethod
+    async def _get_response(uid, msg):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://api.brainshop.ai/get?bid={self.bot.brain_id}&key={self.bot.brain_api}&uid={uid}&msg={msg}") as resp:
+                if resp.status != 200:
+                    return "Something went wrong while accessing the BrainShop API."
+                js = await resp.json()
+                return js["cnt"]
 
 def setup(bot):
     bot.add_cog(Fun(bot))
