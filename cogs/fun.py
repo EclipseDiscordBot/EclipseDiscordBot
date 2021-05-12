@@ -43,6 +43,7 @@ class Fun(commands.Cog):
                 await ctx.reply("lol thats a fake bot token :P")
 
 
+    # TODO make a configuration of chatbot. Example: [p]chatbot <#channel> to talk with the chatbot forever in that channel @Mr Potato#3773 will do it
     @commands.command(name="chatbot",
                       aliases=['chat', 'chatb', 'cb'],
                       brief="Start a talking session with the bot!")
