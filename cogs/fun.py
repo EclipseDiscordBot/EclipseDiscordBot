@@ -58,13 +58,15 @@ class Fun(commands.Cog):
                 session = False
                 await ctx.send("Timed out! Talking session with me has automatically ended!")
             else:
-                if message.content.lower() == "Cancel":
+                if message.content.lower() == "cancel":
                     session = False
-                    await ctx.send("Talking session with me has ended!")
+                    return await ctx.send("Talking session with me has ended!")
                 else:
                     async with ctx.channel.typing():
                         response = rs.get_ai_response(message.content)
                         await ctx.reply(response, mention_author=False)
+
+
 
 
 def setup(bot):
