@@ -61,7 +61,7 @@ class Giveaways(commands.Cog):
             return
         end_time = datetime.datetime.now() + duration
         embed=discord.Embed(title=prize,
-                            description=f"React with 🎉 to enter!\nHosted by: {ctx.author.mention}",
+                            description=f"React with 🎉 to enter!\nTime Remaining: {humanize.precisedelta(duration)}Hosted by: {ctx.author.mention}",
                             color=self.bot.user.color)
         embed.timestamp = end_time
         embed.set_footer(text="Ends at")
@@ -71,6 +71,9 @@ class Giveaways(commands.Cog):
 
         await self.bot.pool.execute("INSERT INTO giveaways (msg_id, ch_id, g_id, end_timestamp, host_id, prize, winners) VALUES ($1, $2, $3, $4, $5, $6, $7)", msg.id, ctx.channel.id, ctx.guild.id,
                                     end_timestamp, ctx.author.id, prize, winners)
+        while datetime.datetime.now() < end_time:
+            new_emb = msg.embeds[0].copy().description=f"React with 🎉 to enter!\nTime Remaining: {humanize.precisedelta(datetime.datetime.now() - end_time)}Hosted by: {ctx.author.mention}"
+            await msg.edit(embed = new_emb)
 
 
     @commands.command()
