@@ -60,7 +60,7 @@ class Fun(commands.Cog):
             else:
                 if message.content.lower() == "cancel":
                     session = False
-                    return await ctx.send("Talking session with me has ended!")
+                    await ctx.send("Talking session with me has ended!")
                 else:
                     async with ctx.channel.typing():
                         response = rs.get_ai_response(message.content)
