@@ -67,7 +67,7 @@ class Fun(commands.Cog):
                 else:
                     return False
 
-            user_emoji = await self.bot.wait_for('reaction_add', check=check)
+            user_emoji = await self.bot.wait_for('reaction_add', check=check, timeout = 60)
             user_choice = emoji_name_dict[user_emoji]
             if user_choice == bot_choice:
                 await ctx.send(f"I chose {bot_choice} and you chose {user_choice}! It's a tie!")
