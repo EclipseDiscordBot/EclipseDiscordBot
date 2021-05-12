@@ -131,7 +131,7 @@ class Utility(commands.Cog):
         dsc = ""
         list_of_emoji_to_react = []
         for opt in opts:
-            list_of_emoji_to_react.append(list_of_emoji[opts.index(opt)+1])
+            list_of_emoji_to_react.append(f"{list_of_emoji[opts.index(opt)+1]}")
             dsc += f"{list_of_emoji[opts.index(opt) + 1]} - {opt}\n"
         embed.description = dsc
         msg = await ctx.send(embed=embed)
