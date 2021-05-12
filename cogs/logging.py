@@ -9,6 +9,16 @@ class Logging(commands.Cog):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
+
+    async def send_log(self, server_id):
+        async with self.bot.pool.acquire() as conn:
+            async with conn.transaction():
+                await conn.fetch(
+                    'SELECT * FROM logging WHERE server_id = $1', server_id
+                )
+                log_channel_id = log_channel_ids[0]['channel_id']
+                return log_channel_id
+
     @commands.command(name="log",
                       brief="Sets the log channel and toggles logging")
     @commands.has_permissions(manage_guild=True)
@@ -81,6 +91,78 @@ class Logging(commands.Cog):
                 if log_chnl is None:
                     return
                 await log_chnl.send(embed=e)
+
+    @commands.Cog.listener(on_member_join)
+    async def member_join(self, member):
+        created = list(str(datetime.datetime.utcnow() - member.created_at)[:-7])
+
+        x = 0
+        for char in created:
+            if char == ":":
+                created[x] == " hours, "
+                break
+            x += 1
+
+        x = 0
+        for char in created:
+            if char == ":":
+                created[x] = " minutes and "
+                break
+            x += 1
+
+        created = "".join(created)
+        embed = discord.Embed(
+            title="Member Joined",
+            color=self.bot.user.color,
+            description=f"{member.mention} has joined the server!\nCreated {created} seconds ago.",
+            timestamp=datetime.datetime.utcnow()
+        )
+        embed.set_author(name=member, icon_url=member.avatar_url)
+        embed.set_footer(text=f"ID: {member.id}")
+        log_channel_id = self.get_log_channel(member.guild.id)
+        log_chnl = self.bot.get_guild(
+            server_id).get_channel(log_channel_id)
+        if log_chnl == None:
+            return
+        await log_chnl.send(embed=embed)
+
+
+    @commands.Cog.listener()
+    async def on_member_remove(self, member):
+        joined = list(str(datetime.datetime.utcnow() - member.joined_at)[:-7])
+
+        x = 0
+        for char in joined:
+            if char == ':':
+                joined[x] = " hours, "
+                break
+            x += 1
+
+        x = 0
+        for char in joined:
+            if char == ':':
+                joined[x] = " minutes and "
+                break
+            x += 1
+
+        joined = "".join(joined)
+
+        embed = discord.Embed(
+            title="Member left",
+            color=discord.Colour.red(),
+            description=f"{member.mention} left the server.\nJoined {joined} seconds ago.",
+            timestamp=datetime.datetime.utcnow()
+        )
+        embed.set_author(name=member, icon_url=member.avatar_url)
+        embed.set_footer(text=f"ID: {member.id}")
+        log_channel_id = self.get_log_channel(member.guild.id)
+        log_chnl = self.bot.get_guild(
+            server_id).get_channel(log_channel_id)
+        if log_chnl == None:
+            return
+        await log_chnl.send(embed=embed)
+
+
 
 
 def setup(bot):
