@@ -58,7 +58,8 @@ class CustomBot(commands.Bot):
         for file in os.listdir("./cogs/slash_cmds"):
             if file.endswith('.py'):
                 try:
-                    load_extension(self, f'cogs.slash_cmds.{file[:-3]}', self.config)
+                    load_extension(
+                        self, f'cogs.slash_cmds.{file[:-3]}', self.config)
                     print(f"loaded cogs.slash_cmds.{file[:-3]}")
                 except Exception as e:
                     exceptions += f"- {file} failed to load [{e}]\n"
@@ -87,4 +88,3 @@ class CustomBot(commands.Bot):
                 await message.reply(f"Hello! My prefix here is *`{prefixes}`*!")
 
         await self.process_commands(message)
-

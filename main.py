@@ -44,4 +44,3 @@ slash = SlashCommand(bot, override_type=True)
 if __name__ == "__main__":
     proccessname_setter.try_set_process_name("eclipse_booting")
     bot.run(bot.token)
-
