@@ -1,7 +1,7 @@
 
 import discord
 from discord_slash import SlashCommand
-from classes import CustomBotClass
+from classes import CustomBotClass, proccessname_setter
 
 
 intents = discord.Intents.all()
@@ -42,5 +42,5 @@ bot = CustomBotClass.CustomBot(
 slash = SlashCommand(bot, override_type=True)
 
 if __name__ == "__main__":
+    proccessname_setter.try_set_process_name("eclipse_booting")
     bot.run(bot.token)
-

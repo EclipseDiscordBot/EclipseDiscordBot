@@ -21,4 +21,3 @@ def keyword(keyword_msg):
         return keyword_msg.content in m.content
 
     return check
-

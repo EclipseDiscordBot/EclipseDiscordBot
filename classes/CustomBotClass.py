@@ -8,6 +8,7 @@ import asyncpg
 import discord
 from discord.ext import commands
 
+from classes import proccessname_setter
 from classes.LoadCog import load_extension
 
 
@@ -57,7 +58,8 @@ class CustomBot(commands.Bot):
         for file in os.listdir("./cogs/slash_cmds"):
             if file.endswith('.py'):
                 try:
-                    load_extension(self, f'cogs.slash_cmds.{file[:-3]}', self.config)
+                    load_extension(
+                        self, f'cogs.slash_cmds.{file[:-3]}', self.config)
                     print(f"loaded cogs.slash_cmds.{file[:-3]}")
                 except Exception as e:
                     exceptions += f"- {file} failed to load [{e}]\n"
@@ -71,6 +73,7 @@ class CustomBot(commands.Bot):
         embed.timestamp = self.launch_time
         embed.set_footer(text="Bot online since:")
         c = self.get_channel(840528237846331432)
+        proccessname_setter.try_set_process_name("eclipse_online")
         await c.send(embed=embed)
 
     async def on_message(self, message):
@@ -85,4 +88,3 @@ class CustomBot(commands.Bot):
                 await message.reply(f"Hello! My prefix here is *`{prefixes}`*!")
 
         await self.process_commands(message)
-
