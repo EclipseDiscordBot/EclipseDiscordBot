@@ -53,7 +53,10 @@ class Fun(commands.Cog):
                 "Scissors": "✂"
             }
             bot_choice = random.choice(list(emoji_name_dict.keys()))
-            embed = discord.Embed(title="Rock Paper Scissors", description="", color=self.bot.color)
+            embed = discord.Embed(title="Rock Paper Scissors", description="**React below to choose!**"
+                                                                           "Rock: 🪨"
+                                                                           "Paper: 📰"
+                                                                           "Scissors: ✂", color=self.bot.color)
             msg = await ctx.send(embed=embed)
             for emo in list(emoji_name_dict.values()):
                 await msg.add_reaction(emo)
@@ -78,22 +81,25 @@ class Fun(commands.Cog):
             elif str(raw_reaction) == "\U00002702":
                 user_choice = "Scissors"
             if user_choice == bot_choice:
-                await ctx.send(f"I chose {bot_choice} and you chose {user_choice}! It's a tie!")
+                reply = f"I chose {bot_choice} and you chose {user_choice}! It's a tie!"
             if user_choice == "Rock":
                 if bot_choice == "Paper":
-                    await ctx.send("You chose Rock and I chose Paper, I won! :D")
+                    reply = "You chose Rock and I chose Paper, I won! :D"
                 if bot_choice == "Scissors":
-                    await ctx.send("You chose Rock and I chose Scissors, You won!, but I won't let you next time!")
+                    reply = "You chose Rock and I chose Scissors, You won!, but I won't let you next time!"
             if user_choice == "Paper":
                 if bot_choice == "Rock":
-                    await ctx.send("You chose Paper and I chose Rock, You won!, but I won't let you next time!")
+                    reply = "You chose Paper and I chose Rock, You won!, but I won't let you next time!"
                 if bot_choice == "Scissors":
-                    await ctx.send("You chose Paper and I chose Scissors, I won! :D")
+                    reply = "You chose Paper and I chose Scissors, I won! :D"
             if user_choice == "Scissors":
                 if bot_choice == "Rock":
-                    await ctx.send("You chose Scissors and I chose Rock, I won! :D")
+                    reply = "You chose Scissors and I chose Rock, I won! :D"
                 if bot_choice == "Paper":
-                    await ctx.send("You chose Scissors and I chose Paper, You won!, but I won't let you next time!")
+                    reply = "You chose Scissors and I chose Paper, You won!, but I won't let you next time!"
+            embed = msg.embeds[0].copy()
+            embed.description += f"\n{reply}"
+            await msg.edit(embed=embed)
 
 
     # TODO make a configuration of chatbot. Example: [p]chatbot <#channel> to talk with the chatbot forever in that channel @Mr Potato#3773 will do it
