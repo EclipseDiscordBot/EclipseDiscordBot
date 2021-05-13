@@ -1,5 +1,6 @@
-
+from constants import basic
 import discord
+from discord.ext import commands
 from discord_slash import SlashCommand
 from classes import CustomBotClass, proccessname_setter
 
@@ -8,12 +9,8 @@ intents = discord.Intents.all()
 
 
 async def get_prefix(eclipse, message):
-    base = [
-        "<@827566012467380274>",
-        "<@!827566012467380274>",
-        "<@827566012467380274> ",
-        "<@!827566012467380274> "]
-    if message.author.id == 694839986763202580 or message.author.id == 605364556465963018:
+    base = []
+    if message.author.id in basic.owners:
         base.append("")
     if not message.guild:
         base.append("e! ")
@@ -24,7 +21,7 @@ async def get_prefix(eclipse, message):
             prefixes = await conn.fetch("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
             for prefix in prefixes:
                 base.append(prefix['prefix'])
-    return base
+    return commands.when_mentioned_or(base)
 
 
 mentions = discord.AllowedMentions(
