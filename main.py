@@ -21,7 +21,7 @@ async def get_prefix(eclipse, message):
             prefixes = await conn.fetch("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
             for prefix in prefixes:
                 base.append(prefix['prefix'])
-    return commands.when_mentioned_or(base)
+    return commands.when_mentioned_or(*base)(bot, message)
 
 
 mentions = discord.AllowedMentions(
