@@ -8,6 +8,7 @@ import discord
 
 rs = RandomStuff()
 
+
 class Fun(commands.Cog):
 
     def __init__(self, bot: CustomBotClass.CustomBot):
@@ -43,7 +44,8 @@ class Fun(commands.Cog):
                 await asyncio.sleep(2)
                 await ctx.reply("lol thats a fake bot token :P")
 
-    @commands.command(name="rps", brief="Play rock paper scissors with the bot or with someone else")
+    @commands.command(name="rps",
+                      brief="Play rock paper scissors with the bot or with someone else")
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def rps(self, ctx, member: discord.Member = None):
         if member is None:
@@ -53,7 +55,10 @@ class Fun(commands.Cog):
                 "Scissors": "✂"
             }
             bot_choice = random.choice(list(emoji_name_dict.keys()))
-            embed = discord.Embed(title="Rock Paper Scissors", description="", color=self.bot.color)
+            embed = discord.Embed(
+                title="Rock Paper Scissors",
+                description="",
+                color=self.bot.color)
             msg = await ctx.send(embed=embed)
             for emo in list(emoji_name_dict.values()):
                 await msg.add_reaction(emo)
@@ -70,7 +75,7 @@ class Fun(commands.Cog):
                 else:
                     return False
 
-            raw_reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout = 60)
+            raw_reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=60)
             if str(raw_reaction) == "\U0001faa8":
                 user_choice = "Rock"
             elif str(raw_reaction) == "\U0001f4f0":
@@ -95,8 +100,9 @@ class Fun(commands.Cog):
                 if bot_choice == "Paper":
                     await ctx.send("You chose Scissors and I chose Paper, You won!, but I won't let you next time!")
 
+    # TODO make a configuration of chatbot. Example: [p]chatbot <#channel> to
+    # talk with the chatbot forever in that channel @Mr Potato#3773 will do it
 
-    # TODO make a configuration of chatbot. Example: [p]chatbot <#channel> to talk with the chatbot forever in that channel @Mr Potato#3773 will do it
     @commands.command(name="chatbot",
                       aliases=['chat', 'chatb', 'cb'],
                       brief="Start a talking session with the bot!")
@@ -107,7 +113,7 @@ class Fun(commands.Cog):
 
         while session is True:
             try:
-                message = await self.bot.wait_for('message', timeout = 30, check = lambda m : (ctx.author == m.author and ctx.channel == m.channel))
+                message = await self.bot.wait_for('message', timeout=30, check=lambda m: (ctx.author == m.author and ctx.channel == m.channel))
             except asyncio.TimeoutError:
                 session = False
                 await ctx.send("Timed out! Talking session with me has automatically ended!")
@@ -121,7 +127,6 @@ class Fun(commands.Cog):
                         response = await self._get_response(ctx.author.id, message.content)
                         await message.reply(response, mention_author=False)
 
-
     async def _get_response(self, uid, msg):
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://api.brainshop.ai/get?bid={self.bot.brain_id}&key={self.bot.brain_api}&uid={uid}&msg={msg}") as resp:
@@ -129,6 +134,7 @@ class Fun(commands.Cog):
                     return "Something went wrong while accessing the BrainShop API."
                 js = await resp.json()
                 return js["cnt"]
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
