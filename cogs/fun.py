@@ -4,6 +4,7 @@ from classes import CustomBotClass
 import aiohttp
 from prsaw import RandomStuff
 from discord.ext import commands
+import discord
 
 rs = RandomStuff()
 
@@ -41,6 +42,50 @@ class Fun(commands.Cog):
                 await ctx.reply(res['token'])
                 await asyncio.sleep(2)
                 await ctx.reply("lol thats a fake bot token :P")
+
+    @commands.command(name="rps", brief="Play rock paper scissors with the bot or with someone else")
+    @commands.cooldown(1, 15, commands.BucketType.user)
+    async def rps(self, ctx, member: discord.Member = None):
+        if member is None:
+            emoji_name_dict = {
+                "Rock": "🪨",
+                "Paper": "📰",
+                "Scissors": "✂"
+            }
+            bot_choice = random.choice(emoji_name_dict.keys())
+            embed = discord.Embed(title="Rock Paper Scissors", description="", color=self.bot.color)
+            msg = await ctx.send(embed=embed)
+            for emo in emoji_name_dict.values():
+                await msg.add_reaction(emo)
+
+            def check(reaction, user):
+                if reaction.message.id == msg.id:
+                    if reaction.emoji in emoji_name_dict.values():
+                        return True
+                    else:
+                        return False
+                else:
+                    return False
+
+            user_emoji = await self.bot.wait_for('reaction_add', check=check)
+            user_choice = emoji_name_dict[user_emoji]
+            if user_choice == bot_choice:
+                await ctx.send(f"I chose {bot_choice} and you chose {user_choice}! It's a tie!")
+            if user_choice == "Rock":
+                if bot_choice == "Paper":
+                    await ctx.send("You chose Rock and I chose Paper, I won! :D")
+                if bot_choice == "Scissors":
+                    await ctx.send("You chose Rock and I chose Scissors, You won!, but I won't let you next time!")
+            if user_choice == "Paper":
+                if bot_choice == "Rock":
+                    await ctx.send("You chose Paper and I chose Rock, You won!, but I won't let you next time!")
+                if bot_choice == "Scissors":
+                    await ctx.send("You chose Paper and I chose Scissors, I won! :D")
+            if user_choice == "Scissors":
+                if bot_choice == "Rock":
+                    await ctx.send("You chose Scissors and I chose Rock, I won! :D")
+                if bot_choice == "Paper":
+                    await ctx.send("You chose Scissors and I chose Paper, You won!, but I won't let you next time!")
 
 
     # TODO make a configuration of chatbot. Example: [p]chatbot <#channel> to talk with the chatbot forever in that channel @Mr Potato#3773 will do it

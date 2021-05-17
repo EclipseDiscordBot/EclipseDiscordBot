@@ -281,6 +281,7 @@ class Logging(commands.Cog):
         embed.set_footer(text=f"ID: {member.id}")
         log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
+
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
