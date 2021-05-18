@@ -6,6 +6,7 @@ from classes import CustomBotClass, checks
 from num2words import num2words
 from constants import emojis
 from constants.basic import support_server
+import humanize
 
 
 def text_to_emoji(count):
