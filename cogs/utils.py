@@ -363,7 +363,7 @@ class Utility(commands.Cog):
         created = humanize.precisedelta(datetime.datetime.now() - member.created_at)
         embed.add_field(name=f"Joined {ctx.guild.name} on", value=joined)
         embed.add_field(name="Created account on", value=created)
-        embed.add_field("Permissions", value=permissions_str)
+        embed.add_field(name="Permissions", value=permissions_str)
         embed.add_field(name="Status",
                         value=str(member.status).replace("dnd", "<:status_dnd:844215897206947930> DND").replace(
                             "do_not_disturb", "<:status_dnd:844215897206947930> DND").replace("online",
