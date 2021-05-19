@@ -1,8 +1,9 @@
 from constants import basic
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord_slash import SlashCommand
 from classes import CustomBotClass, proccessname_setter
+from scripts.python_scripts import stats_webhook
 
 
 intents = discord.Intents.all()
@@ -36,8 +37,15 @@ bot = CustomBotClass.CustomBot(
     allowed_mentions=mentions,
     case_insensitive=True)
 
+@tasks.loop(minutes=5)
+async def update_stats_loop():
+
+    stats_webhook.update_stats(bot)
+
+
 slash = SlashCommand(bot, override_type=True)
 
 if __name__ == "__main__":
     proccessname_setter.try_set_process_name("eclipse_booting")
+    update_stats_loop.start()
     bot.run(bot.token)
