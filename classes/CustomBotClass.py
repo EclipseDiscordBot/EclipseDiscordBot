@@ -91,6 +91,6 @@ class CustomBot(commands.Bot):
         await self.process_commands(message)
 
     async def process_commands(self, message):
-        ctx = self.get_context(message, cls=context.Context)
+        ctx = await self.get_context(message, cls=context.Context)
         await self.invoke(ctx)
 
