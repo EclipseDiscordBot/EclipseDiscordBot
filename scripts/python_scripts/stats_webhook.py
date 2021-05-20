@@ -32,6 +32,3 @@ async def update_stats(bot:discord.ext.commands.Bot):
     embed.timestamp = datetime.datetime.now()
     embed.set_footer(text="Last updated")
     webhook.edit_message(msg_id, content=None, embed=embed)
-
-
-
