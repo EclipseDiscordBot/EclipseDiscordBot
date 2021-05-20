@@ -77,7 +77,7 @@ class CustomBot(commands.Bot):
         await c.send(embed=embed)
 
     async def on_message(self, message):
-        if self.user.mentioned_in(message):
+        if f"<@{self.user.id}>" in message.content:
             if not message.guild:
                 await message.reply("Hello! My prefix here is *`e!`*!")
             else:
