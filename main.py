@@ -40,7 +40,7 @@ bot = CustomBotClass.CustomBot(
 @tasks.loop(minutes=5)
 async def update_stats_loop():
 
-    stats_webhook.update_stats(bot)
+    await stats_webhook.update_stats(bot)
 
 
 slash = SlashCommand(bot, override_type=True)
