@@ -16,7 +16,6 @@ async def update_stats(bot:discord.ext.commands.Bot):
 
     cpu_usage = f"{psutil.cpu_percent(5)}%"
     ram_usage = f"{psutil.virtual_memory()[2]}%"
-    pid = os.getpid()
     load1, load2, load3 = psutil.getloadavg()
     load_str = f"{load1}, {load2}, {load3}"
     embed = discord.Embed(title = "Bot Stats", description = f"Online for **{humanize.precisedelta(datetime.datetime.now() - bot.launch_time)}**", color=bot.color)
