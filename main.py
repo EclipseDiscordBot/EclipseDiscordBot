@@ -2,12 +2,13 @@ from typing import List
 
 from constants import basic
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord_slash import SlashCommand
 from classes import CustomBotClass, proccessname_setter
 from flask import Flask
 from threading import Thread
 from flask import request
+from scripts.python_scripts import stats_webhook
 
 intents = discord.Intents.all()
 
@@ -39,6 +40,12 @@ bot = CustomBotClass.CustomBot(
     intents=intents,
     allowed_mentions=mentions,
     case_insensitive=True)
+
+@tasks.loop(minutes=5)
+async def update_stats_loop():
+
+    await stats_webhook.update_stats(bot)
+
 
 slash = SlashCommand(bot, override_type=True)
 
@@ -109,4 +116,5 @@ if __name__ == "__main__":
     thr = Thread(target=begin_flask)
     thr.daemon = True
     thr.start()
+    update_stats_loop.start()
     bot.run(bot.token)
