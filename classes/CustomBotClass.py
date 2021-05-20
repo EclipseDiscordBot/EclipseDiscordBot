@@ -6,6 +6,7 @@ import pickle
 import asyncpraw as apraw
 import asyncpg
 import discord
+import context
 from discord.ext import commands
 
 from classes import proccessname_setter
@@ -88,3 +89,8 @@ class CustomBot(commands.Bot):
                 await message.reply(f"Hello! My prefix here is *`{prefixes}`*!")
 
         await self.process_commands(message)
+
+    async def process_commands(self, message):
+        ctx = self.get_context(message, cls=context.Context)
+        await self.invoke(ctx)
+
