@@ -6,10 +6,9 @@ import pickle
 import asyncpraw as apraw
 import asyncpg
 import discord
-import context
 from discord.ext import commands
 
-from classes import proccessname_setter
+from classes import proccessname_setter, context
 from classes.LoadCog import load_extension
 
 
@@ -93,4 +92,3 @@ class CustomBot(commands.Bot):
     async def process_commands(self, message):
         ctx = self.get_context(message, cls=context.Context)
         await self.invoke(ctx)
-
