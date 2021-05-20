@@ -3,6 +3,7 @@ import pickle
 import psutil
 import os
 import humanize
+import datetime
 
 
 async def update_stats(bot:discord.ext.commands.Bot):
