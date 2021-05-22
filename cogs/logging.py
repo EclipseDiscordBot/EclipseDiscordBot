@@ -3,6 +3,7 @@ from discord.ext import commands
 from classes import CustomBotClass
 from discord import Embed
 import datetime
+import datetime
 
 
 class Logging(commands.Cog):
@@ -44,6 +45,7 @@ class Logging(commands.Cog):
         e.add_field(
             name="Content: ", value=(
                 deleted_msg_content if not len(deleted_msg_content) == 0 else "Empty msg"))
+        e.timestamp = datetime.datetime.utcnow()
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute(
@@ -77,6 +79,7 @@ class Logging(commands.Cog):
                 new_edited_msg_content.content if not isinstance(
                     new_edited_msg_content,
                     str) else new_edited_msg_content))
+        e.timestamp = datetime.datetime.utcnow()
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute(
@@ -119,6 +122,7 @@ class Logging(commands.Cog):
         )
         embed.set_author(name=member, icon_url=member.avatar_url)
         embed.set_footer(text=f"ID: {member.id}")
+        embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
         if log_chnl == None:
@@ -127,7 +131,7 @@ class Logging(commands.Cog):
 
 
     @commands.Cog.listener("on_member_remove")
-    async def member_remove(self, member):
+    async def member_leave(self, member):
         joined = list(str(datetime.datetime.utcnow() - member.joined_at)[:-7])
 
         x = 0
@@ -154,6 +158,7 @@ class Logging(commands.Cog):
         )
         embed.set_author(name=member, icon_url=member.avatar_url)
         embed.set_footer(text=f"ID: {member.id}")
+        embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
         if log_chnl == None:
@@ -182,7 +187,7 @@ class Logging(commands.Cog):
             return
         log_channel_id = await self.get_log_channel(after.guild.id)
         log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
-
+        e.timestamp = datetime.datetime.utcnow()
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
@@ -231,6 +236,7 @@ class Logging(commands.Cog):
             )
         else:
             return
+        embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(after.guild.id)
         log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
         if log_chnl == None:
@@ -277,6 +283,7 @@ class Logging(commands.Cog):
             )
         else:
             return
+        embed.timestamp = datetime.datetime.utcnow()
         embed.set_author(name=member, icon_url=member.avatar_url)
         embed.set_footer(text=f"ID: {member.id}")
         log_channel_id = await self.get_log_channel(member.guild.id)
@@ -325,6 +332,7 @@ class Logging(commands.Cog):
             return
 
         embed.set_author(name=member, icon_url=member.avatar_url)
+        embed.timestamp = datetime.datetime.utcnow()
         embed.set_footer(text=f"ID: {member.id}")
         log_channel_id = await self.get_log_channel(after.guild.id)
         log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
