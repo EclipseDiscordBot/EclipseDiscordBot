@@ -51,12 +51,12 @@ class EclipseHelpCommand(commands.HelpCommand):
             for a in command.aliases:
                 a_str += f"`{a}` "
             embed.add_field(name="Aliases", value=a_str)
-        bool_can = await command.can_run(ctx)
-        if bool_can:
-            can_txt = "This command can be used by you"
-        else:
-            can_txt = "This command cannot be used by you"
-        embed.set_footer(text=can_txt)
+        #bool_can = await command.can_run(ctx)
+        #if bool_can:
+            #can_txt = "This command can be used by you"
+        #else:
+            #can_txt = "This command cannot be used by you"
+        #embed.set_footer(text=can_txt)
         await ctx.send(embed=embed)
 
 
