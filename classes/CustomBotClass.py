@@ -8,6 +8,7 @@ import asyncpg
 import discord
 from discord.ext import commands
 
+from classes import proccessname_setter, context
 from classes.LoadCog import load_extension
 
 
@@ -31,6 +32,8 @@ class CustomBot(commands.Bot):
             client_secret=f['reddit_secret'],
             user_agent="Eclipse")
         self.memes = []
+        self.brain_id = f['brain_id']
+        self.brain_api = f['brain_api']
         self.token = f["discord"]
         self.sra_api = f['some_random_api']
         self.launch_time = datetime.datetime.utcnow()
@@ -55,7 +58,8 @@ class CustomBot(commands.Bot):
         for file in os.listdir("./cogs/slash_cmds"):
             if file.endswith('.py'):
                 try:
-                    load_extension(self, f'cogs.slash_cmds.{file[:-3]}', self.config)
+                    load_extension(
+                        self, f'cogs.slash_cmds.{file[:-3]}', self.config)
                     print(f"loaded cogs.slash_cmds.{file[:-3]}")
                 except Exception as e:
                     exceptions += f"- {file} failed to load [{e}]\n"
@@ -69,10 +73,11 @@ class CustomBot(commands.Bot):
         embed.timestamp = self.launch_time
         embed.set_footer(text="Bot online since:")
         c = self.get_channel(840528237846331432)
+        proccessname_setter.try_set_process_name("eclipse_online")
         await c.send(embed=embed)
 
     async def on_message(self, message):
-        if self.user.mentioned_in(message):
+        if f"<@{self.user.id}>" in message.content:
             if not message.guild:
                 await message.reply("Hello! My prefix here is *`e!`*!")
             else:
@@ -84,3 +89,14 @@ class CustomBot(commands.Bot):
 
         await self.process_commands(message)
 
+    async def process_commands(self, message):
+        blacklists = await self.pool.fetch("SELECT * FROM blacklists")
+        list = []
+        for row in blacklists:
+            list.append(row["id"])
+        if message.author.id in list:
+            return
+        if message.guild.id in list:
+            return
+        ctx = await self.get_context(message, cls=context.Context)
+        await self.invoke(ctx)

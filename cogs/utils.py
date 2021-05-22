@@ -6,10 +6,14 @@ from classes import CustomBotClass, checks
 from num2words import num2words
 from constants import emojis
 from constants.basic import support_server
+import humanize
+import datetime
+
 
 def text_to_emoji(count):
     base = 0x1f1e6
     return chr(base + count)
+
 
 class Utility(commands.Cog):
     def __init__(self, bot: CustomBotClass.CustomBot):
@@ -122,12 +126,13 @@ class Utility(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 30, commands.BucketType.user)
-    async def poll(self, ctx, *,question):
+    async def poll(self, ctx, *, question):
         messages = [ctx.message]
         answers = []
 
         def check(m):
-            return m.author.id == ctx.author.id and m.channel == ctx.channel and len(m.content) <= 100
+            return m.author.id == ctx.author.id and m.channel == ctx.channel and len(
+                m.content) <= 100
 
         for i in range(50):
             messages.append(await ctx.send(f"Say the poll options or say cancel to publish the poll."))
@@ -146,16 +151,15 @@ class Utility(commands.Cog):
 
         try:
             await ctx.channel.delete_messages(messages)
-        except:
+        except BaseException:
             pass
 
-        answer = "\n".join(f"{keycap}: {content}" for keycap, content in answers)
+        answer = "\n".join(
+            f"{keycap}: {content}" for keycap,
+                                       content in answers)
         actual_poll = await ctx.send(f"{ctx.author} asks: {question}\n\n{answer}")
         for emoji, _ in answers:
             await actual_poll.add_reaction(emoji)
-
-
-
 
     @commands.command()
     async def quickpoll(self, ctx, *questions_and_choices: str):
@@ -168,11 +172,12 @@ class Utility(commands.Cog):
             return await ctx.send("I need Read Message History and Add Reactions permissions.")
 
         question = questions_and_choices[0]
-        choices = [(text_to_emoji(e), v) for e, v in enumerate(questions_and_choices[1:])]
+        choices = [(text_to_emoji(e), v)
+                   for e, v in enumerate(questions_and_choices[1:])]
 
         try:
             await ctx.message.delete()
-        except:
+        except BaseException:
             pass
 
         body = "\n".join(f"{key}: {c}" for key, c in choices)
@@ -188,7 +193,8 @@ class Utility(commands.Cog):
         data = await self.bot.pool.fetch("SELECT * FROM prefixes WHERE guild_id=$1", ctx.guild.id)
         desc = ''
         for prefix in data:
-            desc = f'{desc}\n:{num2words(data.index(prefix))}: `' + prefix['prefix'] + '`'
+            desc = f'{desc}\n:{num2words(data.index(prefix))}: `' + \
+                   prefix['prefix'] + '`'
         desc = f'{desc}\n{emojis.heave_plus_sign} adds a new prefix'
         e.description = desc
         message: discord.Message = await ctx.reply(embed=e)
@@ -198,21 +204,24 @@ class Utility(commands.Cog):
         if not len(data) == 10:
             await message.add_reaction(emojis.heave_plus_sign)
 
-        allowed_emojis = [emojis.heave_plus_sign] + list(emojis.numbers.values())
+        allowed_emojis = [emojis.heave_plus_sign] + \
+                         list(emojis.numbers.values())
 
         def check(reactions, users):
-            return users == ctx.author and str(reactions.emoji) in allowed_emojis
+            return users == ctx.author and str(
+                reactions.emoji) in allowed_emojis
 
         allowed_emojis2 = [emojis.pencil, emojis.no_entry_sign]
 
         allowed_emojis3 = [emojis.white_check_mark, emojis.no_entry_sign]
 
-
         def check3(reactions, users):
-            return users == ctx.author and str(reactions.emoji) in allowed_emojis2
+            return users == ctx.author and str(
+                reactions.emoji) in allowed_emojis2
 
         def check4(reactions, users):
-            return users == ctx.author and str(reactions.emoji) in allowed_emojis3
+            return users == ctx.author and str(
+                reactions.emoji) in allowed_emojis3
 
         def check2(message5: discord.Message):
             return message5.author == ctx.author
@@ -245,7 +254,9 @@ class Utility(commands.Cog):
             if emoji == emojis.heave_plus_sign and len(data) == 10:
                 return
             desc = f'{emojis.no_entry_sign} Delete this prefix\n{emojis.pencil} Edit this prefix'
-            e = discord.Embed(title="What to do with this prefix?", description=desc)
+            e = discord.Embed(
+                title="What to do with this prefix?",
+                description=desc)
             message2 = await ctx.reply(embed=e)
             await message2.add_reaction(emojis.no_entry_sign)
             await message2.add_reaction(emojis.pencil)
@@ -274,7 +285,9 @@ class Utility(commands.Cog):
                                 await ctx.reply("Done! the prefix has been edited!")
                                 return
                 elif reaction.emoji == emojis.no_entry_sign:
-                    e = discord.Embed(title="Sure??", description=f"Are you sure you want to delete the prefix `{prefix}`?")
+                    e = discord.Embed(
+                        title="Sure??",
+                        description=f"Are you sure you want to delete the prefix `{prefix}`?")
                     message3: discord.Message = await ctx.reply(embed=e)
                     await message3.add_reaction(emojis.white_check_mark)
                     await message3.add_reaction(emojis.no_entry_sign)
@@ -289,9 +302,9 @@ class Utility(commands.Cog):
                         elif reaction.emoji == emojis.white_check_mark:
                             async with self.bot.pool.acquire() as conn:
                                 async with conn.transaction():
-                                    await conn.execute("DELETE FROM prefixes WHERE guild_id=$1 AND prefix=$2", ctx.guild.id, prefix)
+                                    await conn.execute("DELETE FROM prefixes WHERE guild_id=$1 AND prefix=$2",
+                                                       ctx.guild.id, prefix)
                                     await ctx.reply("okey! that prefix has been deleted!")
-
 
     @commands.command(aliases=['sniper'])
     @commands.guild_only()
@@ -307,8 +320,8 @@ class Utility(commands.Cog):
                 except IndexError:
                     await ctx.reply(f"Too big or Too small index `{index}`")
                     return
-                e = discord.Embed(title=select['reason'][18:len(select['reason'])], description=select['msg'],
-                                  colour=discord.Color.random())
+                e = discord.Embed(title=select['reason'][18:len(
+                    select['reason'])], description=select['msg'], colour=discord.Color.random())
                 await ctx.reply(embed=e)
 
     @commands.command(aliases=['esnipe', 'esniper'])
@@ -326,9 +339,39 @@ class Utility(commands.Cog):
                 except IndexError:
                     await ctx.reply(f"Too big or Too small index `{index}`")
                     return
-                e = discord.Embed(title=select['reason'][18:len(select['reason'])], description=select['msg'],
-                                  colour=discord.Color.random())
+                e = discord.Embed(title=select['reason'][18:len(
+                    select['reason'])], description=select['msg'], colour=discord.Color.random())
                 await ctx.reply(embed=e)
+
+    @commands.command(name="userinfo", aliases=["ui"])
+    async def userinfo(self, ctx, member: discord.Member = None):
+        if member is None:
+            member = ctx.author
+        embed = discord.Embed(title=f"Information on {member}", description=member.mention, color=self.bot.color)
+        perms_list = []
+        for permission, value in member.guild_permissions:
+            if value:
+                perms_list.append(permission.replace("_", " ").title())
+        for perm in perms_list:
+            ignored_perms = ["Add Reactions", "Priority Speaker", "Stream", "Embed Links", "Read Message History",
+                             "External Emojis", "Connect", "Speak", "Mute Members", "Deafen Members", "Move Members",
+                             "Use Voice Activation", "Change Nickname", "Manage Webhooks", "Request To Speak"]
+            if perm in ignored_perms:
+                perms_list.pop(perms_list.index(perm))
+        permissions_str = ", ".join(perm for perm in perms_list)
+        joined = humanize.precisedelta(datetime.datetime.now() - member.joined_at)
+        created = humanize.precisedelta(datetime.datetime.now() - member.created_at)
+        embed.add_field(name=f"Joined {ctx.guild.name} on", value=joined)
+        embed.add_field(name="Created account on", value=created)
+        embed.add_field(name="Permissions", value=permissions_str)
+        embed.add_field(name="Status",
+                        value=str(member.status).replace("dnd", "<:status_dnd:844215897206947930> DND").replace(
+                            "do_not_disturb", "<:status_dnd:844215897206947930> DND").replace("online",
+                                                                                              "Online <:status_online:844215865951911968>").replace(
+                            "idle", "Idle <:status_idle:844216072265531452>").replace("offline",
+                                                                                      "Offline <:status_offline:844216076543721523>"))
+        embed.add_field(name=f"Roles [{len(member.roles)}]", value=member.top_role.mention)
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
