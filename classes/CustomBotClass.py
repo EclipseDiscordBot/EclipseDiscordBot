@@ -96,7 +96,8 @@ class CustomBot(commands.Bot):
             list.append(row["id"])
         if message.author.id in list:
             return
-        if message.guild.id in list:
-            return
+        if message.guild is not None:
+            if message.guild.id in list:
+                return
         ctx = await self.get_context(message, cls=context.Context)
         await self.invoke(ctx)

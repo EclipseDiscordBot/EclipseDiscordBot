@@ -76,7 +76,7 @@ def mutual_guilds():
     user: discord.User = bot.get_user(user_id)
     if user is None:
         response_json = response_templates['failure'].copy()
-        response_json['reason'] = 'invalid_user_id'
+        response_json['reason'] = 'invalid_user_id_or_unknown_user'
         return response_json
     mutual_guildss = user.mutual_guilds
     if not mutual_guilds:
@@ -91,7 +91,7 @@ def mutual_guilds():
         roles: List[discord.Role] = member.roles
         for role in roles:
             role: discord.Role
-            if role.permissions.manage_guild or role.permissions.administrator:
+            if role.permissions.manage_guild or role.permissions.administrator or member == server.owner:
                 guild = {
                     "name": str(server),
                     "id": server.id,
