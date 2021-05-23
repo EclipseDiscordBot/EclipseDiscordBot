@@ -2,57 +2,55 @@ import discord
 from discord.ext import commands
 from classes import CustomBotClass, indev_check
 from constants import emojis
+import asyncio
 
 
 class TicketingSystem(commands.Cog):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
-    @commands.command()
-    @indev_check.command_in_development()
-    @commands.cooldown(1, 600, commands.BucketType.member)
-    async def ticket(self, ctx: commands.Context, reason: str):
-        data = await self.bot.pool.fetch("SELECT * FROM tickets WHERE creator_uid=$1 AND guild_uid=$2", ctx.author.id,
-                                         ctx.guild.id)
-        if data[0]['ticket_no'] == 0:
-            await ctx.reply(
-                "Sorry but you already have a ticket in this server. currently you cannot open multiple tickets in the same server!")
-            return
-        data2 = await self.bot.pool.fetch("SELECT * FROM tickets WHERE guild_uid=$1", ctx.guild.id)
-        list_of_counter = []
-        for row in data2:
-            list_of_counter.append(row['counter'])
-        highest_counter = (
-            max(list_of_counter) if not list_of_counter == [] else 0)
-        guild: discord.Guild = ctx.guild
-        channel: discord.TextChannel = await guild.create_text_channel(f"ticket-{highest_counter}")
-        await channel.set_permissions(guild.default_role, send_messages=False, read_messages=False)
-        async with self.bot.pool.acquire() as conn:
-            async with conn.transaction():
-                await conn.execute(
-                    "INSERT INTO tickets(creator_uid,channel_uid,guild_uid,ticket_no,reason,counter) VALUES($1,$2,$3,$4,$5,$6)",
-                    ctx.author.id, channel.id, ctx.guild.id, 0, reason, highest_counter + 1)
-                e = discord.Embed(title=f'New ticket!', description=reason)
-                e.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-                message: discord.Message = await channel.send(embed=e)
-                await message.add_reaction(emoji=emojis.lock)
-                await ctx.reply(f"ticket opened! {channel.mention}")
+    @commands.has_permissions(administrator=True)
+    @commands.command(name="setup", brief="Set up ticketing system in your server")
+    async def setup(self, ctx):
+        def check(message):
+            return message.author == ctx.author and message.channel == ctx.channel
 
-    @commands.Cog.listener('on_raw_reaction_add')
-    async def ticket_close_listener(self, payload: discord.RawReactionActionEvent):
-        emoji = emojis.lock
-        if str(payload.emoji) == str(emoji):
-            data = await self.bot.pool.fetch("SELECT * FROM tickets WHERE creator_uid=$1 AND channel_uid=$2", payload.user_id, payload.channel_id)
-            if not data:
-                return
-            if data[0]['ticket_no'] == 1:
-                return
-            channel: discord.TextChannel = await self.bot.fetch_channel(data[0]['channel_uid'])
-            # ticket_name = channel.name
-            await channel.delete()
-            async with self.bot.pool.acquire() as conn:
-                async with conn.transaction():
-                    await conn.execute("UPDATE tickets SET ticket_no=1 WHERE creator_uid=$1 AND channel_uid=$2", payload.user_id, payload.channel_id)
+        embed = discord.Embed(title="Ticketing Panel Setup", color=self.bot.color)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+        embed.set_footer(text="Type 'cancel' instead of input to cancel setup!")
+        embed.description = "Alright! Now mention the channel where the 'panel' or where people should react to open a " \
+                            "ticket must be"
+        emb_msg = await ctx.send(embed=embed)
+        try:
+            ch_msg = await self.bot.wait_for('message', check=check, timeout=60)
+        except asyncio.TimeoutError:
+            embed.description = "You took too long to answer! Try the command again!"
+            await emb_msg.edit(embed=embed)
+            return
+        if ch_msg.content.lower() == 'cancel':
+            embed.description = "Cancelled!"
+            await emb_msg.edit(embed=embed)
+            return
+        if not ch_msg.channel_mentions:
+            embed.description = "Uh oh! You didn't mention a channel! Try the command again!"
+            await emb_msg.edit(embed=embed)
+            return
+        panel_channel = ch_msg.channel_mentions[0]
+        await ch_msg.delete()
+        embed.add_field(name="Panel Channel", value=panel_channel.mention)
+        embed.description = "Alright, I've set the panel channel. Now tell me what should be shown in the panel " \
+                            "message embed description"
+        await emb_msg.edit(embed=embed)
+        try:
+            panel_msg_content_msg = await self.bot.wait_for('message', check=check, timeout=60)
+        except asyncio.TimeoutError:
+            embed.description = "You took too long to answer! Try the command again!"
+            await emb_msg.edit(embed=embed)
+            return
+        if panel_msg_content_msg.content.lower() == 'cancel':
+            embed.description = "Cancelled!"
+            await emb_msg.edit(embed=embed)
+            return
 
 
 def setup(bot: CustomBotClass.CustomBot):
