@@ -60,6 +60,8 @@ class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
         await ctx.reply("Restarting...")
         proccessname_setter.try_set_process_name("eclipse_offline")
         os.system("bash startupfile.sh")
+        self.bot.flask_thread.terminate()
+        self.bot.flask_thread.join()
         await self.bot.logout()
 
     @commands.command(hidden=True, name="updatesra",
