@@ -1,11 +1,12 @@
 from typing import List
-import multiprocessing
+
 from constants import basic
 import discord
 from discord.ext import commands, tasks
 from discord_slash import SlashCommand
 from classes import CustomBotClass, proccessname_setter
 from flask import Flask
+from threading import Thread
 from flask import request
 from scripts.python_scripts import stats_webhook
 
@@ -150,7 +151,8 @@ def begin_flask():
 
 if __name__ == "__main__":
     proccessname_setter.try_set_process_name("eclipse_booting")
-    thr = bot.flask_thread = multiprocessing.Process(target=begin_flask, args=())
+    thr = bot.flask_thread = Thread(target=begin_flask)
+    thr.daemon = True
     thr.start()
     bot.flask_instance = app
     update_stats_loop.start()
