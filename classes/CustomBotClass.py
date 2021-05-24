@@ -19,9 +19,9 @@ class CustomBot(commands.Bot):
     def __init__(self, command_prefix, **options):
         super().__init__(command_prefix, **options)
 
-        loop = asyncio.get_event_loop()
+        pgloop = asyncio.get_event_loop()
         f = pickle.load(open('credentials.pkl', 'rb'))
-        self.pool = loop.run_until_complete(
+        self.pool = pgloop.run_until_complete(
             asyncpg.create_pool(
                 dsn=f["postgres_uri"],
                 host=f["postgres_host"],
@@ -106,3 +106,17 @@ class CustomBot(commands.Bot):
                 return
         ctx = await self.get_context(message, cls=context.Context)
         await self.invoke(ctx)
+
+    def send_message_to_user(self, user: discord.User, message: str):
+        loop = self.loop
+        asyncio.run_coroutine_threadsafe(user.send(message), loop)
+
+    def set_new_log_channel(self, guild, channel):
+        loop = self.loop
+        asyncio.run_coroutine_threadsafe(self._set_new_logging_channel(guild, channel), loop)
+
+    async def _set_new_logging_channel(self, guild, channel):
+        async with self.pool.acquire() as conn:
+            async with conn.transaction():
+                await conn.execute("UPDATE logging SET channel_id=$2 WHERE server_id=$1", guild.id, channel.id)
+
