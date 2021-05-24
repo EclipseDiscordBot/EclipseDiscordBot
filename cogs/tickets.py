@@ -10,8 +10,9 @@ class TicketingSystem(commands.Cog):
         self.bot = bot
 
     @commands.has_permissions(administrator=True)
-    @commands.command(name="setup", brief="Set up ticketing system in your server")
-    async def setup(self, ctx):
+    @commands.command(name="tsetup", brief="Set up ticketing system in your server")
+    @indev_check.command_in_development()
+    async def tsetup(self, ctx):
         def check(message):
             return message.author == ctx.author and message.channel == ctx.channel
 
