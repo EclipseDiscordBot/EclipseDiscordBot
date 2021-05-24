@@ -1,13 +1,16 @@
 import asyncio
 import datetime
 import json
+import multiprocessing
 import os
 import pickle
+from threading import Thread
+
 import asyncpraw as apraw
 import asyncpg
 import discord
+from flask import Flask
 from discord.ext import commands
-
 from classes import proccessname_setter, context
 from classes.LoadCog import load_extension
 
@@ -41,6 +44,8 @@ class CustomBot(commands.Bot):
         with open("config/config.json", "r") as read_file:
             data = json.load(read_file)
             self.config = data
+        self.flask_instance: Flask = None
+        self.flask_thread: multiprocessing.Process = None
 
     async def on_ready(self):
         self.load_extension('jishaku')
@@ -96,7 +101,8 @@ class CustomBot(commands.Bot):
             list.append(row["id"])
         if message.author.id in list:
             return
-        if message.guild.id in list:
-            return
+        if message.guild is not None:
+            if message.guild.id in list:
+                return
         ctx = await self.get_context(message, cls=context.Context)
         await self.invoke(ctx)

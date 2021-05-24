@@ -67,7 +67,7 @@ class ImageGeneration(commands.Cog):
                         await f.write(await resp.read())
                         await f.close()
                     else:
-                        await ctx.reply("There was an error with the api")
+                        await ctx.reply(f"There was an error with the api! ```json \n{await resp.json()}\n```")
                         return
 
             file = discord.File(open(f'data/amongus.{rand}.gif', 'rb'))

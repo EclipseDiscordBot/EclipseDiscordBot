@@ -41,9 +41,9 @@ bot = CustomBotClass.CustomBot(
     allowed_mentions=mentions,
     case_insensitive=True)
 
-@tasks.loop(minutes=5)
-async def update_stats_loop():
 
+@tasks.loop(minutes=1)
+async def update_stats_loop():
     await stats_webhook.update_stats(bot)
 
 
@@ -76,7 +76,7 @@ def mutual_guilds():
     user: discord.User = bot.get_user(user_id)
     if user is None:
         response_json = response_templates['failure'].copy()
-        response_json['reason'] = 'invalid_user_id'
+        response_json['reason'] = 'invalid_user_id_or_unknown_user'
         return response_json
     mutual_guildss = user.mutual_guilds
     if not mutual_guilds:
@@ -91,13 +91,15 @@ def mutual_guilds():
         roles: List[discord.Role] = member.roles
         for role in roles:
             role: discord.Role
-            if role.permissions.manage_guild or role.permissions.administrator:
+            if role.permissions.manage_guild or role.permissions.administrator or member == server.owner:
+                print(server.id)
                 guild = {
                     "name": str(server),
-                    "id": server.id,
+                    "id": str(server.id),
                     "logo": str(server.icon_url) if server.icon_url else hash(server.icon_url)
                 }
                 final_list.append(guild)
+                print(guild)
                 break
     if not final_list:
         response_json = response_templates['failure'].copy()
@@ -107,14 +109,51 @@ def mutual_guilds():
     return response_json
 
 
+@app.route("/channels")
+def channels():
+    guild_id = request.args.get('id', default=0, type=int)
+    if guild_id == 0:
+        response_json = response_templates['failure'].copy()
+        response_json['reason'] = 'no_guild_id_specified'
+        return response_json
+    if not bot.is_ready():
+        response_json = response_templates['failure'].copy()
+        response_json['reason'] = 'bot_not_ready'
+        return response_json
+    guild: discord.Guild = bot.get_guild(guild_id)
+    if guild is None:
+        response_json = response_templates['failure'].copy()
+        response_json['reason'] = 'unknown_guild'
+        return response_json
+    channels = guild.channels
+    if channels is None:
+        response_json = response_templates['failure'].copy()
+        response_json['reason'] = 'no_channels_in_guild'
+        return response_json
+    final_channels = []
+    for channel in channels:
+        if not isinstance(channel, discord.TextChannel): continue
+        channel: discord.TextChannel
+        channel_json = {
+            "name": channel.name,
+            "id": channel.id
+        }
+        final_channels.append(channel_json)
+
+    response_json = response_templates['success'].copy()
+    response_json['result'] = final_channels
+    return response_json
+
+
 def begin_flask():
     app.run(port=8076)
 
 
 if __name__ == "__main__":
     proccessname_setter.try_set_process_name("eclipse_booting")
-    thr = Thread(target=begin_flask)
+    thr = bot.flask_thread = Thread(target=begin_flask)
     thr.daemon = True
     thr.start()
+    bot.flask_instance = app
     update_stats_loop.start()
     bot.run(bot.token)

@@ -17,4 +17,4 @@
 -  ###  Y is non-major feature/High priority bug fix
 -  ###  Z is a minor bug fix
 
-## Quick note: THERE IS NO API KEYS HERE GO AWAY PPL WHO WANT EM!
+## Quick note: API keys are in a file called `credentials.pkl`, which is in the `.gitignore` file, meaning you wont find it here!

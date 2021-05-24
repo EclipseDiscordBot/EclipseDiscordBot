@@ -1,7 +1,7 @@
 import json
 import os
 import discord
-from classes import CustomBotClass
+from classes import CustomBotClass, proccessname_setter
 import pickle
 from discord.ext import commands
 
@@ -58,6 +58,7 @@ class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
     @commands.is_owner()
     async def restart(self, ctx):
         await ctx.reply("Restarting...")
+        proccessname_setter.try_set_process_name("eclipse_offline")
         os.system("bash startupfile.sh")
         await self.bot.logout()
 
