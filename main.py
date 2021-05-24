@@ -98,10 +98,10 @@ async def mutual_guilds():
             role: discord.Role
             if role.permissions.manage_guild or role.permissions.administrator or member == server.owner:
                 guild = {
-                    "name": str(server),
-                    "id": str(server.id),
-                    "logo": str(server.icon_url) if server.icon_url else hash(server.icon_url)
-                }
+                    "name": str(server), "id": str(
+                        server.id), "logo": str(
+                        server.icon_url) if server.icon_url else hash(
+                        server.icon_url)}
                 final_list.append(guild)
                 break
     if not final_list:
@@ -141,7 +141,8 @@ async def channels():
         return response_json
     final_channels = []
     for channel in channels:
-        if not isinstance(channel, discord.TextChannel): continue
+        if not isinstance(channel, discord.TextChannel):
+            continue
         channel: discord.TextChannel
         channel_json = {
             "name": channel.name,
@@ -203,7 +204,6 @@ async def logging_channel_update():
     }
 
 
-
 @app.route("/code")
 async def gen_code():
     user_id = request.args.get('uid', default=0, type=str)
@@ -239,7 +239,10 @@ async def gen_code():
         return response_json
     try:
         code = ''.join(random.choices("0123456789", k=6))
-        check_id = ''.join(random.choices("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", k=24))
+        check_id = ''.join(
+            random.choices(
+                "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+                k=24))
         otps[check_id] = code
         message = f'Hello! just barely made it through some cables, routers, ISPs and satellites to your discord DMs, anyway here\'s a very important code! this code allows anybody to `{basic.scopes[scope]}` in `{guild.name}`! so don\'t share it with anybody! it expires in 5 minutes, so use it soon!\n `{code}`\n Code not working? join the support server at {basic.support_server} and ask <@605364556465963018>'
         bot.send_message_to_user(user, message)

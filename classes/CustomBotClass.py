@@ -113,10 +113,11 @@ class CustomBot(commands.Bot):
 
     def set_new_log_channel(self, guild, channel):
         loop = self.loop
-        asyncio.run_coroutine_threadsafe(self._set_new_logging_channel(guild, channel), loop)
+        asyncio.run_coroutine_threadsafe(
+            self._set_new_logging_channel(
+                guild, channel), loop)
 
     async def _set_new_logging_channel(self, guild, channel):
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("UPDATE logging SET channel_id=$2 WHERE server_id=$1", guild.id, channel.id)
-
