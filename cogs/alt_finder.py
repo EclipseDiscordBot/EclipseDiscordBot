@@ -33,14 +33,14 @@ class AltFinder(commands.Cog):
                     counter += 1
             alts.sort(reverse=True, key=checks.created_at)
             for alt in alts:
-                paginator.add_line(f"{alt.index(alts)+1}) {alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
+                paginator.add_line(f"{alts.index(alt)+1}) {alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
         if not dur:
             all_membrs = ctx.guild.members
             all_membrs.sort(reverse=True, key=checks.created_at)
             new_all_membrs = all_membrs[:size]
             for alt in new_all_membrs:
                 paginator.add_line(
-                    f"{alt.index(alts)+1}) {alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
+                    f"{alts.index(alt)+1}) {alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
         for page in paginator.pages:
             title = f"Accounts less than {humanize.precisedelta(delta)} old" if dur else "Newest accounts"
             embed=discord.Embed(title=title, description=page, color=self.bot.color)
