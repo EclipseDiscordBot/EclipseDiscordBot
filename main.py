@@ -241,7 +241,7 @@ async def gen_code():
         code = ''.join(random.choices("0123456789", k=6))
         check_id = ''.join(random.choices("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", k=24))
         otps[check_id] = code
-        message = f'Hello! just barely made it through some cables, routers, ISPs and satellites to your discord DMs, anyway here\'s a very important code! this code allows anybody to `{basic.scopes[scope]}` in `{guild.name}`! so don\'t share it with anybody! it expires in 5 minutes, so use it soon!\n `{code}`\n Code not working? join the support server at {basic.support_server} and ask <@605364556465963018>'
+        message = f'Hello! just barely made it through some cables, routers, ISPs and satellites to your discord DMs, anyway here\'s a very important code! this code allows anybody to `{basic.scopes[scope]}` in `{guild.name}`! so don\'t share it with anybody! \n `{code}`\n Code not working? join the support server at {basic.support_server} and ask <@605364556465963018>'
         bot.send_message_to_user(user, message)
 
         return {
