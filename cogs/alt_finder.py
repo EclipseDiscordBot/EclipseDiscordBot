@@ -14,21 +14,24 @@ class AltFinder(commands.Cog):
     @commands.command()
     @commands.has_permissions(kick_members=True)
     @commands.guild_only()
-    async def alts(self, ctx, dur="7d", size: int = 10):
-        if not dur.lower().endswith("d"):
-            return await ctx.send("The duration must be days like `7d`")
-
-        delta = datetime.timedelta(days=int(dur[:-1]))
+    async def alts(self, ctx, dur=None, size: int = 10):
+        if dur:
+            if not dur.lower().endswith("d"):
+                return await ctx.send("The duration must be days like `7d`")
         alts = []
 
         paginator = commands.Paginator()
         counter = 0
         for member in ctx.guild.members:
-            if (datetime.datetime.now() - member.created_at) < delta:
-                if counter > size:
-                    break
+            if dur:
+                delta = datetime.timedelta(days=int(dur[:-1]))
+                if (datetime.datetime.now() - member.created_at) < delta:
+                    if counter > size:
+                        break
                 alts.append(member)
                 counter += 1
+            else:
+                alts.append(member)
         alts.sort(reverse=True, key=checks.created_at)
         for alt in alts:
             paginator.add_line(f"{alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
