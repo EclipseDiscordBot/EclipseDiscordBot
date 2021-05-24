@@ -40,7 +40,8 @@ class AltFinder(commands.Cog):
                 paginator.add_line(
                     f"{alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
         for page in paginator.pages:
-            embed=discord.Embed(title=f"Accounts less than {humanize.precisedelta(delta)} old", description=page, color=self.bot.color)
+            title = f"Accounts less than {humanize.precisedelta(delta)} old" if dur else "Newest accounts"
+            embed=discord.Embed(title=title, description=page, color=self.bot.color)
             await ctx.send(embed=embed)
 
 
