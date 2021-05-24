@@ -31,7 +31,10 @@ class AltFinder(commands.Cog):
                 alts.append(member)
                 counter += 1
             else:
+                if counter > size:
+                    break
                 alts.append(member)
+                counter += 1
         alts.sort(reverse=True, key=checks.created_at)
         for alt in alts:
             paginator.add_line(f"{alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
