@@ -35,8 +35,10 @@ class AltFinder(commands.Cog):
             for alt in alts:
                 paginator.add_line(f"{alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
         if not dur:
-            all_membrs = (ctx.guild.members.sort(reverse=True, key=checks.created_at))[:size]
-            for alt in all_membrs:
+            all_membrs = ctx.guild.members
+            all_membrs.sort(reverse=True, key=checks.created_at)
+            new_all_membrs = all_membrs[:size]
+            for alt in new_all_membrs:
                 paginator.add_line(
                     f"{alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
         for page in paginator.pages:
