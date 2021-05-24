@@ -51,7 +51,8 @@ class TicketingSystem(commands.Cog):
             embed.description = "Cancelled!"
             await emb_msg.edit(embed=embed)
             return
-
+        embed.add_field(name="Panel Embed Description", value=panel_msg_content_msg.content)
+        embed.description = "Okay the setup is almost finished! "
 
 def setup(bot: CustomBotClass.CustomBot):
     bot.add_cog(TicketingSystem(bot))

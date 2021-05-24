@@ -31,16 +31,10 @@ class AltFinder(commands.Cog):
                 counter += 1
         alts.sort(reverse=True, key=checks.created_at)
         for alt in alts:
-            paginator.add_line(
-                f"*`{(alts.index(alt)) + 1}.`* - {alt.mention} - {humanize.naturaldate(alt.created_at.date())}\n")
+            paginator.add_line(f"{alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
         for page in paginator.pages:
-            embed = discord.Embed(
-                title=f"New accounts in {ctx.guild.name}",
-                description=page,
-                color=self.bot.color)
-            embed.set_footer(
-                text=f"Showing {size} alts less than {humanize.precisedelta(delta)} old")
-            await ctx.send(embed=embed)
+            await ctx.send(page)
+
 
 
 def setup(bot):
