@@ -395,46 +395,50 @@ class Utility(commands.Cog):
 
         try:
             discriminator = flags["discrim"]
+            conv_dict["discrim"] = discriminator
         except KeyError:
             conv_dict["discrim"] = "0"
         finally:
-            conv_dict["discrim"] = discriminator
             if conv_dict["discrim"] != "0":
+                discriminator = conv_dict["discrim"]
                 for member in total_list:
                     if not str(discriminator) == str(member.discriminator):
                         total_list.pop(total_list.index(member))
 
         try:
             name = flags["name"]
+            conv_dict["name"] = name
         except KeyError:
             conv_dict["name"] = " "
         finally:
-            conv_dict["name"] = name
+            name = conv_dict["name"]
             if conv_dict["name"] != " ":
                 for member in total_list:
                     if not str(name) == str(member.name):
                         total_list.pop(total_list.index(member))
         try:
             activity = flags["activity"]
+            conv_dict["activity"] = activity
         except KeyError:
             conv_dict["activity"] = " "
         finally:
-            conv_dict["activity"] = activity
+            activity = conv_dict["activity"]
             if conv_dict["activity"] != " ":
                 for member in total_list:
                     if not str(activity) in str(member.activities):
                         total_list.pop(total_list.index(member))
         try:
             status = flags["status"]
+            conv_dict["status"] = status
         except KeyError:
-            conv_dict["discrim"] = "0"
+            conv_dict["status"] = " "
         finally:
-            conv_dict["discrim"] = status
+            status = conv_dict["status"]
             valid_status = ["online", "dnd", "do not disturb", "idle"]
             if status.lower() not in valid_status:
                 await ctx.send("That is not a valid status.")
                 return
-            if conv_dict["status"] != "0":
+            if conv_dict["status"] != " ":
                 for member in total_list:
                     if not str(member.status) == status:
                         total_list.pop(total_list.index(member))
