@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, flags
 from classes import indev_check
 import asyncio
 from classes import CustomBotClass, checks
@@ -8,7 +8,6 @@ from constants import emojis
 from constants.basic import support_server
 import humanize
 import datetime
-
 
 def text_to_emoji(count):
     base = 0x1f1e6
@@ -372,6 +371,84 @@ class Utility(commands.Cog):
                                                                                       "Offline <:status_offline:844216076543721523>"))
         embed.add_field(name=f"Roles [{len(member.roles)}]", value=member.top_role.mention)
         await ctx.send(embed=embed)
+
+
+    @flags.add_flag("--role", type=discord.Role)
+    @flags.add_flag("--discrim", type=str)
+    @flags.add_flag("--name", type=str)
+    @flags.add_flag("--activity", type=str)
+    @flags.add_flag("--status", type=str)
+    @flags.command()
+    async def memberswith(self, ctx, **flags):
+        conv_dict = {}
+        total_list = ctx.guild.members
+        try:
+            role = flags["role"]
+        except KeyError:
+            conv_dict["role"] = ctx.guild.default_role.id
+        finally:
+            conv_dict["role"] = role.id
+            for member in total_list:
+                role = ctx.guild.get_role(int(conv_dict["role"]))
+                if role not in member.roles:
+                    total_list.pop(total_list.index(member))
+
+        try:
+            discriminator = flags["discrim"]
+        except KeyError:
+            conv_dict["discrim"] = "0"
+        finally:
+            conv_dict["discrim"] = discriminator
+            if conv_dict["discrim"] != "0":
+                for member in total_list:
+                    if not str(discriminator) == str(member.discriminator):
+                        total_list.pop(total_list.index(member))
+
+        try:
+            name = flags["name"]
+        except KeyError:
+            conv_dict["name"] = " "
+        finally:
+            conv_dict["name"] = name
+            if conv_dict["name"] != " ":
+                for member in total_list:
+                    if not str(name) == str(member.name):
+                        total_list.pop(total_list.index(member))
+        try:
+            activity = flags["activity"]
+        except KeyError:
+            conv_dict["activity"] = " "
+        finally:
+            conv_dict["activity"] = activity
+            if conv_dict["activity"] != " ":
+                for member in total_list:
+                    if not str(activity) in str(member.activities):
+                        total_list.pop(total_list.index(member))
+        try:
+            status = flags["status"]
+        except KeyError:
+            conv_dict["discrim"] = "0"
+        finally:
+            conv_dict["discrim"] = status
+            valid_status = ["online", "dnd", "do not disturb", "idle"]
+            if status.lower() not in valid_status:
+                await ctx.send("That is not a valid status.")
+                return
+            if conv_dict["status"] != "0":
+                for member in total_list:
+                    if not str(member.status) == status:
+                        total_list.pop(total_list.index(member))
+
+        final_str = " | ".join(member.mention for member in total_list)
+        embed=discord.Embed(title="Members with", description=final_str, color=self.bot.color)
+        await ctx.send(embed=embed)
+
+
+
+
+
+
+
 
 
 def setup(bot):
