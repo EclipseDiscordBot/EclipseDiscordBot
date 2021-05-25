@@ -378,7 +378,7 @@ class Utility(commands.Cog):
     @flags.add_flag("--name", type=str)
     @flags.add_flag("--activity", type=str)
     @flags.add_flag("--status", type=str)
-    @flags.command()
+    @commands.command(cls=flags.FlagCommand)
     async def memberswith(self, ctx, **flags):
         conv_dict = {}
         total_list = ctx.guild.members
@@ -452,5 +452,4 @@ class Utility(commands.Cog):
 
 
 def setup(bot):
-    bot.add_command(flags)
     bot.add_cog(Utility(bot))
