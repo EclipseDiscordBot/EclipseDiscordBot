@@ -384,10 +384,10 @@ class Utility(commands.Cog):
         total_list = ctx.guild.members
         try:
             role = flags["role"]
+            conv_dict["role"] = role.id
         except KeyError:
             conv_dict["role"] = ctx.guild.default_role.id
         finally:
-            conv_dict["role"] = role.id
             for member in total_list:
                 role = ctx.guild.get_role(int(conv_dict["role"]))
                 if role not in member.roles:
