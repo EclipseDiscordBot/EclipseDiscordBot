@@ -395,7 +395,7 @@ class Utility(commands.Cog):
                     if role not in member.roles:
                         total_list.pop(total_list.index(member))
 
-        async def filer_discrim(conv_dict, flags, total_list):
+        async def filter_discrim(conv_dict, flags, total_list):
 
             try:
                 discriminator = flags["discrim"]
@@ -462,6 +462,8 @@ class Utility(commands.Cog):
             await filter_name(conv_dict, flags, total_list)
         if flags["status"]:
             await filter_status(conv_dict, flags, total_list)
+        if flags["discrim"]:
+            await filter_discrim(conv_dict, flags, total_list)
 
         final_str = " | ".join(member.mention for member in total_list)
         embed = discord.Embed(title="Members with", description=final_str, color=self.bot.color)
