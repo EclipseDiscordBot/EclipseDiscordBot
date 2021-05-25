@@ -9,6 +9,7 @@ from constants.basic import support_server
 import humanize
 import datetime
 
+
 def text_to_emoji(count):
     base = 0x1f1e6
     return chr(base + count)
@@ -372,7 +373,6 @@ class Utility(commands.Cog):
         embed.add_field(name=f"Roles [{len(member.roles)}]", value=member.top_role.mention)
         await ctx.send(embed=embed)
 
-
     @flags.add_flag("--role", type=discord.Role)
     @flags.add_flag("--discrim", type=str)
     @flags.add_flag("--name", type=str)
@@ -382,77 +382,90 @@ class Utility(commands.Cog):
     async def memberswith(self, ctx, **flags):
         conv_dict = {}
         total_list = ctx.guild.members
-        try:
-            role = flags["role"]
-            conv_dict["role"] = role.id
-        except KeyError:
-            conv_dict["role"] = ctx.guild.default_role.id
-        finally:
-            for member in total_list:
-                role = ctx.guild.get_role(int(conv_dict["role"]))
-                if role not in member.roles:
-                    total_list.pop(total_list.index(member))
 
-        try:
-            discriminator = flags["discrim"]
-            conv_dict["discrim"] = discriminator
-        except KeyError:
-            conv_dict["discrim"] = "0"
-        finally:
-            if conv_dict["discrim"] != "0":
-                discriminator = conv_dict["discrim"]
+        async def filter_role(conv_dict, flags, total_list):
+            try:
+                role = flags["role"]
+                conv_dict["role"] = role.id
+            except KeyError:
+                conv_dict["role"] = ctx.guild.default_role.id
+            finally:
                 for member in total_list:
-                    if not str(discriminator) == str(member.discriminator):
+                    role = ctx.guild.get_role(int(conv_dict["role"]))
+                    if role not in member.roles:
                         total_list.pop(total_list.index(member))
 
-        try:
-            name = flags["name"]
-            conv_dict["name"] = name
-        except KeyError:
-            conv_dict["name"] = " "
-        finally:
-            name = conv_dict["name"]
-            if conv_dict["name"] != " ":
-                for member in total_list:
-                    if not str(name) == str(member.name):
-                        total_list.pop(total_list.index(member))
-        try:
-            activity = flags["activity"]
-            conv_dict["activity"] = activity
-        except KeyError:
-            conv_dict["activity"] = " "
-        finally:
-            activity = conv_dict["activity"]
-            if conv_dict["activity"] != " ":
-                for member in total_list:
-                    if not str(activity) in str(member.activities):
-                        total_list.pop(total_list.index(member))
-        try:
-            status = flags["status"]
-            conv_dict["status"] = status
-        except KeyError:
-            conv_dict["status"] = " "
-        finally:
-            status = conv_dict["status"]
-            valid_status = ["online", "dnd", "do not disturb", "idle"]
-            if status.lower() not in valid_status:
-                await ctx.send("That is not a valid status.")
-                return
-            if conv_dict["status"] != " ":
-                for member in total_list:
-                    if not str(member.status) == status:
-                        total_list.pop(total_list.index(member))
+        async def filer_discrim(conv_dict, flags, total_list):
+
+            try:
+                discriminator = flags["discrim"]
+                conv_dict["discrim"] = discriminator
+            except KeyError:
+                conv_dict["discrim"] = "0"
+            finally:
+                if conv_dict["discrim"] != "0":
+                    discriminator = conv_dict["discrim"]
+                    for member in total_list:
+                        if not str(discriminator) == str(member.discriminator):
+                            total_list.pop(total_list.index(member))
+
+        async def filter_name(conv_dict, flags, total_list):
+            try:
+                name = flags["name"]
+                conv_dict["name"] = name
+            except KeyError:
+                conv_dict["name"] = " "
+            finally:
+                name = conv_dict["name"]
+                if conv_dict["name"] != " ":
+                    for member in total_list:
+                        if not str(name) == str(member.name):
+                            total_list.pop(total_list.index(member))
+
+        async def filter_activity(conv_dict, flags, total_list):
+            try:
+                activity = flags["activity"]
+                conv_dict["activity"] = activity
+            except KeyError:
+                conv_dict["activity"] = " "
+            finally:
+                activity = conv_dict["activity"]
+                if conv_dict["activity"] != " ":
+                    for member in total_list:
+                        if not str(activity) in str(member.activities):
+                            total_list.pop(total_list.index(member))
+
+        async def filter_status(conv_dict, flags, total_list):
+            try:
+                status = flags["status"]
+                conv_dict["status"] = status
+            except KeyError:
+                conv_dict["status"] = " "
+            finally:
+                status = conv_dict["status"]
+                valid_status = ["online", "dnd", "do not disturb", "idle"]
+                if status.lower() not in valid_status:
+                    await ctx.send("That is not a valid status.")
+                    return
+                if conv_dict["status"] != " ":
+                    for member in total_list:
+                        if not str(member.status) == status:
+                            total_list.pop(total_list.index(member))
+
+        if flags["role"]:
+            await filter_role(conv_dict, flags, total_list)
+        if flags["activity"]:
+            await filter_activity(conv_dict, flags, total_list)
+        if flags["name"]:
+            await filter_name(conv_dict, flags, total_list)
+        if flags["discrim"]:
+            await filter_name(conv_dict, flags, total_list)
+        if flags["status"]:
+            await filter_status(conv_dict, flags, total_list)
 
         final_str = " | ".join(member.mention for member in total_list)
-        embed=discord.Embed(title="Members with", description=final_str, color=self.bot.color)
+        embed = discord.Embed(title="Members with", description=final_str, color=self.bot.color)
         await ctx.send(embed=embed)
-
-
-
-
-
-
-
 
 
 def setup(bot):
