@@ -46,7 +46,7 @@ class SnipeCog(commands.Cog):
         embed=discord.Embed(title=f"in {channel.mention} {created}", description=row['msg_content'], color=self.bot.color)
         embed.set_author(name=author, icon_url=author.avatar_url)
         embed.timestamp = datetime.datetime.fromtimestamp(row['msg_deleted'])
-        embed.set_footer(f"Message ID {row['msg_id']} • Message deleted at")
+        embed.set_footer(text=f"Message ID {row['msg_id']} • Message deleted at")
         await ctx.send(embed=embed)
 
 
