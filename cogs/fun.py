@@ -101,7 +101,6 @@ class Fun(commands.Cog):
             embed.description += f"\n{reply}"
             await msg.edit(embed=embed)
 
-
     # TODO make a configuration of chatbot. Example: [p]chatbot <#channel> to talk with the chatbot forever in that channel @Mr Potato#3773 will do it
     @commands.command(name="chatbot",
                       aliases=['chat', 'chatb', 'cb'],

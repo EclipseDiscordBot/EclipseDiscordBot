@@ -131,24 +131,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener("on_member_remove")
     async def member_leave(self, member):
-        joined = list(str(datetime.datetime.utcnow() - member.joined_at)[:-7])
-
-        x = 0
-        for char in joined:
-            if char == ':':
-                joined[x] = " hours, "
-                break
-            x += 1
-
-        x = 0
-        for char in joined:
-            if char == ':':
-                joined[x] = " minutes and "
-                break
-            x += 1
-
-        joined = "".join(joined)
-
+        joined = humanize.precisedelta(datetime.datetime.now() - member.joined_at)
         embed = discord.Embed(
             title="Member left",
             color=discord.Colour.red(),
