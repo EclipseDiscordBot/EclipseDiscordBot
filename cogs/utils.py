@@ -306,42 +306,6 @@ class Utility(commands.Cog):
                                                        ctx.guild.id, prefix)
                                     await ctx.reply("okey! that prefix has been deleted!")
 
-    @commands.command(aliases=['sniper'])
-    @commands.guild_only()
-    async def snipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
-        if channel is None:
-            channel = ctx.channel
-        async with self.bot.pool.acquire() as conn:
-            async with conn.transaction():
-                data2 = await conn.fetch("SELECT * FROM logs WHERE channel_id=$1 AND TYPE=0", channel.id)
-                try:
-                    select_number = -index
-                    select = data2[select_number]
-                except IndexError:
-                    await ctx.reply(f"Too big or Too small index `{index}`")
-                    return
-                e = discord.Embed(title=select['reason'][18:len(
-                    select['reason'])], description=select['msg'], colour=discord.Color.random())
-                await ctx.reply(embed=e)
-
-    @commands.command(aliases=['esnipe', 'esniper'])
-    @commands.guild_only()
-    @indev_check.command_in_development()
-    async def editsnipe(self, ctx, index: int = 1, channel: discord.TextChannel = None):
-        if channel is None:
-            channel = ctx.channel
-        async with self.bot.pool.acquire() as conn:
-            async with conn.transaction():
-                data2 = await conn.fetch("SELECT * FROM logs WHERE channel_id=$1 AND TYPE=1", channel.id)
-                try:
-                    select_number = -index
-                    select = data2[select_number]
-                except IndexError:
-                    await ctx.reply(f"Too big or Too small index `{index}`")
-                    return
-                e = discord.Embed(title=select['reason'][18:len(
-                    select['reason'])], description=select['msg'], colour=discord.Color.random())
-                await ctx.reply(embed=e)
 
     @commands.command(name="userinfo", aliases=["ui"])
     async def userinfo(self, ctx, member: discord.Member = None):
