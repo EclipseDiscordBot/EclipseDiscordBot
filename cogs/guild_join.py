@@ -19,8 +19,8 @@ class GuildJoin(commands.Cog):
                                    guild.id, 0, False)
                 await conn.execute("INSERT INTO automeme(server_id,channel_id,enabled) VALUES($1,$2,$3)",
                                    guild.id, 0, False)
-                await conn.execute("INSERT INTO config(math,server_id) VALUES($1,$2)",
-                                   False, guild.id)
+                await conn.execute("INSERT INTO config(math,server_id,invite_tracker_enable,invite_tracker_channel) VALUES($1,$2,$3,$4)",
+                                   False, guild.id, False, 0)
 
     @commands.Cog.listener()
     async def on_guild_leave(self, guild):

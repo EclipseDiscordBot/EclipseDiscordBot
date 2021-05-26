@@ -9,7 +9,9 @@ class Backup(commands.Cog):
         self.bot = bot
         ignore.ignore(ignore)
 
-    @commands.command("backup", brief=" your server")
+        # TODO FInish backup.py
+
+    @commands.command("backup", brief="backup your server")
     @indev_check.command_in_development()
     @commands.guild_only()
     @is_guild_owner.is_guild_owner()
@@ -22,9 +24,11 @@ class Backup(commands.Cog):
         for channel in channels:
             channel_dict = {
                 "name": channel.name,
-                "permissions": [get_permissions_overwrites.get_overwrites(role, member) for role, member in channel.overwrites.items()]
+                "permissions": [get_permissions_overwrites.get_overwrites(role, member) for role, member in
+                                channel.overwrites.items()]
             }
             print(channel_dict)
+
 
 def setup(bot):
     bot.add_cog(Backup(bot))
