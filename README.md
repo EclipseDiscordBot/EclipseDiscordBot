@@ -16,3 +16,5 @@
 -  ###  where X is Major release
 -  ###  Y is non-major feature/High priority bug fix
 -  ###  Z is a minor bug fix
+
+## Quick note: API keys are in a file called `credentials.pkl`, which is in the `.gitignore` file, meaning you wont find it here!
