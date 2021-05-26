@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 from classes import indev_check
+import humanize
+import datetime
 
 
 class SnipeCog(commands.Cog):
