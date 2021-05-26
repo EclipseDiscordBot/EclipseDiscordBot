@@ -39,7 +39,7 @@ class SnipeCog(commands.Cog):
             channel = ctx.channel
         all = await self.bot.pool.fetch("SELECT * FROM snipe WHERE ch_id = $1", channel.id)
         row = all[index-1]
-        author= bot.get_user(row['msg_author'])
+        author= self.bot.get_user(row['msg_author'])
         created = humanize.naturaltime(datetime.datetime.fromtimestamp(row['msg_created']))
         embed=discord.Embed(title=f"in {channel.mention} {created}", description=row['msg_content'], color=self.bot.color)
         embed.set_author(name=author, icon_url=author.avatar_url)
