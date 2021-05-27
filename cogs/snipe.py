@@ -14,7 +14,7 @@ class SnipeCog(commands.Cog):
     async def snipe_listener(self, message):
         msg_created = datetime.datetime.timestamp(message.created_at)
         msg_deleted = datetime.datetime.timestamp(datetime.datetime.now())
-        all = await self.bot.snipe.fetch("SELECT * FROM snipe WHERE ch_id=$1", message.channel.id)
+        all = await self.bot.pool.fetch("SELECT * FROM snipe WHERE ch_id=$1", message.channel.id)
         if len(all) >= 10:
             last = all[9]['msg_id']
 
