@@ -13,7 +13,7 @@ class SnipeCog(commands.Cog):
     @commands.Cog.listener('on_message_delete')
     async def snipe_listener(self, message):
         msg_created = datetime.datetime.timestamp(message.created_at)
-        msg_deleted = datetime.datetime.timestamp(datetime.datetime.now())
+        msg_deleted = datetime.datetime.timestamp(datetime.datetime.utcnow())
         all = await self.bot.fetch("SELECT * FROM snipe WHERE ch_id=$1", message.channel.id)
         if len(all) >= 10:
             last = all[9]['msg_id']
@@ -40,10 +40,11 @@ class SnipeCog(commands.Cog):
         if channel is None:
             channel = ctx.channel
         all = await self.bot.pool.fetch("SELECT * FROM snipe WHERE ch_id = $1", channel.id)
+        all.reverse()
         row = all[index-1]
         author= self.bot.get_user(row['msg_author'])
         created = humanize.naturaltime(datetime.datetime.fromtimestamp(row['msg_created']))
-        embed=discord.Embed(title=f"in {channel.mention} {created}", description=row['msg_content'], color=self.bot.color)
+        embed=discord.Embed(title=f"in #{channel.name} {created}", description=row['msg_content'], color=self.bot.color)
         embed.set_author(name=author, icon_url=author.avatar_url)
         embed.timestamp = datetime.datetime.fromtimestamp(row['msg_deleted'])
         embed.set_footer(text=f"Message ID {row['msg_id']} • Message deleted at")
