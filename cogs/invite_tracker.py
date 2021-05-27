@@ -33,6 +33,12 @@ class InviteTracker(commands.Cog):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("INSERT INTO invites(id,inviter,guild,uses) VALUES($1,$2,$3,$4)", invite.code, invite.inviter.id, invite.guild.id, 0)
+                rows = await conn.fetch("SELECT * FROM invite_stats WHERE guild=$1", invite.guild.id)
+                final_list = []
+                for row in rows:
+                    final_list.append(row['user_id'])
+                if invite.inviter.id not in final_list:
+                    await conn.execute("INSERT INTO invite_stats(guild,user_id,count) VALUES($1,$2,$3)", invite.guild.id, invite.inviter.id, 0)
 
     @commands.Cog.listener("on_invite_delete")
     async def invite_deleted(self, invite: discord.Invite):
@@ -59,11 +65,12 @@ class InviteTracker(commands.Cog):
                 async with self.bot.pool.acquire() as conn:
                     async with conn.transaction():
                         await conn.execute("UPDATE invites SET uses = $1 WHERE id = $2", updated_invite.uses, invite['id'])
-                        await conn.execute("INSERT INTO invite_stats(guild,user_id,count) VALUES($1,$2,$3) ON CONFLICT (guild,user_id) DO UPDATE SET count=$3 WHERE guild=$1 AND user_id=$2", member.guild.id, member.id, updated_invite.uses)
-                        user_invites = await conn.fetch("SELECT * FROM invite_stats WHERE guild=$1 AND user_id=$2", member.guild.id, member.id)
+                        await conn.execute("UPDATE invite_stats SET count=$1 WHERE guild=$2 AND user_id=$3", updated_invite.uses, member.guild.id, updated_invite.inviter.id)
+                        user_invites = await conn.fetch("SELECT * FROM invite_stats WHERE guild=$1 AND user_id=$2", member.guild.id, updated_invite.inviter.id)
+                        user_invites = user_invites[0]
                         user_invites_count = user_invites['count']
-                        channel_id = row['invite_tracker_channel']
-                        channel = await member.guild.fetch_channel(channel_id)
+                        channel_id = row[0]['invite_tracker_channel']
+                        channel = member.guild.get_channel(channel_id)
                         await channel.send(f"`{member.display_name}` Joined! Invited by `{updated_invite.inviter.display_name}`, who now has {user_invites_count} invites!")
 
 
