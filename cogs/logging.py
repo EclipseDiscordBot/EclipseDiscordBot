@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from classes import CustomBotClass
 from discord import Embed
-import datetime
+import humanize
 import datetime
 
 

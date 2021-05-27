@@ -1,11 +1,11 @@
-import discord
+import asyncpg.pool
 from discord.ext import commands
 
 
 class Context(commands.Context):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._db = None
+        self._db: asyncpg.pool.PoolAcquireContext = None
 
     @property
     def db(self):

@@ -58,7 +58,7 @@ class ErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.UserInputError):
             title = "Input Error"
-            dsc = "Oops! You've made a mistake while giving me input! Please correct it and try again!"
+            dsc = f"Oops! You've made a mistake while giving me input! Please correct it and try again!\n```{ctx.prefix}{ctx.command.qualified_name} {ctx.command.signature}```"
             embed = discord.Embed(
                 title=title,
                 description=dsc,
