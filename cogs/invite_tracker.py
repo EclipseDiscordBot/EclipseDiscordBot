@@ -26,16 +26,16 @@ class InviteTracker(commands.Cog):
         await ctx.reply(f"Ok invite tracker is now set up. any invites created after this point will have their invites counter and show in {text_channel.mention}")
 
     @commands.Cog.listener("on_invite_create")
-    async def invite_created(self, invite: discord.Invite):
+    async def invite_created(self, invite):
         row = await self.bot.pool.fetch("SELECT * FROM config WHERE server_id=$1", invite.guild.id)
         if not row[0]['invite_tracker_enable']:
             return
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.execute("INSERT INTO invites(id,inviter,guild,uses) VALUES($1,$2,$3,$4)", invite.id, invite.inviter.id, invite.guild.id, 0)
+                await conn.execute("INSERT INTO invites(id,inviter,guild,uses) VALUES($1,$2,$3,$4)", invite.code, invite.inviter.id, invite.guild.id, 0)
 
     @commands.Cog.listener("on_invite_delete")
-    async def invite_created(self, invite: discord.Invite):
+    async def invite_deleted(self, invite: discord.Invite):
         row = await self.bot.pool.fetch("SELECT * FROM config WHERE server_id=$1", invite.guild.id)
         if not row[0]['invite_tracker_enable']:
             return
@@ -50,16 +50,21 @@ class InviteTracker(commands.Cog):
             return
         invites = await self.bot.pool.fetch("SELECT * FROM invites WHERE guild=$1", member.guild.id)
         new_invites = await member.guild.invites()
-        parsed_invites = {}
-        for invitee in new_invites:
-            parsed_invites[invitee.id] = invitee
-        for invitee in invites:
-            try:
-                parsed_invites[invitee['id']]
-            except KeyError:
-                return
-            print(invitee)
-            print(parsed_invites[invitee['id']])
+        parsed_new_invites = {}
+        for invite in new_invites:
+            parsed_new_invites[invite.code] = invite
+        for invite in invites:
+            updated_invite = parsed_new_invites[invite['id']]
+            if updated_invite.uses > invite['uses']:
+                async with self.bot.pool.acquire() as conn:
+                    async with conn.transaction():
+                        await conn.execute("UPDATE invites SET uses = $1 WHERE id = $2", updated_invite.uses, invite['id'])
+                        await conn.execute("INSERT INTO invite_stats(guild,user_id,count) VALUES($1,$2,$3) ON CONFLICT (guild,user_id) DO UPDATE SET count=$3 WHERE guild=$1 AND user_id=$2", member.guild.id, member.id, updated_invite.uses)
+                        user_invites = await conn.fetch("SELECT * FROM invite_stats WHERE guild=$1 AND user_id=$2", member.guild.id, member.id)
+                        user_invites_count = user_invites['count']
+                        channel_id = row['invite_tracker_channel']
+                        channel = await member.guild.fetch_channel(channel_id)
+                        await channel.send(f"`{member.display_name}` Joined! Invited by `{updated_invite.inviter.display_name}`, who now has {user_invites_count} invites!")
 
 
 
