@@ -92,7 +92,10 @@ class Logging(commands.Cog):
                     msg.guild_id).get_channel(log_channel_id)
                 if log_chnl is None:
                     return
-                await log_chnl.send(embed=e)
+                try:
+                    await log_chnl.send(embed=e)
+                except discord.HTTPException:
+                    pass
 
     @commands.Cog.listener("on_member_join")
     async def member_join(self, member):
@@ -102,7 +105,7 @@ class Logging(commands.Cog):
         x = 0
         for char in created:
             if char == ":":
-                created[x] == " hours, "
+                created[x] = " hours, "
                 break
             x += 1
 
@@ -227,7 +230,7 @@ class Logging(commands.Cog):
             return
         log_channel_id = await self.get_log_channel(after.guild.id)
         log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
-        e.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = datetime.datetime.utcnow()
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
