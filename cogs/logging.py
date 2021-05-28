@@ -122,7 +122,7 @@ class Logging(commands.Cog):
             color=self.bot.user.color,
             description=f"{member.mention} has joined the server!\nCreated {created} seconds ago.",
             timestamp=datetime.datetime.utcnow())
-        embed.set_author(name=member, icon_url=member.avatar_url)
+        embed.set_author(name=member, icon_url=member.avatar.url)
         embed.set_footer(text=f"ID: {member.id}")
         embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(member.guild.id)
@@ -140,7 +140,7 @@ class Logging(commands.Cog):
             color=discord.Colour.red(),
             description=f"{member.mention} left the server.\nJoined {joined} seconds ago.",
             timestamp=datetime.datetime.utcnow())
-        embed.set_author(name=member, icon_url=member.avatar_url)
+        embed.set_author(name=member, icon_url=member.avatar.url)
         embed.set_footer(text=f"ID: {member.id}")
         embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(member.guild.id)
@@ -327,7 +327,7 @@ class Logging(commands.Cog):
         else:
             return
         embed.timestamp = datetime.datetime.utcnow()
-        embed.set_author(name=member, icon_url=member.avatar_url)
+        embed.set_author(name=member, icon_url=member.avatar.url)
         embed.set_footer(text=f"ID: {member.id}")
         log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
@@ -374,7 +374,7 @@ class Logging(commands.Cog):
         else:
             return
 
-        embed.set_author(name=member, icon_url=member.avatar_url)
+        embed.set_author(name=member, icon_url=member.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_footer(text=f"ID: {member.id}")
         log_channel_id = await self.get_log_channel(after.guild.id)

@@ -5,7 +5,6 @@ from typing import List
 from constants import basic
 import discord
 from discord.ext import commands, tasks
-from discord_slash import SlashCommand
 from classes import CustomBotClass, proccessname_setter
 from constants import basic
 from flask import Flask
@@ -50,7 +49,6 @@ async def update_stats_loop():
     await stats_webhook.update_stats(bot)
 
 
-slash = SlashCommand(bot, override_type=True)
 
 app = Flask(__name__)
 
