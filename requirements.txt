@@ -3,7 +3,7 @@ aiohttp==3.7.4.post0
 asgiref==3.3.4
 astunparse==1.6.3
 async-timeout==3.0.1
-asyncpg @ file:///tmp/build/80754af9/asyncpg_1613247035583/work
+asyncpg
 asyncpixel==1.0.9
 asyncpraw==7.2.0
 asyncprawcore==2.0.1
@@ -16,7 +16,7 @@ click==8.0.0
 cycler==0.10.0
 discord-flags==2.1.1
 discord-py-slash-command==1.1.2
-discord.py==1.7.2
+discord.py
 DiscordUtils==1.2.9.2
 docopt==0.6.2
 Flask==2.0.0
@@ -39,7 +39,7 @@ multidict==5.1.0
 num2words==0.5.10
 numpy==1.20.3
 olefile==0.46
-Pillow @ file:///tmp/build/80754af9/pillow_1617386154241/work
+Pillow
 praw==5.4.0
 prawcore==0.14.0
 prsaw==0.3.1
@@ -54,10 +54,10 @@ requests==2.20.0
 rfc3986==1.5.0
 schedule==1.1.0
 scipy==1.6.3
-setproctitle @ file:///tmp/build/80754af9/setproctitle_1611517559817/work
+setproctitle
 six==1.16.0
 sniffio==1.2.0
-typing-extensions @ file:///home/ktietz/src/ci_mi/typing_extensions_1612808209620/work
+typing-extensions
 update-checker==0.18.0
 urllib3==1.24.3
 Werkzeug==2.0.0
