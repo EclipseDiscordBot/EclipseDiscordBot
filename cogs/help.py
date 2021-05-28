@@ -1,15 +1,15 @@
 import discord
 from discord.ext import commands
-from classes import CustomBotClass
+from classes import CustomBotClass, buttons
 
 
 class EclipseHelpCommand(commands.HelpCommand):
     def get_command_signature(self, command):
-        return f"{self.clean_prefix}{command.qualified_name} {command.signature}"
+        return f"{command.qualified_name} {command.signature}"
 
     async def send_bot_help(self, mapping):
         ctx = self.context
-        bot_prefix = self.clean_prefix
+        bot_prefix = ""
         embed = discord.Embed(
             title="Help",
             description=f"Type *`{bot_prefix}help <category>`* for more info on a category.",
@@ -57,7 +57,7 @@ class EclipseHelpCommand(commands.HelpCommand):
         #else:
             #can_txt = "This command cannot be used by you"
         #embed.set_footer(text=can_txt)
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, view=buttons.Links())
 
 
 class _Help(commands.Cog):

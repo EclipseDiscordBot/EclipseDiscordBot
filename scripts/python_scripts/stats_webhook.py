@@ -4,9 +4,9 @@ import psutil
 import os
 import humanize
 import datetime
+from discord.ext import commands
 
-
-async def update_stats(bot:discord.ext.commands.Bot):
+async def update_stats(bot:commands.Bot):
     latency = f"{bot.latency * 1000}ms"
 
     msg_id = 844559876684513280

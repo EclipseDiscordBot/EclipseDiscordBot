@@ -98,7 +98,7 @@ async def mutual_guilds():
                 guild = {
                     "name": str(server),
                     "id": str(server.id),
-                    "logo": str(server.icon_url) if server.icon_url else hash(server.icon_url)
+                    "logo": str(server.icon.url) if server.icon.url else hash(server.icon.url)
                 }
                 final_list.append(guild)
                 break
