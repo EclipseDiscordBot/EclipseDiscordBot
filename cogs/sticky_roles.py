@@ -30,7 +30,7 @@ class StickyRoles(commands.Cog):
 
     @stickyroles.command(name="add", brief="Add a sticky role")
     async def add(self, ctx, role: discord.Role):
-        if role.position > self.bot.top_role.position:
+        if role.position > self.bot.user.top_role.position:
             await ctx.send(f"{role.name} is higher than my top role, {self.bot.top_role.position.name}. "
                            f"I cannot add it to anyone!")
             return
