@@ -6,6 +6,7 @@ import traceback
 from discord.ext import commands
 from classes import indev_check
 import datetime
+from constants.basic import owners
 import humanize
 
 
@@ -16,6 +17,14 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
+        if ctx.author.id in owners:
+            stacktrace = traceback.format_tb(error.__traceback__)
+            formatted = "\n".join(t for t in stacktrace)
+            embed=discord.Embed(title="Error", description=f"```py{formatted}```",
+                                color=self.bot.color)
+            await ctx.reply(embed=embed)
+
+
         error_code = ''.join(
             random.choices(
                 string.ascii_uppercase +
