@@ -30,8 +30,9 @@ class StickyRoles(commands.Cog):
 
     @stickyroles.command(name="add", brief="Add a sticky role")
     async def add(self, ctx, role: discord.Role):
-        if role.position > self.bot.user.top_role.position:
-            await ctx.send(f"{role.name} is higher than my top role, {self.bot.top_role.position.name}. "
+        bot_mem = ctx.guild.get_member(self.bot.user.id)
+        if role.position > bot_mem.top_role.position:
+            await ctx.send(f"{role.name} is higher than my top role, {bot_mem.top_role.position.name}. "
                            f"I cannot add it to anyone!")
             return
         res = await self.bot.pool.fetch("SELECT * FROM stickyroles WHERE guild_id=$1", ctx.guild.id)
