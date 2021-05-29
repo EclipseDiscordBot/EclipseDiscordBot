@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 import pyboy
 from save_thread_result import ThreadWithResult
-from classes import CustomBotClass, indev_check, ignore, deprecated
+from classes import CustomBotClass, indev_check, ignore, gameboy
 
 
 class GameBoy(commands.Cog):
@@ -13,10 +13,12 @@ class GameBoy(commands.Cog):
     @indev_check.command_in_development()
     @commands.cooldown(1, 3600, commands.BucketType.user)
     @commands.guild_only()
-    @deprecated
     async def _gb(self, ctx: commands.Context):
+        if self.bot.gameboy:
+            await ctx.reply("Sorry, somebody is already using this.. try again later :D")
+            return
         bot = self.bot
-        ignore.ignore(bot)
+        bot.gameboy = True
         message: discord.Message = ctx.message
         if not message.attachments:
             e = discord.Embed(title="Oops! you have not attached any ROM files to your message!",
@@ -30,11 +32,10 @@ class GameBoy(commands.Cog):
             await ctx.reply(embed=e)
             return
         await rom.save(f"data/gameboy/{ctx.author.id}.{rom.filename}")
-        gb_thread = ThreadWithResult(target=pyboy.PyBoy, args=(f"/home/satyamedh/PycharmProjects/EclipseDiscordBot/data/gameboy/{ctx.author.id}.{rom.filename}",))
-        gb_thread.daemon = True
-        gb_thread.start()
-        if getattr(gb_thread, 'result', None):
-            print(gb_thread.result)
+        instance = gameboy.GameBoy(f"data/gameboy/{ctx.author.id}.{rom.filename}", ctx.channel, ctx.author, bot.loop)
+        await instance.start_emulator(ctx)
+        self.bot = False
+
 
 
 

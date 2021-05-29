@@ -76,7 +76,7 @@ class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
     @commands.Cog.listener('on_message')
     async def check_for_token(self, message:discord.Message):
         if self.bot.token in message.content:
-            msg_deleted = False
+            # msg_deleted = False
             try:
                 await message.delete()
                 msg_deleted = True
