@@ -98,7 +98,7 @@ class Logging(commands.Cog):
                     pass
 
     @commands.Cog.listener("on_member_join")
-    async def member_join(self, member):
+    async def member_join(self, member: discord.Member):
         created = list(
             str(datetime.datetime.utcnow() - member.created_at)[:-7])
 
