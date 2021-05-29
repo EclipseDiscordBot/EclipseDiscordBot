@@ -17,7 +17,12 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
-
+        """
+        Handles errors. Ignores if the command isn't found, or when the user is not an owner of the bot, but tried to use a owner only command
+        :param ctx:
+        :param error:
+        :return:
+        """
         error_code = ''.join(
             random.choices(
                 string.ascii_uppercase +
@@ -190,8 +195,14 @@ class ErrorHandler(commands.Cog):
     @commands.command(name="emergency",
                       aliases=["error"],
                       brief="Mark an error as an emergency to prioritize its fixing")
-    @commands.cooldown(1, 300, commands.BucketType.user)
+    @commands.cooldown(1, 30000, commands.BucketType.user)
     async def emergency(self, ctx, error_code):
+        """
+        Alerts the developers about an error, don't use it abusively, or you will get blacklisted
+        :param ctx:
+        :param error_code:
+        :return:
+        """
         log_channel = self.bot.get_channel(840528247708057620)
         async for msg in log_channel.history(limit=50):
             if error_code in msg.content:
