@@ -1,6 +1,6 @@
 import discord
 import datetime
-
+import asyncio
 
 class EclipsePages:
     def __init__(self, embeds: list, timeout: int):
@@ -23,6 +23,7 @@ class EclipsePages:
     async def start(self, ctx):
         self.ctx = ctx
         self.message = await ctx.send(embed=self.embeds[0])
+        await asyncio.sleep(1)
         for em in self.emoji.values():
             self.message.add_reaction(em)
 
@@ -33,7 +34,7 @@ class EclipsePages:
             if now >= _end:
                 await self.message.clear_reactions()
                 break
-            reaction, user = await self.bot.wait_for('reaction_add', check=self.check,
+            reaction, user = await self.ctx.bot.wait_for('reaction_add', check=self.check,
                                                      timeout=(datetime.datetime.now() - _end).total_seconds())
             # remove reaction
             if str(reaction.emoji) in self.emoji.values():
