@@ -4,6 +4,7 @@ import discord
 from classes import CustomBotClass, proccessname_setter
 import pickle
 from discord.ext import commands
+from constants.basic import owners
 
 
 class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
@@ -71,6 +72,18 @@ class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
         pickle.dump(prev_credd, open('credentials.pkl', 'wb'))
         await ctx.reply("Done! rebooting!")
         await self.restart(ctx)
+
+    @commadns.Cog.listener('on_message')
+    async def check_for_token(self, message:discord.Message):
+        if self.bot.token in message.content:
+            try:
+                await message.delete()
+            except Exception:
+                pass
+            for id in owners:
+                dev = self.bot.get_user(int(id))
+                await dev.send(f"PANIK! token has been leaked! in {message.guild.name}!")
+
 
 
 def setup(bot):
