@@ -25,13 +25,14 @@ class StickyRoles(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     @commands.has_permissions(manage_roles=True)
-    async def _stickyroles(self, ctx):
-        await send_sr_details(ctx)
+    async def stickyroles(self, ctx):
+        await self.send_sr_details(ctx)
 
-    @_stickyroles.command(name="add", brief="Add a sticky role")
+    @stickyroles.command(name="add", brief="Add a sticky role")
     async def add(self, ctx, role: discord.Role):
-        if role.position > self.bot.top_role.position:
-            await ctx.send(f"{role.name} is higher than my top role, {self.bot.top_role.position.name}. "
+        bot_mem = ctx.guild.get_member(self.bot.user.id)
+        if role.position > bot_mem.top_role.position:
+            await ctx.send(f"{role.name} is higher than my top role, {bot_mem.top_role.position.name}. "
                            f"I cannot add it to anyone!")
             return
         res = await self.bot.pool.fetch("SELECT * FROM stickyroles WHERE guild_id=$1", ctx.guild.id)
@@ -46,9 +47,9 @@ class StickyRoles(commands.Cog):
         index = len(res) + 1
         await self.bot.pool.execute("INSERT INTO stickyroles (guild_id, role_id, index, enabled) VALUES ($1,$2,$3,$4)",
                                     ctx.guild.id, role.id, index, "True")
-        await send_sr_details(ctx)
+        await self.send_sr_details(ctx)
 
-    @_stickyroles.command(name="remove", brief="Remove a sticky role")
+    @stickyroles.command(name="remove", brief="Remove a sticky role")
     @commands.has_permissions(manage_roles=True)
     async def remove(self, ctx, index: int):
         res = await self.bot.pool.fetch("SELECT * FROM stickyroles WHERE guild_id=$1", ctx.guild.id)
@@ -59,9 +60,9 @@ class StickyRoles(commands.Cog):
                            f"do `{ctx.prefix}stickyroles` to see the index of all configured roles")
             return
         await self.bot.pool.execute("DELETE FROM stickyroles WHERE role_id=$1", role["role_id"])
-        await send_sr_details(ctx)
+        await self.send_sr_details(ctx)
 
-    @_stickyroles.command(name="enable", brief="Enables a sticky role which is already configured")
+    @stickyroles.command(name="enable", brief="Enables a sticky role which is already configured")
     @commands.has_permissions(manage_roles=True)
     async def enable(self, ctx, index):
         res = await self.bot.pool.fetch("SELECT * FROM stickyroles WHERE guild_id=$1", ctx.guild.id)
@@ -72,9 +73,9 @@ class StickyRoles(commands.Cog):
                            f"do `{ctx.prefix}stickyroles` to see the index of all configured roles")
         else:
             await self.bot.pool.execute("UPDATE stickyroles SET enabled=$1 WHERE role_id=$1", "True", role.id)
-            await send_sr_details(ctx)
+            await self.send_sr_details(ctx)
 
-    @_stickyroles.command(name="disable", brief="Disables a sticky role which is already configured")
+    @stickyroles.command(name="disable", brief="Disables a sticky role which is already configured")
     @commands.has_permissions(manage_roles=True)
     async def disable(self, ctx, index):
         res = await self.bot.pool.fetch("SELECT * FROM stickyroles WHERE guild_id=$1", ctx.guild.id)
@@ -85,7 +86,7 @@ class StickyRoles(commands.Cog):
                            f"do `{ctx.prefix}stickyroles` to see the index of all configured roles")
         else:
             await self.bot.pool.execute("UPDATE stickyroles SET enabled=$1 WHERE role_id=$1", "False", role.id)
-            await send_sr_details(ctx)
+            await self.send_sr_details(ctx)
 
 
     @commands.Cog.listener("on_member_leave")
