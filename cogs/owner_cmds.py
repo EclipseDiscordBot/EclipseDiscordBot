@@ -73,16 +73,18 @@ class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
         await ctx.reply("Done! rebooting!")
         await self.restart(ctx)
 
-    @commadns.Cog.listener('on_message')
+    @commands.Cog.listener('on_message')
     async def check_for_token(self, message:discord.Message):
         if self.bot.token in message.content:
+            msg_deleted = False
             try:
                 await message.delete()
+                msg_deleted = True
             except Exception:
                 pass
             for id in owners:
                 dev = self.bot.get_user(int(id))
-                await dev.send(f"PANIK! token has been leaked! in {message.guild.name}!")
+                await dev.send(f"PANIK! token has been leaked! in `{message.guild.name}` by `{message.author.display_name}`! but Regen it to be safe")
 
 
 
