@@ -49,7 +49,6 @@ async def update_stats_loop():
     await stats_webhook.update_stats(bot)
 
 
-
 app = Flask(__name__)
 
 response_templates = {
@@ -98,7 +97,7 @@ async def mutual_guilds():
                 guild = {
                     "name": str(server),
                     "id": str(server.id),
-                    "logo": str(server.icon.url) if server.icon.url else hash(server.icon.url)
+                    "logo": str(server.icon.url) if server.icon else None
                 }
                 final_list.append(guild)
                 break
@@ -199,7 +198,6 @@ async def logging_channel_update():
     return {
         "success": True
     }
-
 
 
 @app.route("/code")
