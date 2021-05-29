@@ -14,19 +14,20 @@ def text_to_emoji(count):
     base = 0x1f1e6
     return chr(base + count)
 
+
 class MyView(discord.ui.View):
-    def __init__(self, embeds:list):
+    def __init__(self, embeds: list):
         super().__init__()
         self.current_page = 0
         self.embeds = embeds
 
-
-    @discord.ui.button(style=discord.ButtonStyle.blurple, label="Previous Page")
+    @discord.ui.button(style=discord.ButtonStyle.blurple,
+                       label="Previous Page")
     async def button(self, button, interaction):
-        if self.current_page == len(embeds)-1:
+        if self.current_page == len(embeds) - 1:
             return
 
-        await interaction.message.edit(embed=self.embeds[self.current_page+1])
+        await interaction.message.edit(embed=self.embeds[self.current_page + 1])
         self.current_page += 1
 
     @discord.ui.button(style=discord.ButtonStyle.blurple, label="Next Page")
@@ -34,9 +35,7 @@ class MyView(discord.ui.View):
         if self.current_page == 0:
             return
 
-        await interaction.message.edit(embed=self.embeds[self.current_page-1])
-
-
+        await interaction.message.edit(embed=self.embeds[self.current_page - 1])
 
 
 class Utility(commands.Cog):
@@ -180,7 +179,7 @@ class Utility(commands.Cog):
 
         answer = "\n".join(
             f"{keycap}: {content}" for keycap,
-                                       content in answers)
+            content in answers)
         actual_poll = await ctx.send(f"{ctx.author} asks: {question}\n\n{answer}")
         for emoji, _ in answers:
             await actual_poll.add_reaction(emoji)
@@ -229,7 +228,7 @@ class Utility(commands.Cog):
             await message.add_reaction(emojis.heave_plus_sign)
 
         allowed_emojis = [emojis.heave_plus_sign] + \
-                         list(emojis.numbers.values())
+            list(emojis.numbers.values())
 
         def check(reactions, users):
             return users == ctx.author and str(
@@ -330,47 +329,71 @@ class Utility(commands.Cog):
                                                        ctx.guild.id, prefix)
                                     await ctx.reply("okey! that prefix has been deleted!")
 
-
     @commands.command(name="userinfo", aliases=["ui"])
     async def userinfo(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        embed = discord.Embed(title=f"Information on {member}", description=member.mention, color=self.bot.color)
+        embed = discord.Embed(
+            title=f"Information on {member}",
+            description=member.mention,
+            color=self.bot.color)
         perms_list = []
         for permission, value in member.guild_permissions:
             if value:
                 perms_list.append(permission.replace("_", " ").title())
         for perm in perms_list:
-            ignored_perms = ["Add Reactions", "Priority Speaker", "Stream", "Embed Links", "Read Message History",
-                             "External Emojis", "Connect", "Speak", "Mute Members", "Deafen Members", "Move Members",
-                             "Use Voice Activation", "Change Nickname", "Manage Webhooks", "Request To Speak"]
+            ignored_perms = [
+                "Add Reactions",
+                "Priority Speaker",
+                "Stream",
+                "Embed Links",
+                "Read Message History",
+                "External Emojis",
+                "Connect",
+                "Speak",
+                "Mute Members",
+                "Deafen Members",
+                "Move Members",
+                "Use Voice Activation",
+                "Change Nickname",
+                "Manage Webhooks",
+                "Request To Speak"]
             if perm in ignored_perms:
                 perms_list.pop(perms_list.index(perm))
         permissions_str = ", ".join(perm for perm in perms_list)
-        joined = humanize.precisedelta(datetime.datetime.now() - member.joined_at)
-        created = humanize.precisedelta(datetime.datetime.now() - member.created_at)
+        joined = humanize.precisedelta(
+            datetime.datetime.now() - member.joined_at)
+        created = humanize.precisedelta(
+            datetime.datetime.now() - member.created_at)
         embed.add_field(name=f"Joined {ctx.guild.name} on", value=joined)
         embed.add_field(name="Created account on", value=created)
         embed.add_field(name="Permissions", value=permissions_str)
-        embed.add_field(name="Status",
-                        value=str(member.status).replace("dnd", "<:status_dnd:844215897206947930> DND").replace(
-                            "do_not_disturb", "<:status_dnd:844215897206947930> DND").replace("online",
-                                                                                              "Online <:status_online:844215865951911968>").replace(
-                            "idle", "Idle <:status_idle:844216072265531452>").replace("offline",
-                                                                                      "Offline <:status_offline:844216076543721523>"))
-        embed.add_field(name=f"Roles [{len(member.roles)}]", value=member.top_role.mention)
+        embed.add_field(
+            name="Status",
+            value=str(
+                member.status).replace(
+                "dnd",
+                "<:status_dnd:844215897206947930> DND").replace(
+                "do_not_disturb",
+                "<:status_dnd:844215897206947930> DND").replace(
+                    "online",
+                    "Online <:status_online:844215865951911968>").replace(
+                        "idle",
+                        "Idle <:status_idle:844216072265531452>").replace(
+                            "offline",
+                "Offline <:status_offline:844216076543721523>"))
+        embed.add_field(
+            name=f"Roles [{len(member.roles)}]",
+            value=member.top_role.mention)
         await ctx.send(embed=embed)
-
 
     @commands.command(name="paginator")
     async def paginator(self, ctx):
         embeds = []
         for i in range(3):
-            embed=discord.Embed(title = f"Page {i}")
+            embed = discord.Embed(title=f"Page {i}")
             embeds.append(embed)
         await ctx.send("Here is the paginator!", view=MyView(embeds))
-
-
 
 
 def setup(bot):

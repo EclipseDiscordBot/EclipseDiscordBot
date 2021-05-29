@@ -138,7 +138,8 @@ async def channels():
         return response_json
     final_channels = []
     for channel in channels:
-        if not isinstance(channel, discord.TextChannel): continue
+        if not isinstance(channel, discord.TextChannel):
+            continue
         channel: discord.TextChannel
         channel_json = {
             "name": channel.name,
@@ -235,7 +236,10 @@ async def gen_code():
         return response_json
     try:
         code = ''.join(random.choices("0123456789", k=6))
-        check_id = ''.join(random.choices("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", k=24))
+        check_id = ''.join(
+            random.choices(
+                "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+                k=24))
         otps[check_id] = code
         message = f'Hello! just barely made it through some cables, routers, ISPs and satellites to your discord DMs, anyway here\'s a very important code! this code allows anybody to `{basic.scopes[scope]}` in `{guild.name}`! so don\'t share it with anybody! \n `{code}`\n Code not working? join the support server at {basic.support_server} and ask <@605364556465963018>'
         bot.send_message_to_user(user, message)

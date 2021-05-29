@@ -74,7 +74,7 @@ class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
         await self.restart(ctx)
 
     @commands.Cog.listener('on_message')
-    async def check_for_token(self, message:discord.Message):
+    async def check_for_token(self, message: discord.Message):
         if self.bot.token in message.content:
             # msg_deleted = False
             try:
@@ -85,7 +85,6 @@ class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
             for id in owners:
                 dev = self.bot.get_user(int(id))
                 await dev.send(f"PANIK! token has been leaked! in `{message.guild.name}` by `{message.author.display_name}`! but Regen it to be safe")
-
 
 
 def setup(bot):

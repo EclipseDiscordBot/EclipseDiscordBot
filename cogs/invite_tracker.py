@@ -13,7 +13,10 @@ class InviteTracker(commands.Cog):
         ignore.ignore(discord)
         ignore.ignore(Embed)
 
-    @commands.command("invitetracker", brief="track invites on your server", aliases=['it', 'trackinvites'])
+    @commands.command("invitetracker",
+                      brief="track invites on your server",
+                      aliases=['it',
+                               'trackinvites'])
     @indev_check.command_in_development()
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)

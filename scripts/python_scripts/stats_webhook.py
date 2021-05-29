@@ -6,19 +6,24 @@ import humanize
 import datetime
 from discord.ext import commands
 
-async def update_stats(bot:commands.Bot):
+
+async def update_stats(bot: commands.Bot):
     latency = f"{bot.latency * 1000}ms"
 
     msg_id = 844559876684513280
     url = (pickle.load(open("credentials.pkl", 'rb')))["usageinfo"]
 
-    webhook = discord.Webhook.from_url(url, adapter=discord.RequestsWebhookAdapter())
+    webhook = discord.Webhook.from_url(
+        url, adapter=discord.RequestsWebhookAdapter())
 
     cpu_usage = f"{psutil.cpu_percent(5)}%"
     ram_usage = f"{psutil.virtual_memory()[2]}%"
     load1, load2, load3 = psutil.getloadavg()
     load_str = f"{load1}, {load2}, {load3}"
-    embed = discord.Embed(title = "Bot Stats", description = f"Online for **{humanize.precisedelta(datetime.datetime.now() - bot.launch_time)}**", color=bot.color)
+    embed = discord.Embed(
+        title="Bot Stats",
+        description=f"Online for **{humanize.precisedelta(datetime.datetime.now() - bot.launch_time)}**",
+        color=bot.color)
     embed.add_field(name="Ping", value=latency)
     embed.add_field(name="Servers", value=len(bot.guilds))
     users = 0

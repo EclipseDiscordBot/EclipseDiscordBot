@@ -15,13 +15,14 @@ class AltFinder(commands.Cog):
     @commands.command()
     @commands.has_permissions(kick_members=True)
     @commands.guild_only()
-    async def alts(self, ctx, dur: typing.Optional[str]=None, size: int = 10):
+    async def alts(self, ctx, dur: typing.Optional[str] = None, size: int = 10):
         if dur:
             if not dur.lower().endswith("d"):
                 return await ctx.send("The duration must be days like `7d`")
         alts = []
 
-        paginator = commands.Paginator(prefix="```yaml", suffix="```", max_size=1000)
+        paginator = commands.Paginator(
+            prefix="```yaml", suffix="```", max_size=1000)
         counter = 0
         if dur:
             for member in ctx.guild.members:
@@ -33,7 +34,8 @@ class AltFinder(commands.Cog):
                     counter += 1
             alts.sort(reverse=True, key=checks.created_at)
             for alt in alts:
-                paginator.add_line(f"{alts.index(alt)+1}) {alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
+                paginator.add_line(
+                    f"{alts.index(alt)+1}) {alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
         if not dur:
             all_membrs = ctx.guild.members
             all_membrs.sort(reverse=True, key=checks.created_at)
@@ -43,9 +45,11 @@ class AltFinder(commands.Cog):
                     f"{alts.index(alt)+1}) {alt} Created at {humanize.naturaldate(alt.created_at.date())} ({humanize.precisedelta(datetime.datetime.now() - alt.created_at)})\n")
         for page in paginator.pages:
             title = f"Accounts less than {humanize.precisedelta(delta)} old" if dur else "Newest accounts"
-            embed=discord.Embed(title=title, description=page, color=self.bot.color)
+            embed = discord.Embed(
+                title=title,
+                description=page,
+                color=self.bot.color)
             await ctx.send(embed=embed)
-
 
 
 def setup(bot):
