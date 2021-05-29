@@ -22,7 +22,7 @@ class EclipsePages:
 
     async def start(self, ctx):
         self.ctx = ctx
-        self.message = await ctx.send(embed=embeds[0])
+        self.message = await ctx.send(embed=self.embeds[0])
         for em in self.emoji.values():
             self.message.add_reaction(em)
 
