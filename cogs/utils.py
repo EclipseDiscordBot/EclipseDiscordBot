@@ -324,14 +324,8 @@ class Utility(commands.Cog):
                                                        ctx.guild.id, prefix)
                                     await ctx.reply("That prefix has been deleted!")
 
-    @commands.command(name="userinfo", aliases=["ui"], brief="Gives information collected on the user")
+    @commands.command(name="userinfo", aliases=["ui"])
     async def userinfo(self, ctx, member: discord.Member = None):
-        """
-        Shows information on the user mentioned
-        :param ctx:
-        :param member: the member whose information to show
-        :return:
-        """
         if member is None:
             member = ctx.author
         embed = discord.Embed(title=f"Information on {member}", description=member.mention, color=self.bot.color)
