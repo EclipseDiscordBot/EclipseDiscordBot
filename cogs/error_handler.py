@@ -4,9 +4,8 @@ import discord
 from classes import CustomBotClass
 import traceback
 from discord.ext import commands
-from classes import indev_check
+from classes import indev_check, testexception
 import datetime
-from constants.basic import owners
 import humanize
 
 
@@ -68,6 +67,16 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.UserInputError):
             title = "Input Error"
             dsc = f"Oops! You've made a mistake while giving me input! Please correct it and try again!\n```{ctx.prefix}{ctx.command.qualified_name} {ctx.command.signature}```"
+            embed = discord.Embed(
+                title=title,
+                description=dsc,
+                color=discord.Color.random())
+            await ctx.reply(embed=embed)
+            return
+
+        elif isinstance(error, testexception.TestException):
+            title = "It works!"
+            dsc = f"The test has worked!```"
             embed = discord.Embed(
                 title=title,
                 description=dsc,
