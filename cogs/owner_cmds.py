@@ -1,7 +1,7 @@
 import json
 import os
 import discord
-from classes import CustomBotClass, proccessname_setter
+from classes import CustomBotClass, proccessname_setter, testexception
 import pickle
 from discord.ext import commands
 from constants.basic import owners
@@ -122,6 +122,20 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
                 await dev.send(
                     f"PANIK! token has been leaked! in `{message.guild.name}` by `{message.author}`! but "
                     f"Regen it to be safe")
+
+    @commands.command(name="test", brief="Tests an aspect of the bot")
+    @commands.is_owner()
+    async def test(self, ctx, aspect: str):
+        """
+        Tests an aspect of the bot
+        :param ctx:
+        :param aspect:
+        :return:
+        """
+        aspect = aspect.lower()
+        if aspect == "error" or aspect == "exception":
+            await ctx.reply("ok, testing!")
+            raise testexception.TestException("TESTTTTTTT")
 
 
 def setup(bot):
