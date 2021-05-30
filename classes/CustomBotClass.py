@@ -72,15 +72,15 @@ class CustomBot(commands.Bot):
                 else:
                     exceptions += f"+ {file} loaded successfully\n"
 
-        embed = discord.Embed(
-            title="Bot ready!",
-            description=f"Cogs status: \n ```diff\n{exceptions}```",
-            color=self.color)
-        embed.timestamp = self.launch_time
-        embed.set_footer(text="Bot online since:")
-        c = self.get_channel(840528237846331432)
-        proccessname_setter.try_set_process_name("eclipse_online")
-        await c.send(embed=embed)
+        # embed = discord.Embed(
+        #     title="Bot ready!",
+        #     description=f"Cogs status: \n ```diff\n{exceptions}```",
+        #     color=self.color)
+        # embed.timestamp = self.launch_time
+        # embed.set_footer(text="Bot online since:")
+        # c = self.get_channel(840528237846331432)
+        # proccessname_setter.try_set_process_name("eclipse_online")
+        # await c.send(embed=embed)
 
     async def on_message(self, message):
         if f"<@{self.user.id}>" in message.content:

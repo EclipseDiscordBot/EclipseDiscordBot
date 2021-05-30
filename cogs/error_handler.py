@@ -50,6 +50,7 @@ class ErrorHandler(commands.Cog):
                 description=dsc,
                 color=discord.Color.random())
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, commands.NoPrivateMessage):
             title = "Server Command"
@@ -62,6 +63,7 @@ class ErrorHandler(commands.Cog):
                 name="Think its a bug and needs to be fixed very quick?",
                 value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, commands.UserInputError):
             title = "Input Error"
@@ -71,6 +73,7 @@ class ErrorHandler(commands.Cog):
                 description=dsc,
                 color=discord.Color.random())
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, commands.CommandOnCooldown):
             title = "Command on cooldown"
@@ -80,6 +83,7 @@ class ErrorHandler(commands.Cog):
                 description=dsc,
                 color=discord.Color.random())
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, commands.MemberNotFound):
             title = "Member not found"
@@ -92,6 +96,7 @@ class ErrorHandler(commands.Cog):
                 name="Think its a bug and needs to be fixed very quick?",
                 value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, discord.errors.Forbidden):
             title = "I don't have the permissions"
@@ -104,6 +109,7 @@ class ErrorHandler(commands.Cog):
                 name="Think its a bug and needs to be fixed very quick?",
                 value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, commands.MissingPermissions):
             title = "Missing Permissions"
@@ -118,6 +124,7 @@ class ErrorHandler(commands.Cog):
                     name="Think its a bug and needs to be fixed very quick?",
                     value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                 await ctx.reply(embed=embed)
+                return
             else:
                 str_perms = ""
                 for perm in error.missing_perms:
@@ -129,6 +136,7 @@ class ErrorHandler(commands.Cog):
                         name="Think its a bug and needs to be fixed very quick?",
                         value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                     await ctx.reply(embed=embed)
+                    return
         elif isinstance(error, commands.BotMissingPermissions):
             title = "Missing Permissions"
             if len(error.missing_perms) == 1:
@@ -142,6 +150,7 @@ class ErrorHandler(commands.Cog):
                     name="Think its a bug and needs to be fixed very quick?",
                     value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                 await ctx.reply(embed=embed)
+                return
             else:
                 str_perms = ""
                 for perm in error.missing_perms:
@@ -153,6 +162,7 @@ class ErrorHandler(commands.Cog):
                         name="Think its needs to be fixed very quick?",
                         value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                     await ctx.reply(embed=embed)
+                    return
 
         elif isinstance(error, indev_check.CommandInDevException):
             await ctx.reply(str(error))
