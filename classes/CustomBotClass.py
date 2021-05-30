@@ -47,8 +47,21 @@ class CustomBot(commands.Bot):
             self.config = data
         self.flask_instance: Flask = None
         self.flask_thread: multiprocessing.Process = None
+        self.prefixes = {}
 
     async def on_ready(self):
+        prefixes = {}
+        all_prefix_data = await _bot.pool.fetch("SELECT * FROM prefixes")
+        all_guilds = await _bot.pool.fetch("SELECT guild_id FROM prefixes")
+        for guild in all_guilds:
+            g_prefixes = []
+            for row in all_prefix_data:
+                if row["guild_id"] == guild["guild_id"]:
+                    g_prefixes.append(row["prefix"])
+            prefixes[guild["guild_id"]] = g_prefixes
+
+        self.prefixes = prefixes
+
         self.load_extension('jishaku')
         exceptions = ""
         for file in os.listdir("./cogs"):
@@ -72,39 +85,17 @@ class CustomBot(commands.Bot):
                 else:
                     exceptions += f"+ {file} loaded successfully\n"
 
-        # embed = discord.Embed(
-        #     title="Bot ready!",
-        #     description=f"Cogs status: \n ```diff\n{exceptions}```",
-        #     color=self.color)
-        # embed.timestamp = self.launch_time
-        # embed.set_footer(text="Bot online since:")
-        # c = self.get_channel(840528237846331432)
-        # proccessname_setter.try_set_process_name("eclipse_online")
-        # await c.send(embed=embed)
-
-    async def on_message(self, message):
-        if f"<@{self.user.id}>" in message.content:
-            if not message.guild:
-                await message.reply("Hello! My prefix here is *`e!`*!")
-            else:
-                async with self.pool.acquire() as conn:
-                    async with conn.transaction():
-                        prefixes = await conn.fetchval("SELECT prefix FROM prefixes WHERE guild_id = $1",
-                                                       message.guild.id)
-                await message.reply(f"Hello! My prefix here is *`{prefixes}`*!")
-
-        await self.process_commands(message)
+        embed = discord.Embed(
+            title="Bot ready!",
+            description=f"Cogs status: \n ```diff\n{exceptions}```",
+            color=self.color)
+        embed.timestamp = self.launch_time
+        embed.set_footer(text="Bot online since:")
+        c = self.get_channel(840528237846331432)
+        proccessname_setter.try_set_process_name("eclipse_online")
+        await c.send(embed=embed)
 
     async def process_commands(self, message):
-        # blacklists = await self.pool.fetch("SELECT * FROM blacklists")
-        # list = []
-        # for row in blacklists:
-        #     list.append(row["id"])
-        # if message.author.id in list:
-        #     return
-        # if message.guild is not None:
-        #     if message.guild.id in list:
-        #         return
         ctx = await self.get_context(message, cls=context.Context)
         await self.invoke(ctx)
 
@@ -120,4 +111,3 @@ class CustomBot(commands.Bot):
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("UPDATE logging SET channel_id=$2 WHERE server_id=$1", guild.id, channel.id)
-
