@@ -65,6 +65,39 @@ class Basic(commands.Cog):
         """
         await ctx.send(f"I am in {len(self.bot.guilds)} servers")
 
+    @commands.command("source", aliases=['src', 'license'])
+    async def _source(self, ctx):
+        """
+        :returns The bot's source code, and its license
+        :param ctx:
+        :return:
+        """
+
+        await ctx.reply("""
+Eclipse is licensed under GPL 3: https://github.com/EclipseDiscordBot/EclipseDiscordBot/blob/master/LICENSE
+**To sum it up**:
+```diff
++Commercial use
++Modification
++Distribution
++Patent use
++Private use
+-Liability
+-Warranty
+```
+Also you **MUST** Follow these with whatever you do with the source:
+```
+License and copyright notice
+State changes
+Disclose source
+Same license
+```
+
+You are legally bound to do the above. if not, you are violating a license, which is illegal
+
+Source: https://github.com/EclipseDiscordBot/EclipseDiscordBot/
+        """)
+
 
 def setup(bot):
     bot.add_cog(Basic(bot))

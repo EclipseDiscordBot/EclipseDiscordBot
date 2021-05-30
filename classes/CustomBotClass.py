@@ -96,15 +96,15 @@ class CustomBot(commands.Bot):
         await self.process_commands(message)
 
     async def process_commands(self, message):
-        blacklists = await self.pool.fetch("SELECT * FROM blacklists")
-        list = []
-        for row in blacklists:
-            list.append(row["id"])
-        if message.author.id in list:
-            return
-        if message.guild is not None:
-            if message.guild.id in list:
-                return
+        # blacklists = await self.pool.fetch("SELECT * FROM blacklists")
+        # list = []
+        # for row in blacklists:
+        #     list.append(row["id"])
+        # if message.author.id in list:
+        #     return
+        # if message.guild is not None:
+        #     if message.guild.id in list:
+        #         return
         ctx = await self.get_context(message, cls=context.Context)
         await self.invoke(ctx)
 
