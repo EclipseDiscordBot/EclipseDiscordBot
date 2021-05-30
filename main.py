@@ -243,7 +243,7 @@ async def gen_code():
         return {
             'success': True,
             "check_id": check_id,
-            "scope": scope
+            "scope": str(scope)
         }
     except discord.Forbidden or discord.HTTPException as e:
         response_json = response_templates['failure'].copy()
