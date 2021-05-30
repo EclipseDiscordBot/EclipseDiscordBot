@@ -7,66 +7,98 @@ from discord.ext import commands
 from constants.basic import owners
 
 
-class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
+class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
+    def cog_check(self, ctx):
+        """
+        So that only owners can use any command from this cog
+        :param ctx:
+        :return:
+        """
+        return ctx.author.id in owners
+
     @commands.command(hidden=True,
-                      brief="PING SPAM(owner only to call other devs on, so nobody use it pls)",
+                      brief="Repeatedly sends the mentioned user's mention",
                       name="spamping")
     @commands.is_owner()
     async def spamping(self, ctx: discord.ext.commands.Context, times: int, member: discord.Member):
+        """
+        Repeatedly mentions the mentioned user
+        :param ctx:
+        :param times: the number of times to repeat
+        :param member: the member whose mention will be repeated
+        :return:
+        """
+        if member.id not in owners:
+            await ctx.reply("It's mean to spam ping anyone that's not a dev :P")
+            return
+
         for i in range(times):
             await ctx.reply(f"{member.mention} {i}")
 
-    @commands.command(hidden=True, brief="Perform SQL commands ")
-    @commands.is_owner()
-    async def sql(self, ctx, query, vals=None):
-        async with self.bot.pool.acquire() as conn:
-            async with conn.transaction():
-                if query.startswith("SELECT"):
-                    ret = await conn.fetchval(query, vals)
-                    await ctx.send(f"The query returned {ret}")
-                else:
-                    if vals is None:
-                        await conn.execute(query)
-                    else:
-                        await conn.execute(query, vals)
-
-    @commands.command(hidden=True, name="disablecog", brief="disables a cog")
+    @commands.command(hidden=True, name="disablecog", brief="Disables a cog")
     @commands.is_owner()
     async def _disable(self, ctx, cog: str):
+        """
+        Disables a cog so it doesn't automatically load on startup
+        :param ctx:
+        :param cog: the cog file path
+        :return:
+        """
         self.bot.config['cogs'][cog] = False
         with open('config/config.json', 'w') as file:
             json.dump(self.bot.config, file, sort_keys=True,
                       indent=2, separators=(',', ': '))
             file.flush()
-        await ctx.reply(f"{cog} has been disabled until re-enabled! rebooting!")
+        await ctx.reply(f"{cog} has been disabled until re-enabled! Rebooting!")
         await self.restart(ctx)
 
-    @commands.command(hidden=True, name="enablecog", brief="enables a cog")
+    @commands.command(hidden=True, name="enablecog", brief="Enables a cog")
     @commands.is_owner()
     async def _enable(self, ctx, cog: str):
+        """
+        Enables a cog so that it automatically loads on startup
+        :param ctx:
+        :param cog:
+        :return:
+        """
         self.bot.config['cogs'][cog] = True
         with open('config/config.json', 'w') as file:
             json.dump(self.bot.config, file, sort_keys=True,
                       indent=2, separators=(',', ': '))
             file.flush()
-        await ctx.reply(f"{cog} has been enabled! rebooting!")
+        await ctx.reply(f"{cog} has been enabled! Rebooting!")
         await self.restart(ctx)
 
-    @commands.command(hidden=True)
+    @commands.command(name="restart", brief="Restarts the bot", hidden=True)
     @commands.is_owner()
     async def restart(self, ctx):
+        """
+        Restarts the bot
+        Fun Fact: this is the most used command
+        :param ctx:
+        :return:
+        """
         await ctx.reply("Restarting...")
         proccessname_setter.try_set_process_name("eclipse_offline")
         os.system("bash startupfile.sh")
-        await self.bot.logout()
+        await self.bot.close()
 
     @commands.command(hidden=True, name="updatesra",
                       aliases=["sra"], brief="Updates SRA key")
     @commands.is_owner()
+    @commands.dm_only()
     async def updatesra(self, ctx, key: str):
+        """
+        The two facts that lead to this command:
+            - SRA keys expire every 5 days or so
+            - Developers are lazy
+        :param ctx:
+        :param key: the key to replace it with
+        :return:
+        """
         prev_credd = pickle.load(open('credentials.pkl', 'rb'))
         prev_credd['some_random_api'] = key
         pickle.dump(prev_credd, open('credentials.pkl', 'wb'))
@@ -74,18 +106,22 @@ class OwnerOnlyCommands(commands.Cog, name="DevCommands"):
         await self.restart(ctx)
 
     @commands.Cog.listener('on_message')
-    async def check_for_token(self, message:discord.Message):
+    async def check_for_token(self, message: discord.Message):
+        """
+        Worst case scenario management
+        :param message:
+        :return:
+        """
         if self.bot.token in message.content:
-            # msg_deleted = False
             try:
                 await message.delete()
-                msg_deleted = True
             except Exception:
                 pass
             for id in owners:
                 dev = self.bot.get_user(int(id))
-                await dev.send(f"PANIK! token has been leaked! in `{message.guild.name}` by `{message.author.display_name}`! but Regen it to be safe")
-
+                await dev.send(
+                    f"PANIK! token has been leaked! in `{message.guild.name}` by `{message.author}`! but "
+                    f"Regen it to be safe")
 
 
 def setup(bot):
