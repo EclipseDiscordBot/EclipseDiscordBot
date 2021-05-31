@@ -46,7 +46,7 @@ class EclipseHelpCommand(commands.Cog):
     @commands.command(name="help", brief="Shows this message")
     async def help(self, ctx, subcommand=None):
         if subcommand is None:
-            await send_bot_help(ctx)
+            await self.send_bot_help(ctx)
             return
 
         if bot.get_command(subcommand) is not None:
