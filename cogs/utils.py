@@ -15,7 +15,7 @@ def text_to_emoji(count):
     return chr(base + count)
 
 
-class Utility(commands.Cog):
+class Utility(commands.Cog, description="Small but useful commands"):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
