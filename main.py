@@ -1,8 +1,5 @@
-import asyncio
 import random
 from typing import List
-
-from constants import basic
 import discord
 from discord.ext import commands, tasks
 from classes import CustomBotClass, proccessname_setter
