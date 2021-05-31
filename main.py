@@ -3,7 +3,6 @@ import random
 from typing import List
 
 from constants import basic
-from cogs import prefixes
 import discord
 from discord.ext import commands, tasks
 from classes import CustomBotClass, proccessname_setter
@@ -16,6 +15,20 @@ from scripts.python_scripts import stats_webhook
 intents = discord.Intents.all()
 
 
+async def get_prefix(eclipse, message):
+    base = []
+    if message.author.id in basic.owners:
+        base.append("")
+    if not message.guild:
+        base.append("e! ")
+        base.append("e!")
+        return base
+    async with eclipse.pool.acquire() as conn:
+        async with conn.transaction():
+            prefixes = await conn.fetch("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
+            for prefix in prefixes:
+                base.append(prefix['prefix'])
+    return commands.when_mentioned_or(*base)(bot, message)
 
 
 mentions = discord.AllowedMentions(
@@ -25,7 +38,7 @@ mentions = discord.AllowedMentions(
     roles=True)
 
 bot = CustomBotClass.CustomBot(
-    command_prefix=prefixes.get_prefix,
+    command_prefix=get_prefix,
     intents=intents,
     allowed_mentions=mentions,
     case_insensitive=True)
@@ -230,7 +243,7 @@ async def gen_code():
         return {
             'success': True,
             "check_id": check_id,
-            "scope": scope
+            "scope": str(scope)
         }
     except discord.Forbidden or discord.HTTPException as e:
         response_json = response_templates['failure'].copy()
