@@ -1,8 +1,5 @@
-import asyncio
 import random
 from typing import List
-
-from constants import basic
 import discord
 from discord.ext import commands, tasks
 from classes import CustomBotClass, proccessname_setter
@@ -17,7 +14,7 @@ intents = discord.Intents.all()
 
 async def get_prefix(eclipse, message):
     base = []
-    if message.author.id in basic.owners:
+    if message.author.id in basic.owners or message.author.id in eclipse.owner_ids:
         base.append("")
     if not message.guild:
         base.append("e! ")
@@ -41,7 +38,8 @@ bot = CustomBotClass.CustomBot(
     command_prefix=get_prefix,
     intents=intents,
     allowed_mentions=mentions,
-    case_insensitive=True)
+    case_insensitive=True,
+    strip_after_prefix=True)
 
 
 @tasks.loop(minutes=1)
