@@ -12,15 +12,15 @@ class BaseHelpView(discord.ui.View):
 
 
 class BaseButton(discord.ui.Button):
-    def __init__(self, label, embed: discord.Embed = None, ctx:commands.Context=None, view=None):
+    def __init__(self, label, embed: discord.Embed = None, ctx: commands.Context = None, custom_view=None):
         super().__init__(style=discord.ButtonStyle.blurple, label=re.sub("([A-Z])", " \\1", label).strip())
         self.embed = embed
-        self.view = view
+        self.custom_view = custom_view
         self.ctx = ctx
 
     async def callback(self, interaction):
         if interaction.user.id == self.ctx.author.id:
-            await interaction.message.edit(embed=self.embed, view=self.view)
+            await interaction.message.edit(embed=self.embed, view=self.custom_view)
         else:
             await interaction.response.send_message(f"Hey, that button can only be used by {ctx.author}! "
                                                     f"Do {ctx.prefix}help if you want help!", ephemeral=True)
@@ -56,14 +56,13 @@ class EclipseHelpCommand(commands.Cog):
         embed.description = new_dsc
         return embed
 
-    async def get_command_help(self, ctx, command): # yes
+    async def get_command_help(self, ctx, command):  # yes
         embed = discord.Embed(title=command.qualified_name, description=command.brief, color=ctx.bot.color)
         embed.add_field(name="Usage", value=f"```yaml\n{ctx.prefix}{command.qualified_name} {command.signature}```")
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         if command.aliases:
             embed.add_field(name="Aliases", value=" ".join(f"`{alias}`" for alias in command.aliases))
         return embed
-
 
     async def get_cog_help(self, ctx, cog_name):
         embed = discord.Embed(title=cog_name, color=self.bot.color)
