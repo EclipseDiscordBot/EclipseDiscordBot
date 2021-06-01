@@ -36,8 +36,7 @@ class EclipseHelpCommand(commands.Cog):
         cog = ctx.bot.get_cog(cog_name)
         cog_buttons = []
         for command in cog.get_commands():
-            embed = discord.Embed(title=command.qualified_name, description=command.brief, color=ctx.bot.color)
-            embed.add_field(name="Usage", value=f"```yaml\n{ctx.prefix}{command.qualified_name} {command.signature}```")
+            embed = await self.get_command_help(ctx, command)
             button = BaseButton(label=command.qualified_name, embed=embed)
             cog_buttons.append(button)
         return BaseHelpView(cog_buttons)
