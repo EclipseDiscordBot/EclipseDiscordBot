@@ -62,6 +62,7 @@ class EclipseHelpCommand(commands.Cog):
         bot = ctx.bot
         cog = bot.get_cog(cog_name)
         embed.description = "\n\n".join(f"`{ctx.prefix}{command.qualified_name}`" for command in cog.get_commands())
+        return embed
 
     @commands.command(name="help", brief="Shows this message")
     async def help(self, ctx, subcommand=None):
@@ -70,8 +71,7 @@ class EclipseHelpCommand(commands.Cog):
             embed = await self.get_bot_help(ctx)
             base_buttons = []
             for cog_name in bot.cogs:
-                cog = bot.get_cog(cog_name)
-                embed = await self.get_cog_help(ctx, cog)
+                embed = await self.get_cog_help(ctx, cog_name)
                 button = BaseButton(label=cog_name, embed=embed)
                 base_buttons.append(button)
             await ctx.send(embed=embed, view=BaseHelpView(base_buttons))
