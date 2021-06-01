@@ -51,11 +51,14 @@ class EclipseHelpCommand(commands.Cog):
         embed.description = new_dsc
         return embed
 
-    async def get_command_help(self, ctx, command):
+    async def get_command_help(self, ctx, command): # yes
         embed = discord.Embed(title=command.qualified_name, description=command.brief, color=ctx.bot.color)
         embed.add_field(name="Usage", value=f"```yaml\n{ctx.prefix}{command.qualified_name} {command.signature}```")
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
+        if command.aliases:
+            embed.add_field(name="Aliases", value=" ".join(f"`{alias}`" for alias in command.aliases))
         return embed
+
 
     async def get_cog_help(self, ctx, cog_name):
         embed = discord.Embed(title=cog_name, color=self.bot.color)
