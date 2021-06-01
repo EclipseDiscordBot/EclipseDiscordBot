@@ -70,7 +70,7 @@ class EclipseHelpCommand(commands.Cog):
             base_buttons = []
             for cog_name in bot.cogs:
                 cog = bot.get_cog(cog_name)
-                embed = self.get_cog_help(ctx, cog)
+                embed = await self.get_cog_help(ctx, cog)
                 button = BaseButton(label=cog_name, embed=embed)
                 base_buttons.append(button)
             await ctx.send(embed=embed, view=BaseHelpView(base_buttons))
@@ -78,7 +78,7 @@ class EclipseHelpCommand(commands.Cog):
 
         if bot.get_command(subcommand) is not None:
             command = bot.get_command(subcommand)
-            embed = await get_command_help(ctx, command)
+            embed = await self.get_command_help(ctx, command)
             await ctx.send(embed=embed)
             return
 
