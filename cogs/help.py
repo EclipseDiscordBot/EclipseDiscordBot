@@ -37,7 +37,7 @@ class EclipseHelpCommand(commands.Cog):
         cog_buttons = []
         for command in cog.get_commands():
             embed = discord.Embed(title=command.qualified_name, description=command.brief, color=ctx.bot.color)
-            embed.add_field(name="Usage", value=f"```yaml\n{ctx.prefix}{command.qualified_name} {command.signature}")
+            embed.add_field(name="Usage", value=f"```yaml\n{ctx.prefix}{command.qualified_name} {command.signature}```")
             button = BaseButton(label=command.qualified_name, embed=embed)
             cog_buttons.append(button)
         return BaseHelpView(cog_buttons)
@@ -58,7 +58,8 @@ class EclipseHelpCommand(commands.Cog):
         return embed
 
     async def get_cog_help(self, ctx, cog_name):
-        embed = discord.Embed(title=cog_name)
+        embed = discord.Embed(title=cog_name, color=self.bot.color)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         bot = ctx.bot
         cog = bot.get_cog(cog_name)
         embed.description = "\n\n".join(f"`{ctx.prefix}{command.qualified_name}`" for command in cog.get_commands())
@@ -68,13 +69,13 @@ class EclipseHelpCommand(commands.Cog):
     async def help(self, ctx, subcommand=None):
         bot = ctx.bot
         if subcommand is None:
-            embed = await self.get_bot_help(ctx)
+            act_embed = await self.get_bot_help(ctx)
             base_buttons = []
             for cog_name in bot.cogs:
                 embed = await self.get_cog_help(ctx, cog_name)
                 button = BaseButton(label=cog_name, embed=embed)
                 base_buttons.append(button)
-            await ctx.send(embed=embed, view=BaseHelpView(base_buttons))
+            await ctx.send(embed=act_embed, view=BaseHelpView(base_buttons))
             return
 
         if bot.get_command(subcommand) is not None:
