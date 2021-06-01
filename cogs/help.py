@@ -1,75 +1,94 @@
 import discord
 from discord.ext import commands
 from classes import CustomBotClass, buttons
+import re
 
 
-class EclipseHelpCommand(commands.HelpCommand):
-    def get_command_signature(self, command):
-        return f"{command.qualified_name} {command.signature}"
-
-    async def send_bot_help(self, mapping):
-        ctx = self.context
-        bot_prefix = ""
-        embed = discord.Embed(
-            title="Help",
-            description=f"Type *`{bot_prefix}help <category>`* for more info on a category.",
-            color=ctx.bot.color)
-        for cog, command in mapping.items():
-            all_cmds = [f"`{c.qualified_name}`" for c in command]
-            if all_cmds:
-                cog_name = getattr(cog, "qualified_name", "No Category")
-                embed.add_field(
-                    name=cog_name,
-                    value=" ".join(all_cmds),
-                    inline=False)
-        await ctx.send(embed=embed, view=buttons.Links())
-
-    async def send_cog_help(self, cog):
-        ctx = self.context
-        embed = discord.Embed(
-            title=f"{cog.qualified_name} Commands",
-            color=ctx.bot.color)
-        all_commands = cog.get_commands()
-        dsc = ""
-        for command in all_commands:
-            dsc += f"**{command.qualified_name}** - {command.brief}\n"
-        embed.description = dsc
-        await ctx.send(embed=embed, view=buttons.Links())
-
-    async def send_command_help(self, command):
-        ctx = self.context
-        # prefix = self.clean_prefix
-        embed = discord.Embed(
-            title=command.qualified_name,
-            color=ctx.bot.color)
-        embed.description = command.brief
-        embed.add_field(
-            name="Usage",
-            value=f"```{self.get_command_signature(command)}```")
-        if command.aliases:
-            a_str = ""
-            for a in command.aliases:
-                a_str += f"`{a}` "
-            embed.add_field(name="Aliases", value=a_str)
-        bool_can = await command.can_run(ctx)
-        if bool_can:
-            can_txt = "This command can be used by you"
-        else:
-            can_txt = "This command cannot be used by you"
-        embed.set_footer(text=can_txt)
-        await ctx.send(embed=embed, view=buttons.Links())
+class BaseHelpView(discord.ui.View):
+    def __init__(self, all_buttons: list):
+        super().__init__()
+        for button in all_buttons:
+            self.add_item(button)
 
 
-class _Help(commands.Cog):
-    def __init__(self, bot: CustomBotClass.CustomBot):
-        self._original_help_command = bot.help_command
-        bot.help_command = EclipseHelpCommand()
-        bot.help_command.cog = self
+class BaseButton(discord.ui.Button):
+    def __init__(self, label, embed: discord.Embed = None):
+        super().__init__(style=discord.ButtonStyle.blurple, label=label)
+        self.embed = embed
+
+    async def callback(self, interaction):
+        await interaction.message.edit(embed=self.embed)
+
+
+class EclipseHelpCommand(commands.Cog):
+    def __init__(self, bot):
         self.bot = bot
+        self.original_help_command = bot.help_command
+        bot.help_command = None
 
     def cog_unload(self):
-        self.bot.help_command = self._original_help_command
+        self.bot.help_command = self.original_help_command
+
+    def _caps(self, str):
+        return re.sub(r"(\w)([A-Z])", r"\1 \2", str)
+
+    async def get_cog_view(self, ctx, cog_name):
+        cog = ctx.bot.get_cog(cog_name)
+        cog_buttons = []
+        for command in cog.get_commands():
+            embed = discord.Embed(title=command.qualified_name, description=command.brief, color=ctx.bot.color)
+            embed.add_field(name="Usage", value=f"```yaml\n{ctx.prefix}{command.qualified_name} {command.signature}")
+            button = BaseButton(label=command.qualified_name, embed=embed)
+            cog_buttons.append(button)
+        return BaseHelpView(cog_buttons)
+
+    async def get_bot_help(self, ctx):
+        bot = ctx.bot
+        embed = discord.Embed(title="Help", color=ctx.bot.color)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
+        dsc = "\n\n".join(f"**{cog_name}**" for cog_name in bot.cogs)
+        new_dsc = self._caps(dsc)
+        embed.description = new_dsc
+        return embed
+
+    async def get_command_help(self, ctx, command):
+        embed = discord.Embed(title=command.qualified_name, description=command.brief, color=ctx.bot.color)
+        embed.add_field(name="Usage", value=f"```yaml\n{ctx.prefix}{command.qualified_name} {command.signature}```")
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
+        return embed
+
+    async def get_cog_help(self, ctx, cog_name):
+        embed = discord.Embed(title=cog_name)
+        bot = ctx.bot
+        cog = bot.get_cog(cog_name)
+        embed.description = "\n\n".join(f"`{ctx.prefix}{command.qualified_name}`" for command in cog.get_commands())
+
+    @commands.command(name="help", brief="Shows this message")
+    async def help(self, ctx, subcommand=None):
+        bot = ctx.bot
+        if subcommand is None:
+            embed = await self.get_bot_help(ctx)
+            base_buttons = []
+            for cog_name in bot.cogs:
+                cog = bot.get_cog(cog_name)
+                embed = await self.get_cog_help(ctx, cog)
+                button = BaseButton(label=cog_name, embed=embed)
+                base_buttons.append(button)
+            await ctx.send(embed=embed, view=BaseHelpView(base_buttons))
+            return
+
+        if bot.get_command(subcommand) is not None:
+            command = bot.get_command(subcommand)
+            embed = await self.get_command_help(ctx, command)
+            await ctx.send(embed=embed)
+            return
+
+        if bot.get_cog(subcommand) is not None:
+            view = await self.get_cog_view(ctx, subcommand)
+            embed = await self.get_cog_help(ctx, subcommand)
+            await ctx.send(embed=embed, view=view)
+            return
 
 
 def setup(bot):
-    bot.add_cog(_Help(bot))
+    bot.add_cog(EclipseHelpCommand(bot))

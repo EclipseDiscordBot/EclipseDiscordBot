@@ -4,9 +4,8 @@ import discord
 from classes import CustomBotClass
 import traceback
 from discord.ext import commands
-from classes import indev_check
+from classes import indev_check, testexception
 import datetime
-from constants.basic import owners
 import humanize
 
 
@@ -17,7 +16,12 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
-
+        """
+        Handles errors. Ignores if the command isn't found, or when the user is not an owner of the bot, but tried to use a owner only command
+        :param ctx:
+        :param error:
+        :return:
+        """
         error_code = ''.join(
             random.choices(
                 string.ascii_uppercase +
@@ -45,6 +49,7 @@ class ErrorHandler(commands.Cog):
                 description=dsc,
                 color=discord.Color.random())
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, commands.NoPrivateMessage):
             title = "Server Command"
@@ -57,6 +62,7 @@ class ErrorHandler(commands.Cog):
                 name="Think its a bug and needs to be fixed very quick?",
                 value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, commands.UserInputError):
             title = "Input Error"
@@ -66,6 +72,17 @@ class ErrorHandler(commands.Cog):
                 description=dsc,
                 color=discord.Color.random())
             await ctx.reply(embed=embed)
+            return
+
+        elif isinstance(error, testexception.TestException):
+            title = "It works!"
+            dsc = f"The test has worked!```"
+            embed = discord.Embed(
+                title=title,
+                description=dsc,
+                color=discord.Color.random())
+            await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, commands.CommandOnCooldown):
             title = "Command on cooldown"
@@ -75,6 +92,7 @@ class ErrorHandler(commands.Cog):
                 description=dsc,
                 color=discord.Color.random())
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, commands.MemberNotFound):
             title = "Member not found"
@@ -87,6 +105,7 @@ class ErrorHandler(commands.Cog):
                 name="Think its a bug and needs to be fixed very quick?",
                 value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, discord.errors.Forbidden):
             title = "I don't have the permissions"
@@ -99,6 +118,7 @@ class ErrorHandler(commands.Cog):
                 name="Think its a bug and needs to be fixed very quick?",
                 value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
             await ctx.reply(embed=embed)
+            return
 
         elif isinstance(error, commands.MissingPermissions):
             title = "Missing Permissions"
@@ -113,6 +133,7 @@ class ErrorHandler(commands.Cog):
                     name="Think its a bug and needs to be fixed very quick?",
                     value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                 await ctx.reply(embed=embed)
+                return
             else:
                 str_perms = ""
                 for perm in error.missing_perms:
@@ -124,6 +145,7 @@ class ErrorHandler(commands.Cog):
                         name="Think its a bug and needs to be fixed very quick?",
                         value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                     await ctx.reply(embed=embed)
+                    return
         elif isinstance(error, commands.BotMissingPermissions):
             title = "Missing Permissions"
             if len(error.missing_perms) == 1:
@@ -137,6 +159,7 @@ class ErrorHandler(commands.Cog):
                     name="Think its a bug and needs to be fixed very quick?",
                     value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                 await ctx.reply(embed=embed)
+                return
             else:
                 str_perms = ""
                 for perm in error.missing_perms:
@@ -148,6 +171,7 @@ class ErrorHandler(commands.Cog):
                         name="Think its needs to be fixed very quick?",
                         value=f"if that's the case, do `{ctx.prefix}emergency {error_code}`")
                     await ctx.reply(embed=embed)
+                    return
 
         elif isinstance(error, indev_check.CommandInDevException):
             await ctx.reply(str(error))
@@ -190,8 +214,14 @@ class ErrorHandler(commands.Cog):
     @commands.command(name="emergency",
                       aliases=["error"],
                       brief="Mark an error as an emergency to prioritize its fixing")
-    @commands.cooldown(1, 300, commands.BucketType.user)
+    @commands.cooldown(1, 30000, commands.BucketType.user)
     async def emergency(self, ctx, error_code):
+        """
+        Alerts the developers about an error, don't use it abusively, or you will get blacklisted
+        :param ctx:
+        :param error_code:
+        :return:
+        """
         log_channel = self.bot.get_channel(840528247708057620)
         async for msg in log_channel.history(limit=50):
             if error_code in msg.content:

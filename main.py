@@ -1,8 +1,5 @@
-import asyncio
 import random
 from typing import List
-
-from constants import basic
 import discord
 from discord.ext import commands, tasks
 from classes import CustomBotClass, proccessname_setter
@@ -17,7 +14,7 @@ intents = discord.Intents.all()
 
 async def get_prefix(eclipse, message):
     base = []
-    if message.author.id in basic.owners:
+    if message.author.id in basic.owners or message.author.id in eclipse.owner_ids:
         base.append("")
     if not message.guild:
         base.append("e! ")
@@ -41,13 +38,13 @@ bot = CustomBotClass.CustomBot(
     command_prefix=get_prefix,
     intents=intents,
     allowed_mentions=mentions,
-    case_insensitive=True)
+    case_insensitive=True,
+    strip_after_prefix=True)
 
 
 @tasks.loop(minutes=1)
 async def update_stats_loop():
     await stats_webhook.update_stats(bot)
-
 
 
 app = Flask(__name__)
@@ -98,7 +95,7 @@ async def mutual_guilds():
                 guild = {
                     "name": str(server),
                     "id": str(server.id),
-                    "logo": str(server.icon.url) if server.icon.url else hash(server.icon.url)
+                    "logo": str(server.icon.url) if server.icon else None
                 }
                 final_list.append(guild)
                 break
@@ -201,7 +198,6 @@ async def logging_channel_update():
     }
 
 
-
 @app.route("/code")
 async def gen_code():
     user_id = request.args.get('uid', default=0, type=str)
@@ -245,7 +241,7 @@ async def gen_code():
         return {
             'success': True,
             "check_id": check_id,
-            "scope": scope
+            "scope": str(scope)
         }
     except discord.Forbidden or discord.HTTPException as e:
         response_json = response_templates['failure'].copy()

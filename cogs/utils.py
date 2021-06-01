@@ -14,105 +14,74 @@ def text_to_emoji(count):
     base = 0x1f1e6
     return chr(base + count)
 
-class MyView(discord.ui.View):
-    def __init__(self, embeds:list):
-        super().__init__()
-        self.current_page = 0
-        self.embeds = embeds
 
-
-    @discord.ui.button(style=discord.ButtonStyle.blurple, label="Previous Page")
-    async def button(self, button, interaction):
-        if self.current_page == len(embeds)-1:
-            return
-
-        await interaction.message.edit(embed=self.embeds[self.current_page+1])
-        self.current_page += 1
-
-    @discord.ui.button(style=discord.ButtonStyle.blurple, label="Next Page")
-    async def button2(self, button, interaction):
-        if self.current_page == 0:
-            return
-
-        await interaction.message.edit(embed=self.embeds[self.current_page-1])
-
-
-
-
-class Utility(commands.Cog):
+class Utility(commands.Cog, description="Small but useful commands"):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
     @commands.command(aliases=['av'],
-                      brief="gives the mentioned user(you if nobody is mentioned)'s avatar")
-    async def avatar(self, ctx, member: discord.Member = None):
-        if member is None:
-            member = ctx.author
+                      brief="Gives the avatar of the user mentioned")
+    async def avatar(self, ctx, user: discord.User = None):
+        """
+    Gives the avatar of the user mentioned. Defaults to the author if no one is mentioned.
+        :param ctx:
+        :param user: the user whose avatar will be shown
+        :return: the avatar of the member
+        """
+        user = user or ctx.author
         embed = discord.Embed(title=" ", description=" ", color=0x2F3136)
-        embed.set_image(url=member.avatar_url)
+        embed.set_image(url=user.avatar.url)
         await ctx.reply(embed=embed)
 
     @commands.command(aliases=["ct", "timedif", "timediff"],
-                      brief="gives the difference between two ids (any ids)")
-    async def snowflake(self, ctx, win_id: int, dm_id: int):
-        win_time = discord.utils.snowflake_time(win_id)
-        dm_time = discord.utils.snowflake_time(dm_id)
-        diff = dm_time - win_time
+                      brief="Gives the time difference between two Discord object IDs")
+    async def snowflake(self, ctx, id1: int, id2: int):
+        """
+    Gives the time difference between two Discord object IDs
+        :param ctx:
+        :param id1: Discord ID 1
+        :param id2: Discord ID 2
+        :return: The time difference between the two objects
+        """
+        one_time = discord.utils.snowflake_time(id1)
+        two_time = discord.utils.snowflake_time(id2)
+        diff = two_time - one_time
         seconds = diff.total_seconds()
         seconds_str = str(seconds)
         final = abs(int(seconds_str))
-        await ctx.send(f"Difference between the two message ID's is `{final}` seconds!")
+        embed = discord.Embed(title=final, color=self.bot.color)
+        embed.add_field(name=str(id1), value=f"**Created time:** {humanize.naturaltime(one_time)}")
+        embed.add_field(name=str(id2), value=f"**Created time:** {humanize.naturaltime(two_time)}")
 
-    @commands.command(name="suggest", brief="Suggest a command to the devs")
+    @commands.command(name="suggest", brief="Suggest a command/feature to the developers")
     @commands.cooldown(1, 900, discord.ext.commands.BucketType.user)
-    async def suggest(self, ctx: commands.Context, *, suggestion=None):
-        if suggestion is None:
-            def chek(u1):
-                return u1.author == ctx.author
-
-            await ctx.reply(
-                "Great! your suggestion is valuable! Now send what the new suggestion will do in brief in **1 SINGLE MESSAGE** \n\n **Pro tip: using shift+enter creates a new line without sending the message**")
-            try:
-                message = await self.bot.wait_for('message', timeout=60.0, check=chek)
-            except asyncio.TimeoutError:
-                await ctx.reply("time's up mate, try again!")
-                return
-            else:
-                await ctx.reply("Great! now send some detailed description on the new feature in **1 SINGLE MESSAGE**")
-                try:
-                    message2 = await self.bot.wait_for('message', timeout=300.0, check=chek)
-                except asyncio.TimeoutError:
-                    await ctx.reply("time's up mate, try again!")
-                    return
-                else:
-                    await ctx.reply("Great! Sending the suggestion...")
-                    brief = message.content
-                    detailed = message2.content
-        else:
-            brief = "Not specified"
-            detailed = suggestion
+    async def suggest(self, ctx: commands.Context, *, suggestion):
+        """
+    Suggests a command/feature to be voted on and (maybe) be added.
+        :param ctx:
+        :param suggestion: the suggestion
+        :return:
+        """
         suggestion_channel = self.bot.get_channel(840528236597477377)
-        dsc = f"""
-
-
-**Brief:** ```{brief}```
-**Detailed Description:** ```{detailed}```
-
-"""
-        embed = discord.Embed(
-            title="New Suggestion",
-            description=dsc,
-            color=self.bot.color)
-        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        embed.set_footer(text=f"From {ctx.guild if ctx.guild else None}")
+        embed = discord.Embed(title="New Suggestion",
+                              description=f"```yaml\n{suggestion}```",
+                              color=self.bot.color)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
+        embed.set_footer(text=f"From {ctx.guild.name}")
         embed.timestamp = ctx.message.created_at
         suggestion_msg = await suggestion_channel.send(embed=embed)
         await suggestion_msg.add_reaction(emojis.white_check_mark)
         await suggestion_msg.add_reaction(emojis.no_entry_sign)
-        await ctx.reply(f"Done! you can check the your suggestion's reviews in {support_server} <#834442086513508363>")
+        await ctx.reply(
+            f"Done! you can check the your suggestion's reviews in {support_server} {suggestion_channel.mention}")
 
     @commands.Cog.listener("on_message")
     async def on_msg(self, msg: discord.message):
+        """
+        The Auto Responder for Math Problems
+        :param msg:
+        :return:
+        """
         if not msg.guild:
             return
         async with self.bot.pool.acquire() as conn:
@@ -135,10 +104,20 @@ class Utility(commands.Cog):
         except BaseException:
             return
 
-    @commands.command(name="ar", aliases=['autoresponse'])
+    @commands.command(name="ar", aliases=['autoresponse'], brief="Set various auto responders on or off")
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     async def ar(self, ctx, option: str, toggle: bool):
+        """
+        Toggles auto responders on/off
+        Currently, all the options are:
+            - math
+
+        :param ctx:
+        :param option:
+        :param toggle:
+        :return:
+        """
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 if option == "math":
@@ -148,9 +127,16 @@ class Utility(commands.Cog):
                     return
         await ctx.reply("done!")
 
-    @commands.command()
+    @commands.command(name="poll", brief="Create a poll with different options")
+    @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def poll(self, ctx, *, question):
+        """
+        An interactive poll command
+        :param ctx:
+        :param question:
+        :return:
+        """
         messages = [ctx.message]
         answers = []
 
@@ -159,7 +145,7 @@ class Utility(commands.Cog):
                 m.content) <= 100
 
         for i in range(50):
-            messages.append(await ctx.send(f"Say the poll options or say cancel to publish the poll."))
+            messages.append(await ctx.send(f"Say the poll options or say `cancel` to publish the poll."))
 
             try:
                 options = await self.bot.wait_for("message", check=check, timeout=90.0)
@@ -181,12 +167,21 @@ class Utility(commands.Cog):
         answer = "\n".join(
             f"{keycap}: {content}" for keycap,
                                        content in answers)
-        actual_poll = await ctx.send(f"{ctx.author} asks: {question}\n\n{answer}")
+        embed = discord.Embed(title=question, color=self.bot.color, description=answer)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
+        actual_poll = await ctx.send(embed=embed)
         for emoji, _ in answers:
             await actual_poll.add_reaction(emoji)
 
-    @commands.command()
+    @commands.command(name="quickpoll", brief="Quickly create a poll with a single command")
+    @commands.has_permissions(manage_messages=True)
     async def quickpoll(self, ctx, *questions_and_choices: str):
+        """
+        Quickly create a poll with a single command
+        :param ctx:
+        :param questions_and_choices:
+        :return:
+        """
         if len(questions_and_choices) < 3:
             return await ctx.send("Need at least 1 question with 2 choices.")
         elif len(questions_and_choices) > 21:
@@ -205,15 +200,22 @@ class Utility(commands.Cog):
             pass
 
         body = "\n".join(f"{key}: {c}" for key, c in choices)
-        poll = await ctx.send(f"Question: {question}\n\n{body}")
+        embed = discord.Embed(title=question, color=self.bot.color, description=body)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
+        actual_poll = await ctx.send(embed=embed)
         for emoji, _ in choices:
-            await poll.add_reaction(emoji)
+            await actual_poll.add_reaction(emoji)
 
-    @commands.command()
+    @commands.command(name="prefix", brief="Change/view the guild's prefixes")
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
     async def prefix(self, ctx: commands.Context):
-        e = discord.Embed(title=f'My prefixes in {str(ctx.guild)}')
+        """
+        An interactive command to change/view prefix
+        :param ctx:
+        :return:
+        """
+        e = discord.Embed(title=f'My prefixes in {str(ctx.guild.name)}')
         data = await self.bot.pool.fetch("SELECT * FROM prefixes WHERE guild_id=$1", ctx.guild.id)
         desc = ''
         for prefix in data:
@@ -256,12 +258,8 @@ class Utility(commands.Cog):
             return
         else:
             if reaction.emoji == emojis.heave_plus_sign:
-                await ctx.reply(
-                    'aight send me da prefix mate! remember, if the prefix is a word, add a space after it, '
-                    'and put it in a code block. like: `hey ` or `!`, if you do something like: `hey` then you '
-                    'will have to do something like `heyhelp` not `hey help` so mind the space. How to put in '
-                    'a code block: put a backtick(that one below escape), then your new prefix and then '
-                    'another backtick. easy right?')
+                await ctx.reply("Alright, send me the prefix. "
+                                "Surround the prefix with backticks so I can detect spaces backticks (`). ")
                 try:
                     message2 = await self.bot.wait_for('message', timeout=60.0, check=check2)
                 except asyncio.TimeoutError:
@@ -290,12 +288,8 @@ class Utility(commands.Cog):
                 return
             else:
                 if reaction.emoji == emojis.pencil:
-                    await ctx.reply(
-                        'aight send me da prefix mate! remember, if the prefix is a word, add a space after it, '
-                        'and put it in a code block. like: `hey ` or `!`, if you do something like: `hey` then you '
-                        'will have to do something like `heyhelp` not `hey help` so mind the space. How to put in '
-                        'a code block: put a backtick(that one below escape), then your new prefix and then '
-                        'another backtick. easy right?')
+                    await ctx.reply("Alright, send me the prefix. "
+                                    "Surround the prefix with backticks so I can detect spaces backticks (`). ")
                     try:
                         message2 = await self.bot.wait_for('message', timeout=60.0, check=check2)
                     except asyncio.TimeoutError:
@@ -328,8 +322,7 @@ class Utility(commands.Cog):
                                 async with conn.transaction():
                                     await conn.execute("DELETE FROM prefixes WHERE guild_id=$1 AND prefix=$2",
                                                        ctx.guild.id, prefix)
-                                    await ctx.reply("okey! that prefix has been deleted!")
-
+                                    await ctx.reply("That prefix has been deleted!")
 
     @commands.command(name="userinfo", aliases=["ui"])
     async def userinfo(self, ctx, member: discord.Member = None):
@@ -353,24 +346,13 @@ class Utility(commands.Cog):
         embed.add_field(name="Created account on", value=created)
         embed.add_field(name="Permissions", value=permissions_str)
         embed.add_field(name="Status",
-                        value=str(member.status).replace("dnd", "<:status_dnd:844215897206947930> DND").replace(
+                        value=str(member.status).replace("dnd", "DND <:status_dnd:844215897206947930>").replace(
                             "do_not_disturb", "<:status_dnd:844215897206947930> DND").replace("online",
                                                                                               "Online <:status_online:844215865951911968>").replace(
                             "idle", "Idle <:status_idle:844216072265531452>").replace("offline",
                                                                                       "Offline <:status_offline:844216076543721523>"))
         embed.add_field(name=f"Roles [{len(member.roles)}]", value=member.top_role.mention)
         await ctx.send(embed=embed)
-
-
-    @commands.command(name="paginator")
-    async def paginator(self, ctx):
-        embeds = []
-        for i in range(3):
-            embed=discord.Embed(title = f"Page {i}")
-            embeds.append(embed)
-        await ctx.send("Here is the paginator!", view=MyView(embeds))
-
-
 
 
 def setup(bot):
