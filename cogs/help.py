@@ -65,6 +65,7 @@ class EclipseHelpCommand(commands.Cog):
 
     @commands.command(name="help", brief="Shows this message")
     async def help(self, ctx, subcommand=None):
+        bot = ctx.bot
         if subcommand is None:
             embed = await self.get_bot_help(ctx)
             base_buttons = []
