@@ -12,12 +12,18 @@ class BaseHelpView(discord.ui.View):
 
 
 class BaseButton(discord.ui.Button):
-    def __init__(self, label, embed: discord.Embed = None):
-        super().__init__(style=discord.ButtonStyle.blurple, label=label)
+    def __init__(self, label, embed: discord.Embed = None, ctx:commands.Context=None, view=None):
+        super().__init__(style=discord.ButtonStyle.blurple, label=re.sub("([A-Z])", " \\1", label).strip())
         self.embed = embed
+        self.view = view
+        self.ctx = ctx
 
     async def callback(self, interaction):
-        await interaction.message.edit(embed=self.embed)
+        if interaction.user.id == self.ctx.author.id:
+            await interaction.message.edit(embed=self.embed, view=self.view)
+        else:
+            await interaction.response.send_message(f"Hey, that button can only be used by {ctx.author}! "
+                                                    f"Do {ctx.prefix}help if you want help!", ephemeral=True)
 
 
 class EclipseHelpCommand(commands.Cog):
@@ -30,14 +36,14 @@ class EclipseHelpCommand(commands.Cog):
         self.bot.help_command = self.original_help_command
 
     def _caps(self, str):
-        return re.sub(r"(\w)([A-Z])", r"\1 \2", str)
+        return re.sub("([A-Z])", " \\1", str).strip()
 
     async def get_cog_view(self, ctx, cog_name):
         cog = ctx.bot.get_cog(cog_name)
         cog_buttons = []
         for command in cog.get_commands():
             embed = await self.get_command_help(ctx, command)
-            button = BaseButton(label=command.qualified_name, embed=embed)
+            button = BaseButton(label=command.qualified_name, embed=embed, ctx=ctx)
             cog_buttons.append(button)
         return BaseHelpView(cog_buttons)
 
@@ -75,7 +81,8 @@ class EclipseHelpCommand(commands.Cog):
             base_buttons = []
             for cog_name in bot.cogs:
                 embed = await self.get_cog_help(ctx, cog_name)
-                button = BaseButton(label=cog_name, embed=embed)
+                view = await self.get_cog_view(ctx, cog_name)
+                button = BaseButton(label=cog_name, embed=embed, ctx=ctx, view=view)
                 base_buttons.append(button)
             await ctx.send(embed=act_embed, view=BaseHelpView(base_buttons))
             return
