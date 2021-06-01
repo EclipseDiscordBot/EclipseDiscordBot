@@ -79,7 +79,7 @@ class EclipseHelpCommand(commands.Cog):
 
         if bot.get_command(subcommand) is not None:
             command = bot.get_command(subcommand)
-            embed = await get_command_help(ctx, command)
+            embed = await self.get_command_help(ctx, command)
             await ctx.send(embed=embed)
             return
 
