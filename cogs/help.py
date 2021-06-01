@@ -81,7 +81,7 @@ class EclipseHelpCommand(commands.Cog):
             for cog_name in bot.cogs:
                 embed = await self.get_cog_help(ctx, cog_name)
                 view = await self.get_cog_view(ctx, cog_name)
-                button = BaseButton(label=cog_name, embed=embed, ctx=ctx, view=view)
+                button = BaseButton(label=cog_name, embed=embed, ctx=ctx, custom_view=view)
                 base_buttons.append(button)
             await ctx.send(embed=act_embed, view=BaseHelpView(base_buttons))
             return
