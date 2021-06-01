@@ -12,7 +12,7 @@ class BaseHelpView(discord.ui.View):
 
 
 class BaseButton(discord.ui.Button):
-    def __init__(self, label, embed: discord.Embed = None, ctx: commands.Context = None, custom_view=None):
+    def __init__(self, label, embed: discord.Embed = None, ctx: commands.Context = None, custom_view:discord.ui.View=None):
         super().__init__(style=discord.ButtonStyle.blurple, label=re.sub("([A-Z])", " \\1", label).strip())
         self.embed = embed
         self.custom_view = custom_view
@@ -20,7 +20,10 @@ class BaseButton(discord.ui.Button):
 
     async def callback(self, interaction):
         if interaction.user.id == self.ctx.author.id:
-            await interaction.message.edit(embed=self.embed, view=self.custom_view)
+            if self.custom_view is not None:
+                await interaction.message.edit(embed=self.embed, view=self.custom_view)
+            if self.custom_view is None:
+                await interaction.message.edit(embed=self.embed)
         else:
             await interaction.response.send_message(f"Hey, that button can only be used by {ctx.author}! "
                                                     f"Do {ctx.prefix}help if you want help!", ephemeral=True)
