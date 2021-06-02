@@ -23,7 +23,7 @@ class AutoMeme(commands.Cog, name="Auto Meme Cog"):
         :param channel:
         :return:
         """
-        positive = ["yes", "true", "1", "]
+        positive = ["yes", "true", "1"]
         negative = ["no", "false", "0"]
         if toggle in positive:
                     bool_toggle = True
