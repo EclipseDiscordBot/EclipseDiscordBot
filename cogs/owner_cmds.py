@@ -113,7 +113,7 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
                     if isinstance(e, CogDisabledException):
                         counter += 1
         if exceptions == "":
-            exceptions = f"+ All cogs loaded successfully\n - {counter} cogs were not loaded due to config"
+            exceptions = f"+ All cogs loaded successfully\n- {counter} cogs were not loaded due to config"
         embed = discord.Embed(title="Restarted", description=f"```diff\n{exceptions}```", color=self.bot.color)
         await ctx.send(embed=embed)
 
