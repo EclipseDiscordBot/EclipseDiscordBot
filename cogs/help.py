@@ -16,22 +16,13 @@ class BaseHelpView(discord.ui.View):
 
 class BaseButton(discord.ui.Button):
     def __init__(self, label, embed: discord.Embed = None, ctx: commands.Context = None, custom_view:discord.ui.View=None):
-        if label == "Exit":
-            super().__init__(style=discord.ButtonStyle.red, label="Exit")
-            self.embed = None
-            self._custom_label = "Exit"
-            self.custom_view = None
-            self.ctx = ctx
-        else:
-            super().__init__(style=discord.ButtonStyle.blurple, label=re.sub("([A-Z])", " \\1", label).strip())
-            self.embed = embed
-            self.custom_view = custom_view
-            self.ctx = ctx
+        super().__init__(style=discord.ButtonStyle.blurple, label=re.sub("([A-Z])", " \\1", label).strip())
+        self.embed = embed
+        self.custom_view = custom_view
+        self.ctx = ctx
 
     async def callback(self, interaction):
         if interaction.user.id == self.ctx.author.id:
-            if self._custom_label == "Exit":
-                await interaction.message.delete()
             if self.custom_view is not None:
                 await interaction.message.edit(embed=self.embed, view=self.custom_view)
             if self.custom_view is None:
@@ -60,7 +51,6 @@ class EclipseHelpCommand(commands.Cog):
             embed = await self.get_command_help(ctx, command)
             button = BaseButton(label=command.qualified_name, embed=embed, ctx=ctx)
             cog_buttons.append(button)
-        exit = BaseButton(label="Exit")
         cog_buttons.append(exit)
         return BaseHelpView(cog_buttons)
 
@@ -100,8 +90,6 @@ class EclipseHelpCommand(commands.Cog):
                 view = await self.get_cog_view(ctx, cog_name)
                 button = BaseButton(label=cog_name, embed=embed, ctx=ctx, custom_view=view)
                 base_buttons.append(button)
-            exit = BaseButton(label="Exit")
-            base_buttons.append(exit)
             await ctx.send(embed=act_embed, view=BaseHelpView(base_buttons))
             return
 
