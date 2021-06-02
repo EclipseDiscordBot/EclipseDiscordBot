@@ -5,6 +5,7 @@ from classes import CustomBotClass, proccessname_setter, testexception
 import pickle
 from discord.ext import commands
 from constants.basic import owners
+from classes.LoadCog import CogDisabledException
 
 
 class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
