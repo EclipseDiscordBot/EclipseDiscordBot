@@ -104,17 +104,21 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
         os.system("git pull 'https://github.com/EclipseDiscordBot/EclipseDiscordBot.git' --allow-unrelated-histories")
         exceptions = ""
         counter = 0
+        failed_counter = 0
         for file in os.listdir("./cogs"):
             if file.endswith('.py'):
                 try:
                     reload_extension(self.bot, f'cogs.{file[:-3]}', self.bot.config)
+                    counter += 1
                     print(f"loaded cogs.{file[:-3]}")
                 except Exception as e:
                     if isinstance(e, CogDisabledException):
-                        counter += 1
-        if exceptions == "":
-            exceptions = f"+ All cogs loaded successfully\n- {counter} cogs were not loaded due to config"
-        embed = discord.Embed(title="Restarted", description=f"```diff\n{exceptions}```", color=self.bot.color)
+                        failed_counter += 1
+                    else:
+                        exceptions += f"- Error while loading {file} [{e}]\n"
+        f_exceptions = f"+ {counter} cogs loaded successfully\n" \
+                       f"- {failed_counter} cogs were not loaded due to config\n{exceptions} "
+        embed = discord.Embed(title="Restarted", description=f"```diff\n{f_exceptions}```", color=self.bot.color)
         await ctx.send(embed=embed)
 
     @commands.command(hidden=True, name="updatesra",
