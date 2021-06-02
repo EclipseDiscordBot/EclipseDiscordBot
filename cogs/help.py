@@ -19,6 +19,7 @@ class BaseButton(discord.ui.Button):
         if label == "Exit":
             super().__init__(style=discord.ButtonStyle.red, label="Exit")
             self.embed = None
+            self._custom_label = "Exit"
             self.custom_view = None
             self.ctx = ctx
         else:
@@ -29,6 +30,8 @@ class BaseButton(discord.ui.Button):
 
     async def callback(self, interaction):
         if interaction.user.id == self.ctx.author.id:
+            if self._custom_label == "Exit":
+                await interaction.message.delete()
             if self.custom_view is not None:
                 await interaction.message.edit(embed=self.embed, view=self.custom_view)
             if self.custom_view is None:
@@ -58,6 +61,7 @@ class EclipseHelpCommand(commands.Cog):
             button = BaseButton(label=command.qualified_name, embed=embed, ctx=ctx)
             cog_buttons.append(button)
         exit = BaseButton(label="Exit")
+        cog_buttons.append(exit)
         return BaseHelpView(cog_buttons)
 
     async def get_bot_help(self, ctx):
