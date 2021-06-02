@@ -82,17 +82,35 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
         :return:
         """
         await ctx.reply("Restarting...")
+
+        def reload_extension(bot: commands.Bot, cog: str, json: dict):
+            """
+            Loads a cog after checking if it is allowed to be loaded in config.json
+            :param bot:
+            :param cog:
+            :param json:
+            :return:
+            """
+            if json['load_cogs']:
+                try:
+                    if json['cogs'][cog]:
+                        bot.reload_extension(cog)
+                    else:
+                        raise CogDisabledException(cog)
+                except KeyError:
+                    raise CogDisabledException(cog)
+
         os.system("git pull 'https://github.com/EclipseDiscordBot/EclipseDiscordBot.git' --allow-unrelated-histories")
         exceptions = ""
         for file in os.listdir("./cogs"):
             if file.endswith('.py'):
                 try:
-                    self.bot.reload_extension(self, f'cogs.{file[:-3]}', self.config)
+                    reload_extension(self.bot, f'cogs.{file[:-3]}', self.bot.config)
                     print(f"loaded cogs.{file[:-3]}")
                 except Exception as e:
                     exceptions += f"- {file} failed to load [{e}]\n"
         if exceptions == "":
-            exception = "+ All cogs loaded successfully"
+            exceptions = "+ All cogs loaded successfully"
         embed = discord.Embed(title="Restarted", description=f"```diff\n{exceptions}```", color=self.bot.color)
         await ctx.send(embed=embed)
 
