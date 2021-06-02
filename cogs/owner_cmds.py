@@ -82,9 +82,19 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
         :return:
         """
         await ctx.reply("Restarting...")
-        proccessname_setter.try_set_process_name("eclipse_offline")
-        os.system("bash startupfile.sh")
-        await self.bot.close()
+        os.system("git pull 'https://github.com/EclipseDiscordBot/EclipseDiscordBot.git' --allow-unrelated-histories")
+        exceptions = ""
+        for file in os.listdir("./cogs"):
+            if file.endswith('.py'):
+                try:
+                    self.bot.reload_extension(self, f'cogs.{file[:-3]}', self.config)
+                    print(f"loaded cogs.{file[:-3]}")
+                except Exception as e:
+                    exceptions += f"- {file} failed to load [{e}]\n"
+        if exceptions == "":
+            exception = "+ All cogs loaded successfully"
+        embed = discord.Embed(title="Restarted", description=f"```diff\n{exceptions}```", color=self.bot.color)
+        await ctx.send(embed=embed)
 
     @commands.command(hidden=True, name="updatesra",
                       aliases=["sra"], brief="Updates SRA key")
