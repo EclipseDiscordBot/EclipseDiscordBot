@@ -12,7 +12,6 @@ class AkinatorCog(commands.Cog):
 
     @commands.command("akinator", aliases=['aki'], brief="Starts a game of akinator")
     @commands.cooldown(1, 120, commands.BucketType.user)
-    @indev_check.command_in_development()
     async def _aki(self, ctx: commands.Context):
         aki = Akinator()
         q = await aki.start_game()
