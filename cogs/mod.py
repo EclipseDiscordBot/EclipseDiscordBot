@@ -45,9 +45,8 @@ class Moderation(commands.Cog):
             title="Kick Successful",
             description=f"Kicked {member} from {ctx.guild.name} with "
                         f"reason ```{reason}```",
-            footer=ctx.message.created_at,
             color=self.bot.color)
-        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         try:
             await member.send(f"You were kicked from {ctx.guild} for: {reason}")
         except Exception:

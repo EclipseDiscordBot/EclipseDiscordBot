@@ -128,7 +128,6 @@ class Utility(commands.Cog, description="Small but useful commands"):
         await ctx.reply("done!")
 
     @commands.command(name="poll", brief="Create a poll with different options")
-    @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def poll(self, ctx, *, question):
         """
@@ -174,7 +173,6 @@ class Utility(commands.Cog, description="Small but useful commands"):
             await actual_poll.add_reaction(emoji)
 
     @commands.command(name="quickpoll", brief="Quickly create a poll with a single command")
-    @commands.has_permissions(manage_messages=True)
     async def quickpoll(self, ctx, *questions_and_choices: str):
         """
         Quickly create a poll with a single command

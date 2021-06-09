@@ -9,13 +9,11 @@ class BaseHelpView(discord.ui.View):
         super().__init__()
         for button in all_buttons:
             self.add_item(button)
-            
-            
-            
 
 
 class BaseButton(discord.ui.Button):
-    def __init__(self, label, embed: discord.Embed = None, ctx: commands.Context = None, custom_view:discord.ui.View=None):
+    def __init__(self, label, embed: discord.Embed = None, ctx: commands.Context = None,
+                 custom_view: discord.ui.View = None):
         super().__init__(style=discord.ButtonStyle.blurple, label=re.sub("([A-Z])", " \\1", label).strip())
         self.embed = embed
         self.custom_view = custom_view

@@ -105,6 +105,9 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
         exceptions = ""
         counter = 0
         failed_counter = 0
+        with open("config/config.json", "r") as read_file:
+            data = json.load(read_file)
+            self.bot.config = data
         for file in os.listdir("./cogs"):
             if file.endswith('.py'):
                 try:
