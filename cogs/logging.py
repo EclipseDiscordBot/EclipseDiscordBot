@@ -128,7 +128,6 @@ class Logging(commands.Cog):
         log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
         if log_chnl == None:
-
             return
         await log_chnl.send(embed=embed)
 
@@ -286,7 +285,6 @@ class Logging(commands.Cog):
             return
         await log_chnl.send(embed=embed)
 
-
     @commands.Cog.listener("on_voice_state_update")
     async def voice_state_update(self, member, before, after):
         if before.channel == None:
@@ -336,7 +334,6 @@ class Logging(commands.Cog):
             return
         await log_chnl.send(embed=embed)
 
-
     @commands.Cog.listener("on_member_update")
     async def member_update(self, before, after):
         member = after
@@ -382,6 +379,7 @@ class Logging(commands.Cog):
         if log_chnl == None:
             return
         await log_chnl.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Logging(bot))

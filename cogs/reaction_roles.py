@@ -15,6 +15,14 @@ class ReactionRoles(commands.Cog):
     @commands.command(name="reactionroles", aliases=['rr', 'reaction'])
     @commands.has_permissions(manage_guild=True)
     async def rr(self, ctx: commands.Context, subcommand: str, argv1: str, argv2: discord.Role):
+        """
+        Reaction roles command
+        :param ctx:
+        :param subcommand:
+        :param argv1:
+        :param argv2:
+        :return:
+        """
         def check(u):
             return u.author == ctx.author
 
@@ -103,6 +111,11 @@ class ReactionRoles(commands.Cog):
 
     @commands.Cog.listener('on_raw_reaction_add')
     async def reaction_add(self, payload: discord.RawReactionActionEvent):
+        """
+        Reaction added
+        :param payload:
+        :return:
+        """
         if payload.member == self.bot.user:
             return
         async with self.pool.acquire():
@@ -128,6 +141,11 @@ class ReactionRoles(commands.Cog):
 
     @commands.Cog.listener('on_raw_reaction_remove')
     async def reaction_remove(self, payload: discord.RawReactionActionEvent):
+        """
+        Reaction removed
+        :param payload:
+        :return:
+        """
         if payload.member == self.bot.user:
             return
         async with self.pool.acquire():
