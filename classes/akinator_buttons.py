@@ -101,7 +101,6 @@ class NotRight(discord.ui.Button):
                 f"{interaction.user.mention}! you cant play this game of akinator!, start your own!")
             return
         await self.callback_command(False)
-        await interaction.response.send_message("Huh, I'll try again")
         return
 
 class Back(discord.ui.Button):
