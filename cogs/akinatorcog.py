@@ -17,18 +17,35 @@ class AkinatorCog(commands.Cog):
         q = await aki.start_game()
         game_over = False
 
-        async def game_over_callback():
+        async def game_over_callback(nothing):
             nonlocal game_over
-            game_over = True
+            if nothing:
+                game_over = True
+            else:
+                await aki.win()
+                e3 = discord.Embed(title=aki.first_guess['name'], description=aki.first_guess['description'])
+                e3.set_image(url=aki.first_guess['absolute_picture_path'])
+                await ctx.reply(embed=e3, view=akinator_buttons.AkinatorView2(ctx.author, game_over_callback))
+                return
 
         async def callback(buttontype):
             if game_over:
                 return
-            if aki.progression <= 80:
-                q2 = await aki.answer(buttontype)
+            if not buttontype:
+                await aki.back()
+                q2 = aki.question
                 e2 = discord.Embed(title=q2, description="Click a button to answer")
                 await ctx.reply(embed=e2,
                                 view=akinator_buttons.AkinatorView(ctx.author, callback))
+                return
+            if aki.progression <= 80:
+                q2 = await aki.answer(buttontype)
+                e2 = discord.Embed(title=q2, description="Click a button to answer")
+                e2.set_footer(text=f"Progression: {aki.progression}")
+                await ctx.reply(embed=e2,
+                                view=akinator_buttons.AkinatorView(ctx.author, callback))
+                return
+
             await aki.win()
             e3 = discord.Embed(title=aki.first_guess['name'], description=aki.first_guess['description'])
             e3.set_image(url=aki.first_guess['absolute_picture_path'])
