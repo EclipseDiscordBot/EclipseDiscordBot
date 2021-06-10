@@ -16,15 +16,22 @@ class AkinatorCog(commands.Cog):
         aki = Akinator()
         q = await aki.start_game()
         game_over = False
+        guesses = 1
 
         async def game_over_callback(nothing):
             nonlocal game_over
+            nonlocal guesses
             if nothing:
                 game_over = True
             else:
                 await aki.win()
-                e3 = discord.Embed(title=aki.first_guess['name'], description=aki.first_guess['description'])
-                e3.set_image(url=aki.first_guess['absolute_picture_path'])
+                guesses = guesses + 1
+                if len(aki.guesses) <= guesses:
+                    await ctx.reply(";( you win, I don't know who it is!")
+                    game_over = True
+                    return
+                e3 = discord.Embed(title=aki.guesses[guesses]['name'], description=aki.guesses[guesses]['description'])
+                e3.set_image(url=aki.guesses[guesses]['absolute_picture_path'])
                 await ctx.reply(embed=e3, view=akinator_buttons.AkinatorView2(ctx.author, game_over_callback))
                 return
 

@@ -48,6 +48,7 @@ class CustomBot(commands.Bot):
         self.flask_instance: Flask = None
         self.flask_thread: multiprocessing.Process = None
 
+
     async def on_ready(self):
         self.load_extension('jishaku')
         exceptions = ""
@@ -81,6 +82,10 @@ class CustomBot(commands.Bot):
         c = self.get_channel(840528237846331432)
         proccessname_setter.try_set_process_name("eclipse_online")
         await c.send(embed=embed)
+        async with self.pool.acquire() as conn:
+            async with conn.transaction():
+                await conn.execute("DELETE FROM snipe")
+                return
 
     async def on_message(self, message):
         if f"<@{self.user.id}>" in message.content:
