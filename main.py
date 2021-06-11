@@ -2,12 +2,11 @@ import random
 from typing import List
 import discord
 from discord.ext import commands, tasks
-from classes import CustomBotClass, proccessname_setter
+from classes import CustomBotClass, proccessname_setter, stats_webhook
 from constants import basic
 from flask import Flask
 from threading import Thread
 from flask import request
-from scripts.python_scripts import stats_webhook
 
 intents = discord.Intents.all()
 
