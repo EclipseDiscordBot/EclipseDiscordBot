@@ -51,7 +51,6 @@ class EclipseHelpCommand(commands.Cog):
             embed = await self.get_command_help(ctx, command)
             button = BaseButton(label=command.qualified_name, embed=embed, ctx=ctx)
             cog_buttons.append(button)
-        cog_buttons.append(exit)
         return BaseHelpView(cog_buttons)
 
     async def get_bot_help(self, ctx):
