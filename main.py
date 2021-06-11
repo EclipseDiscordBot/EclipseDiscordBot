@@ -31,7 +31,7 @@ async def get_prefix(eclipse, message):
 mentions = discord.AllowedMentions(
     everyone=False,
     users=True,
-    replied_user=False,
+    replied_user=True,
     roles=True)
 
 bot = CustomBotClass.CustomBot(

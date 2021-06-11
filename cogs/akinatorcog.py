@@ -14,7 +14,7 @@ class AkinatorCog(commands.Cog):
     @commands.cooldown(1, 120, commands.BucketType.user)
     async def _aki(self, ctx: commands.Context):
         aki = Akinator()
-        q = await aki.start_game()
+        q = await aki.start_game(child_mode=True)
         game_over = False
         guesses = 1
 
