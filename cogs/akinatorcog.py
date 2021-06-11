@@ -14,7 +14,7 @@ class AkinatorCog(commands.Cog):
     @commands.cooldown(1, 120, commands.BucketType.user)
     async def _aki(self, ctx: commands.Context):
         aki = Akinator()
-        q = await aki.start_game(child_mode=True)
+        q = await aki.start_game(child_mode=(False if ctx.channel.is_nsfw() else True))
         game_over = False
         guesses = 1
 
