@@ -9,9 +9,6 @@ class BaseHelpView(discord.ui.View):
         super().__init__()
         for button in all_buttons:
             self.add_item(button)
-            
-            
-            
 
 
 class BaseButton(discord.ui.Button):
