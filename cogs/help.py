@@ -26,8 +26,8 @@ class BaseButton(discord.ui.Button):
             if self.custom_view is None:
                 await interaction.message.edit(embed=self.embed)
         else:
-            await interaction.response.send_message(f"Hey, that button can only be used by {ctx.author}! "
-                                                    f"Do {ctx.prefix}help if you want help!", ephemeral=True)
+            await interaction.response.send_message(f"Hey, that button can only be used by {self.ctx.author}! "
+                                                    f"Do {self.ctx.prefix}help if you want help!", ephemeral=True)
 
 
 class EclipseHelpCommand(commands.Cog):
