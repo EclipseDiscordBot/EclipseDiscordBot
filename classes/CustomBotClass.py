@@ -48,7 +48,6 @@ class CustomBot(commands.Bot):
         self.flask_instance: Flask = None
         self.flask_thread: multiprocessing.Process = None
 
-
     async def on_ready(self):
         self.load_extension('jishaku')
         exceptions = ""
@@ -68,6 +67,17 @@ class CustomBot(commands.Bot):
                     load_extension(
                         self, f'cogs.slash_cmds.{file[:-3]}', self.config)
                     print(f"loaded cogs.slash_cmds.{file[:-3]}")
+                except Exception as e:
+                    exceptions += f"- {file} failed to load [{e}]\n"
+                else:
+                    exceptions += f"+ {file} loaded successfully\n"
+
+        for file in os.listdir("./cogs/economy/"):
+            if file.endswith('.py'):
+                try:
+                    load_extension(
+                        self, f'cogs.economy.{file[:-3]}', self.config)
+                    print(f"loaded cogs.economy.{file[:-3]}")
                 except Exception as e:
                     exceptions += f"- {file} failed to load [{e}]\n"
                 else:
@@ -101,7 +111,6 @@ class CustomBot(commands.Bot):
         await self.process_commands(message)
 
     async def process_commands(self, message):
-
         ctx = await self.get_context(message, cls=context.Context)
         await self.invoke(ctx)
 
@@ -117,4 +126,3 @@ class CustomBot(commands.Bot):
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("UPDATE logging SET channel_id=$2 WHERE server_id=$1", guild.id, channel.id)
-

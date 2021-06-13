@@ -1,7 +1,7 @@
 import json
 import os
 import discord
-from classes import CustomBotClass, proccessname_setter, testexception
+from classes import CustomBotClass, proccessname_setter, testexception, check_create_db_entries
 import pickle
 from discord.ext import commands
 from constants.basic import owners
@@ -174,6 +174,10 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
         if aspect == "error" or aspect == "exception":
             await ctx.reply("ok, testing!")
             raise testexception.TestException("TESTTTTTTT")
+
+    @commands.Cog.listener("on_command")
+    async def command_listener(self, ctx):
+        await check_create_db_entries.check_create_db(self.bot, ctx)
 
 
 def setup(bot):

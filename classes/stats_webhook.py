@@ -1,7 +1,7 @@
+import aiohttp
 import discord
 import pickle
 import psutil
-import os
 import humanize
 import datetime
 from discord.ext import commands
@@ -11,9 +11,8 @@ async def update_stats(bot:commands.Bot):
 
     msg_id = 844559876684513280
     url = (pickle.load(open("credentials.pkl", 'rb')))["usageinfo"]
-
-    webhook = discord.Webhook.from_url(url, adapter=discord.RequestsWebhookAdapter())
-
+    session = aiohttp.ClientSession()
+    webhook = discord.Webhook.from_url(url=url, session=session)
     cpu_usage = f"{psutil.cpu_percent(5)}%"
     ram_usage = f"{psutil.virtual_memory()[2]}%"
     load1, load2, load3 = psutil.getloadavg()
@@ -31,4 +30,5 @@ async def update_stats(bot:commands.Bot):
     embed.add_field(name="Load Average", value=load_str)
     embed.timestamp = datetime.datetime.now()
     embed.set_footer(text="Last updated")
-    webhook.edit_message(msg_id, content=None, embed=embed)
+    await webhook.edit_message(msg_id, content=None, embed=embed)
+    await session.close()
