@@ -95,7 +95,10 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
             if json['load_cogs']:
                 try:
                     if json['cogs'][cog]:
-                        bot.reload_extension(cog)
+                        try:
+                            bot.reload_extension(cog)
+                        except Exception:
+                            bot.load_extension(cog)
                     else:
                         raise CogDisabledException(cog)
                 except KeyError:

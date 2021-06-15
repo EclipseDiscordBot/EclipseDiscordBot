@@ -11,6 +11,8 @@ connectToServer.sh
 # config
 config/*
 
+rebuild_pickle.py
+
 # Distribution / packaging
 .Python
 build/
