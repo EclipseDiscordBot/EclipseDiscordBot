@@ -7,7 +7,7 @@ import datetime
 from discord.ext import commands
 
 
-async def update_stats(bot: commands.Bot):
+async def update_stats(bot):
     latency = f"{bot.latency * 1000}ms"
 
     msg_id = 844559876684513280
