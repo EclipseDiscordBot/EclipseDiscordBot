@@ -4,7 +4,7 @@ import discord
 from classes import CustomBotClass
 import traceback
 from discord.ext import commands
-from classes import indev_check, testexception
+from classes import indev_check, testexception, economy
 import datetime
 import humanize
 
@@ -176,7 +176,9 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, indev_check.CommandInDevException):
             await ctx.reply(str(error))
             return
-
+        elif isinstance(error, economy.EconomyException):
+            await ctx.reply(str(error))
+            return
         else:
             title = "Unknown exception"
             dsc = "Sorry, the bot has run into an unknown Exception, it has been reported and is soon to be fixed!"

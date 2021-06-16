@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from classes import CustomBotClass, indev_check
+from classes import CustomBotClass, indev_check, economy
 import random
 
 
@@ -51,11 +51,9 @@ class EconomyBasic(commands.Cog):
     @commands.command(name='slots', brief="Gambling is bad!")
     @commands.cooldown(1, 15, commands.BucketType.user)
     @indev_check.command_in_development()
-    async def slots_command(self, ctx, amt: int):
+    async def slots_command(self, ctx, amt: str):
         bal = (await self.get_balance(ctx.author))['purse']
-        if amt > bal:
-            await ctx.send("You don't have that much!")
-            return
+        economy.convert_to_money(amt, bal, 100, ctx.author)
         emoji = ["👀", "🔥", "😳", "🤡", "👽", "🖕", "🌟", "🍑", "🍆"]
         result = []
         first = random.choice(emoji)
@@ -123,9 +121,21 @@ class EconomyBasic(commands.Cog):
 
     @commands.command(name="deposit", aliases=["dep"], brief="Deposits coins into your bank account")
     @indev_check.command_in_development()
-    async def balance_command(self, ctx, member: discord.Member = None):
-        
+    async def _deposit(self, ctx, amt: str):
+        bal = (await self.get_balance(ctx.author))['purse']
+        final_bal = economy.convert_to_money(amt, bal, 0, ctx.author)
+        await self.modify(ctx.author, "purse", "-", final_bal)
+        await self.modify(ctx.author, "bank", "+", final_bal)
+        await ctx.reply(f"Deposited {final_bal} coins, you now have {bal-final_bal} coins!")
 
+    @commands.command(name="withdraw", aliases=["with"], brief="Withdraws money from your bank account")
+    @indev_check.command_in_development()
+    async def _withdraw(self, ctx, amt: str):
+        bal = (await self.get_balance(ctx.author))['bank']
+        final_bal = economy.convert_to_money(amt, bal, 0, ctx.author)
+        await self.modify(ctx.author, "bank", "-", final_bal)
+        await self.modify(ctx.author, "purse", "+", final_bal)
+        await ctx.reply(f"Withdrew {final_bal} coins, you now have {bal - final_bal} coins!")
 
 def setup(bot):
     bot.add_cog(EconomyBasic(bot))
