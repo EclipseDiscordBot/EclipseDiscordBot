@@ -24,7 +24,7 @@ class ImageGeneration(commands.Cog):
         if len(comment) > 999:
             await ctx.reply("comment cant be more than 1000 chars long")
             return
-        url = (ctx.author.avatar_url if not user else user.avatar_url)
+        url = (ctx.author.avatar.url if not user else user.avatar.url)
         await ctx.reply(
             f"https://some-random-api.ml/canvas/youtube-comment?avatar={url}&username={uname}&comment={comment}")
 
