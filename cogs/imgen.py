@@ -54,9 +54,9 @@ class ImageGeneration(commands.Cog):
             uname = urllib.parse.quote(
                 (str(ctx.author) if not user else str(user)))
             av = (
-                ctx.author.avatar_url_as(
-                    format='png') if not user else user.avatar_url_as(
-                    format='png'))
+                ctx.author.avatar.with_format(
+                    format='png').url if not user else user.avatar.with_format(
+                    format='png').url)
             impostor = ('true' if impostor else 'false')
             rand = random.randint(0, 10000)
             async with aiohttp.ClientSession() as session:

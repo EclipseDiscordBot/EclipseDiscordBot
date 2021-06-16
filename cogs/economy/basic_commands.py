@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 from classes import CustomBotClass, indev_check
 import random
+
+
 class EconomyBasic(commands.Cog):
     def __init__(self, bot: CustomBotClass.CustomBot):
         """
@@ -34,8 +36,6 @@ class EconomyBasic(commands.Cog):
             await self.bot.pool.execute("UPDATE economy SET bank =$1 WHERE uid=$2", new_value, member.id)
         return new_value
 
-
-
     @commands.command("beg", brief="Begs for money!")
     @commands.cooldown(1, 45, commands.BucketType.user)
     @indev_check.command_in_development()
@@ -43,7 +43,9 @@ class EconomyBasic(commands.Cog):
         beg_successful = random.choice([True, False])
         coins = (random.randint(0, 1000) if beg_successful else 0)
         new_bal = await self.modify(ctx.author, 'purse', "+" if beg_successful else "-", coins)
-        e = discord.Embed(title=("Oh poor little beggar! take some coins!" if beg_successful else "Ew! a beggar!"), description=f"You got {str(coins)} coins!\nNow you have {new_bal} coins", colour=(discord.Colour.green() if beg_successful else discord.Colour.red()))
+        e = discord.Embed(title=("Oh poor little beggar! take some coins!" if beg_successful else "Ew! a beggar!"),
+                          description=f"You got {str(coins)} coins!",
+                          colour=(discord.Colour.green() if beg_successful else discord.Colour.red()))
         await ctx.reply(embed=e)
 
     @commands.command(name='slots', brief="Gambling is bad!")
@@ -110,14 +112,19 @@ class EconomyBasic(commands.Cog):
 
     @commands.command(name="balance", aliases=["bal"], brief="Gets the balance of a member")
     @indev_check.command_in_development()
-    async def balance_command(self, ctx, member:discord.Member=None):
+    async def balance_command(self, ctx, member: discord.Member = None):
         member = member or ctx.author
         balance = await self.get_balance(member)
-        embed = discord.Embed(title = f"{member}'s balance", description=f"Purse: **{balance['purse']}** coins\nBank: **{balance['bank']}** coins", color=self.bot.color)
+        embed = discord.Embed(title=f"{member}'s balance",
+                              description=f"Purse: **{balance['purse']}** coins\nBank: **{balance['bank']}** coins",
+                              color=self.bot.color)
         embed.set_author(name=member, icon_url=member.avatar.url)
-        await ctx.reply(embed = embed)
+        await ctx.reply(embed=embed)
 
-
+    @commands.command(name="deposit", aliases=["dep"], brief="Deposits coins into your bank account")
+    @indev_check.command_in_development()
+    async def balance_command(self, ctx, member: discord.Member = None):
+        
 
 
 def setup(bot):
