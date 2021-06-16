@@ -8,6 +8,7 @@ import discord
 
 rs = RandomStuff()
 
+
 class Fun(commands.Cog):
 
     def __init__(self, bot: CustomBotClass.CustomBot):
@@ -73,7 +74,7 @@ class Fun(commands.Cog):
                 else:
                     return False
 
-            raw_reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout = 60)
+            raw_reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=60)
             if str(raw_reaction) == "\U0001faa8":
                 user_choice = "Rock"
             elif str(raw_reaction) == "\U0001f4f0":
@@ -108,11 +109,13 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def _chatbot(self, ctx):
         session = True
-        await ctx.send("The talking session between you and me started! Why not say something like `hi`\nIf you want to end this talking session, type `Cancel`")
+        await ctx.send(
+            "The talking session between you and me started! Why not say something like `hi`\nIf you want to end this talking session, type `Cancel`")
 
         while session is True:
             try:
-                message = await self.bot.wait_for('message', timeout = 30, check = lambda m : (ctx.author == m.author and ctx.channel == m.channel))
+                message = await self.bot.wait_for('message', timeout=30,
+                                                  check=lambda m: (ctx.author == m.author and ctx.channel == m.channel))
             except asyncio.TimeoutError:
                 session = False
                 await ctx.send("Timed out! Talking session with me has automatically ended!")
@@ -126,14 +129,15 @@ class Fun(commands.Cog):
                         response = await self._get_response(ctx.author.id, message.content)
                         await message.reply(response, mention_author=False)
 
-
     async def _get_response(self, uid, msg):
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://api.brainshop.ai/get?bid={self.bot.brain_id}&key={self.bot.brain_api}&uid={uid}&msg={msg}") as resp:
+            async with session.get(
+                    f"http://api.brainshop.ai/get?bid={self.bot.brain_id}&key={self.bot.brain_api}&uid={uid}&msg={msg}") as resp:
                 if resp.status != 200:
                     return "Something went wrong while accessing the BrainShop API."
                 js = await resp.json()
                 return js["cnt"]
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))
