@@ -84,6 +84,7 @@ class EconomyBasic(commands.Cog):
             embed.color = discord.Color.green()
         else:
             embed.color = discord.Color.red()
+            embed.set_footer(text="sucks to suck")
 
         if win == True:
             if first == second == third:
@@ -106,6 +107,17 @@ class EconomyBasic(commands.Cog):
         outcome_str = f"{first} {second} {third}"
         embed.add_field(name="Outcome", value=f"**<** {outcome_str} **>**")
         await ctx.send(embed=embed)
+
+    @commands.command(name="balance", aliases=["bal"], brief="Gets the balance of a member")
+    @indev_check.command_in_development()
+    async def balance_command(self, member:discord.Member=None):
+        member = member or ctx.author
+        balance = await self.get_balance(member)
+        embed = discord.Embed(title = f"{member}'s balance", description=f"Purse: **{balance['purse']}** coins\nBank: **{balance['bank']}** coins", color=self.bot.color)
+        embed.set_author(name=member, icon_url=member.avatar.url)
+        await ctx.reply(embed = embed)
+
+
 
 
 def setup(bot):
