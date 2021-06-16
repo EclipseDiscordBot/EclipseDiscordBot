@@ -110,7 +110,7 @@ class EconomyBasic(commands.Cog):
 
     @commands.command(name="balance", aliases=["bal"], brief="Gets the balance of a member")
     @indev_check.command_in_development()
-    async def balance_command(self, member:discord.Member=None):
+    async def balance_command(self, ctx, member:discord.Member=None):
         member = member or ctx.author
         balance = await self.get_balance(member)
         embed = discord.Embed(title = f"{member}'s balance", description=f"Purse: **{balance['purse']}** coins\nBank: **{balance['bank']}** coins", color=self.bot.color)
