@@ -8,7 +8,7 @@ from discord.ext import commands
 
 
 async def update_stats(bot):
-    latency = f"{bot.latency * 1000}ms"
+    latency = f"{round(bot.latency * 1000, 3)}ms"
 
     msg_id = 844559876684513280
     url = (pickle.load(open("credentials.pkl", 'rb')))["usageinfo"]

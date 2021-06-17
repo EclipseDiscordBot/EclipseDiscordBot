@@ -41,11 +41,6 @@ bot = CustomBotClass.CustomBot(
     strip_after_prefix=True)
 
 
-@tasks.loop(minutes=1)
-async def update_stats_loop():
-    await stats_webhook.update_stats(bot)
-
-
 app = Flask(__name__)
 
 response_templates = {
@@ -258,5 +253,4 @@ if __name__ == "__main__":
     thr.daemon = True
     thr.start()
     bot.flask_instance = app
-    update_stats_loop.start()
     bot.run(bot.token)

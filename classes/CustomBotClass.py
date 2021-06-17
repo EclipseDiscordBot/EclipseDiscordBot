@@ -10,8 +10,8 @@ import asyncpraw as apraw
 import asyncpg
 import discord
 from flask import Flask
-from discord.ext import commands
-from classes import proccessname_setter, context
+from discord.ext import commands, tasks
+from classes import proccessname_setter, context, stats_webhook
 from classes.LoadCog import load_extension
 
 
@@ -92,10 +92,12 @@ class CustomBot(commands.Bot):
         c = self.get_channel(840528237846331432)
         proccessname_setter.try_set_process_name("eclipse_online")
         await c.send(embed=embed)
-        async with self.pool.acquire() as conn:
-            async with conn.transaction():
-                await conn.execute("DELETE FROM snipe")
-                return
+        await self.pool.execute("DELETE FROM snipe;")
+        self.update_stats_loop.start()
+
+    @tasks.loop(minutes=1)
+    async def update_stats_loop(self):
+        await stats_webhook.update_stats(self)
 
     async def on_message(self, message):
         if f"<@{self.user.id}>" in message.content:
