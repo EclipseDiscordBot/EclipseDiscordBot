@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 from classes import CustomBotClass, indev_check, economy
+from constants import emojis
+from constants.economy.ids import id_name, id_to_strid, strid_to_id
 import random
 
 
@@ -28,6 +30,12 @@ class EconomyBasic(commands.Cog):
             new_value = (await self.get_balance(member))[column] - amt
         elif sign == "+":
             new_value = (await self.get_balance(member))[column] + amt
+        elif sign == "rr":
+            await self.bot.pool.execute("UPDATE economy SET active_items=array_remove(active_items, $1) WHERE uid=$2", amt, member.id)
+            return
+        elif sign == "ar":
+            await self.bot.pool.execute("UPDATE economy SET active_items=array_append(active_items, $1) WHERE uid=$2", amt, member.id)
+            return
         else:
             return
         if column == "purse":
@@ -126,7 +134,7 @@ class EconomyBasic(commands.Cog):
         final_bal = economy.convert_to_money(amt, bal, 0, ctx.author)
         await self.modify(ctx.author, "purse", "-", final_bal)
         await self.modify(ctx.author, "bank", "+", final_bal)
-        await ctx.reply(f"Deposited {final_bal} coins, you now have {bal-final_bal} coins!")
+        await ctx.reply(f"Deposited {final_bal} coins, you now have {bal - final_bal} coins in your purse!")
 
     @commands.command(name="withdraw", aliases=["with"], brief="Withdraws money from your bank account")
     @indev_check.command_in_development()
@@ -135,7 +143,59 @@ class EconomyBasic(commands.Cog):
         final_bal = economy.convert_to_money(amt, bal, 0, ctx.author)
         await self.modify(ctx.author, "bank", "-", final_bal)
         await self.modify(ctx.author, "purse", "+", final_bal)
-        await ctx.reply(f"Withdrew {final_bal} coins, you now have {bal - final_bal} coins!")
+        await ctx.reply(f"Withdrew {final_bal} coins, you now have {bal - final_bal} coins in your bank!")
+
+    @commands.command(name="rob", aliases=["steal"], brief="Stealing/robbing is bad!")
+    @indev_check.command_in_development()
+    @commands.guild_only()
+    @commands.cooldown(1, 45, commands.BucketType.user)
+    async def _rob(self, ctx: commands.Context, user: discord.Member):
+        author = (await self.get_balance(ctx.author))
+        unlucky_guy = (await self.get_balance(user))
+        if unlucky_guy['purse'] <= 500:
+            await ctx.reply(
+                f"Wtf are you doing? he has only {unlucky_guy['purse']} coins in his purse! leave that poor guy alone!")
+            return
+        if author['purse'] <= 250:
+            await ctx.reply(
+                f"You need at least 250 coins in your purse to steal!")
+            return
+        if strid_to_id.strid_id['padlock'] in unlucky_guy['active_items']:
+            await self.modify(user, None, 'rr', strid_to_id.strid_id['padlock'])
+            await ctx.reply(f"You notice `{user.display_name}` has  **HUGE** padlock on his wallet, you were caught and had to pay 250 coins to the police!")
+            await self.modify(ctx.author, "purse", "-", 250)
+            return
+        success = random.choice([True, False])
+        if success:
+            amount = random.randint(1, unlucky_guy['purse'])
+        else:
+            amount = random.randint(1, author['purse'])
+
+        quotient = amount / unlucky_guy['purse']
+        percentage = quotient * 100
+
+        await self.modify(ctx.author, 'purse', ("+" if success else "-"), amount)
+        await self.modify(user, 'purse', ("-" if success else "+"), amount)
+
+        if success:
+            if percentage <= 10:
+                await ctx.reply(f"{emojis.laughing} You stole just {amount} from `{user.display_name}`")
+                return
+            if percentage <= 25:
+                await ctx.reply(f"{emojis.no_emotion} You stole {amount} from `{user.display_name}`")
+                return
+            if percentage <= 75:
+                await ctx.reply(
+                    f"{emojis.bag_o_cash} You stole a fair amount! you stole {amount} from `{user.display_name}`")
+                return
+            if percentage <= 100:
+                await ctx.reply(
+                    f"{emojis.money_in_mouth} YOU STOLE BASICALLY EVERYTHING LMFAO! You stole {amount} from `{user.display_name}`!")
+                return
+        else:
+            await ctx.reply(
+                f'{emojis.laughing} You were caught stealing! you had to pay {amount} to the police {emojis.laughing}')
+
 
 def setup(bot):
     bot.add_cog(EconomyBasic(bot))

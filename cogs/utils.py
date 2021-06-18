@@ -338,8 +338,8 @@ class Utility(commands.Cog, description="Small but useful commands"):
             if perm in ignored_perms:
                 perms_list.pop(perms_list.index(perm))
         permissions_str = ", ".join(perm for perm in perms_list)
-        joined = humanize.precisedelta(datetime.datetime.now() - member.joined_at)
-        created = humanize.precisedelta(datetime.datetime.now() - member.created_at)
+        joined = humanize.precisedelta(datetime.datetime.utcnow() - member.joined_at.replace(tzinfo=None))
+        created = humanize.precisedelta(datetime.datetime.utcnow() - member.created_at.replace(tzinfo=None))
         embed.add_field(name=f"Joined {ctx.guild.name} on", value=joined)
         embed.add_field(name="Created account on", value=created)
         embed.add_field(name="Permissions", value=permissions_str)
