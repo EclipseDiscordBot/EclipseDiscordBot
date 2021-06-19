@@ -182,6 +182,18 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
     async def command_listener(self, ctx):
         await check_create_db_entries.check_create_db(self.bot, ctx)
 
+    @commands.command("cleanup")
+    @commands.is_owner()
+    async def cleanup_command(self, ctx, amt: int = 20):
+        await ctx.message.delete()
+
+        def check(m):
+            return (m.author == ctx.author) or (m.author == self.bot.user)
+
+        msgs = await ctx.channel.purge(limit=amt, check=check)
+        await ctx.send(f"Cleaned up {len(msgs)} messages.", delete_after=5)
+
+
 
 def setup(bot):
     bot.add_cog(OwnerOnlyCommands(bot))
