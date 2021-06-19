@@ -17,6 +17,11 @@ class Snipe(commands.Cog):
             return
         row = rows[-(abs(count))]
         author: discord.User = self.bot.get_user(row['author'])
+        if author.id == 694839986763202580:
+            await ctx.send("No you can't snipe my developer!")
+            await self.bot.pool.fetch("DELETE FROM snipe WHERE guild=$1 AND message_content=$2", ctx.guild.id,
+                                      row["message_content"])
+            return
         if author is None:
             author_name = "Unknown User"
             author_pfp = ""
@@ -32,7 +37,7 @@ class Snipe(commands.Cog):
     async def _snipe_listener(self, payload: discord.Message):
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.execute("INSERT INTO snipe(guild,channel,message_content,attachment,author) VALUES($1,$2,$3,$4,$5)", payload.guild.id, payload.channel.id, payload.content, (payload.attachments[0].url if payload.attachments else None), payload.author.id)
+                await conn.execute("INSERT INTO snipe(guild,channel,message_content,attachment,author) VALUES($1,$2,$3,$4,$5)", payload.guild.id, payload.channel.id, payload.content, ("\n".join(a.url for a in payload.attachments)), payload.author.id)
 
 def setup(bot):
     bot.add_cog(Snipe(bot))
