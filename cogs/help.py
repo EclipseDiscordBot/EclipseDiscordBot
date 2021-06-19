@@ -49,6 +49,7 @@ class EclipseHelpCommand(commands.Cog):
             embed = await self.get_command_help(ctx, command)
             button = BaseButton(label=command.qualified_name, embed=embed, ctx=ctx)
             cog_buttons.append(button)
+
         return BaseHelpView(cog_buttons)
 
     async def get_bot_help(self, ctx):
@@ -87,6 +88,10 @@ class EclipseHelpCommand(commands.Cog):
                 view = await self.get_cog_view(ctx, cog_name)
                 button = BaseButton(label=cog_name, embed=embed, ctx=ctx, custom_view=view)
                 base_buttons.append(button)
+            support_button = discord.ui.Button(label="Support Server", style=discord.ButtonStyle.link, url="https://discord.gg/XCDhUknkwD")
+            site_button = discord.ui.Button(label="Website", style=discord.ButtonStyle.link, url="https://satyamedh.ml")
+            base_buttons.append(support_button)
+            base_buttons.append(site_button)
             await ctx.send(embed=act_embed, view=BaseHelpView(base_buttons))
             return
 
