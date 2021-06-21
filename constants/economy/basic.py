@@ -1,15 +1,15 @@
 first_interaction = """
 
-Hello {user_mention}! seems like you're using eclipse for the first time! Welcome!
+Hello {user_mention}! It seems like you're using Eclipse for the **first time**! Welcome!
 
-eclipse is currently still in heavy development, please be sure to report bugs with the command which pops up in a embed when a error occurs!
-eclipse is a open source bot! you can see and contribute to it's code by using the `{prefix}src` command!
+Eclipse is currently still in heavy development, please be sure to report bugs with the command which pops up in an embed when an error occurs when running a command!
+Eclipse is an open source bot! You can see and contribute to my code by using the `{prefix}src` command!
 
-hope you have fun with eclipse!
+I hope you enjoy using Eclipse as your bot!
 
-links:
+Links:
 
-bot invite link: {bot_invite} 
-support server: {support_server}
+**My Invite Link:** {bot_invite} 
+**Support Server:** {support_server}
 
 """
