@@ -110,7 +110,7 @@ class EconomyBasic(commands.Cog):
         else:
             coin_str = f"You lost **{win_amt}** coins."
 
-        new_balance = await self.modify(ctx.author, 'purse', sign, win_amt)
+        new_balance = await self.modify(ctx.author, 'purse', sign, int(win_amt))
         embed.description = f"{coin_str}\n\nYou now have **{new_balance}** coins."
         outcome_str = f"{first} {second} {third}"
         embed.add_field(name="Outcome", value=f"**<** {outcome_str} **>**")
