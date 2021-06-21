@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 from discord.ext import commands
 from classes import CustomBotClass, indev_check, economy
@@ -195,6 +197,65 @@ class EconomyBasic(commands.Cog):
         else:
             await ctx.reply(
                 f'{emojis.laughing} You were caught stealing! you had to pay {amount} to the police {emojis.laughing}')
+
+    @commands.command(name="give", brief="gives the mentioned used a certain amount of money!")
+    @indev_check.command_in_development()
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.guild_only()
+    async def _give(self, ctx: commands.Context, user: discord.Member, amount: str):
+        bal = (await self.get_balance(ctx.author))['purse']
+        info = (await self.get_balance(ctx.author))
+        user_info = (await self.get_balance(user))
+        if info['passive']:
+            await ctx.reply("Hey! You're in passive mode! Turn that off if you want to share!")
+            return
+        if user_info['passive']:
+            await ctx.reply(f"Hey! {user.display_name} is in passive mode! leave them alone!")
+            return
+        amt = economy.convert_to_money(amount, bal, 100, ctx.author)
+        quotient = amt / bal
+        percentage = quotient * 100
+
+        def check(message):
+            return message.author.id == ctx.author.id
+
+        if percentage > 50:
+            await ctx.reply(f"You want to give {amt} to {user.mention}? reply with yes or no")
+            try:
+                msg = await self.bot.wait_for("message", check=check, timeout=60)
+            except asyncio.TimeoutError:
+                return
+            else:
+                if msg.content == "yes" or msg.content == "y" or msg.content == "ye" or msg.content == "yup":
+                    message = await ctx.reply(f"kay, initiating transaction {emojis.loading}")
+                    await asyncio.sleep(0.5)
+                    await message.edit(content="Contacting to the bank {emojis.loading}")
+                    await asyncio.sleep(0.5)
+                    await message.edit(content=f"Writing check {emojis.loading}")
+                    await asyncio.sleep(0.5)
+                    await message.edit(content=f"Processing payment {emojis.loading}")
+                    await asyncio.sleep(0.5)
+                    await self.modify(ctx.author, "purse", "-", amt)
+                    await self.modify(user, "purse", "+", amt)
+                    await message.edit(content=f"Transfer done {emojis.white_check_mark}")
+                    return
+                else:
+                    await ctx.reply("aight, not giving anything")
+                    return
+        message = await ctx.reply(content=f"kay, initiating transaction {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await message.edit(content=f"Contacting to the bank {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await message.edit(content=f"Writing check {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await message.edit(content=f"Processing payment {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await self.modify(ctx.author, "purse", "-", amt)
+        await self.modify(user, "purse", "+", amt)
+        await message.edit(content=f"Transfer done {emojis.white_check_mark}")
+        return
+
+
 
 
 def setup(bot):

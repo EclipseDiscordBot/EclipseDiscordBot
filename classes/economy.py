@@ -33,6 +33,7 @@ class InvalidMoneyException(EconomyException):
 
 
 def convert_to_money(input_cash, balance, minimum, user):
+    input_cash = str(input_cash).lower()
     if input_cash == "max" or input_cash == "all":
         return balance
     elif input_cash == "min":
@@ -40,7 +41,12 @@ def convert_to_money(input_cash, balance, minimum, user):
     try:
         input_cash = int(input_cash)
     except ValueError:
-        raise InvalidMoneyException(user)
+        if input_cash[-1] == "k":
+            input_cash = input_cash[0:-1] + "000"
+            try:
+                input_cash = int(input_cash)
+            except ValueError:
+                raise InvalidMoneyException(user)
     if input_cash > balance:
         raise NotEnoughMoneyError(user)
     elif input_cash < minimum:

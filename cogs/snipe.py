@@ -19,11 +19,6 @@ class Snipe(commands.Cog):
             return
         row = rows[-(abs(count))]
         author: discord.User = self.bot.get_user(row['author'])
-        if author.id in owners:
-            await ctx.send("No you can't snipe my developer!")
-            await self.bot.pool.fetch("DELETE FROM snipe WHERE guild=$1 AND message_content=$2", ctx.guild.id,
-                                      row["message_content"])
-            return
         if author is None:
             author_name = "Unknown User"
             author_pfp = ""
