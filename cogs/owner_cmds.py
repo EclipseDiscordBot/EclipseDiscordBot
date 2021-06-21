@@ -180,7 +180,7 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
 
     @commands.Cog.listener("on_command")
     async def command_listener(self, ctx):
-        await check_create_db_entries.check_create_db(self.bot, ctx)
+        await check_create_db_entries.check_create_db(self.bot, ctx.author)
 
     @commands.command("cleanup")
     @commands.is_owner()

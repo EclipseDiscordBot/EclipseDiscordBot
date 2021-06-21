@@ -2,7 +2,7 @@ import asyncio
 
 import discord
 from discord.ext import commands
-from classes import CustomBotClass, indev_check, economy
+from classes import CustomBotClass, indev_check, economy, check_create_db_entries
 from constants import emojis
 from constants.economy.ids import id_name, id_to_strid, strid_to_id
 import random
@@ -25,7 +25,10 @@ class EconomyBasic(commands.Cog):
         self.bot = bot
 
     async def get_balance(self, member):
-        return (await self.bot.pool.fetch("SELECT * FROM economy WHERE uid=$1", member.id))[0]
+        try:
+            return (await self.bot.pool.fetch("SELECT * FROM economy WHERE uid=$1", member.id))[0]
+        except IndexError:
+            await check_create_db_entries.check_create_db(self.bot, member)
 
     async def modify(self, member, column, sign, amt):
         if sign == "-":
