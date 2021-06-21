@@ -61,6 +61,17 @@ class EconomyBasic(commands.Cog):
                           colour=(discord.Colour.green() if beg_successful else discord.Colour.red()))
         await ctx.reply(embed=e)
 
+    @commands.command()
+    @indev_check.command_in_development()
+    async def item(self, ctx: commands.Context, item: str):
+        try:
+            item = strid_to_id.strid_id[item]
+        except KeyError:
+            await ctx.reply("No such item")
+            return
+        await self.modify(ctx.author, None, "ar", item)
+        await ctx.reply("done")
+
     @commands.command(name='slots', brief="Gambling is bad!")
     @commands.cooldown(1, 15, commands.BucketType.user)
     @indev_check.command_in_development()
@@ -157,6 +168,14 @@ class EconomyBasic(commands.Cog):
     async def _rob(self, ctx: commands.Context, user: discord.Member):
         author = (await self.get_balance(ctx.author))
         unlucky_guy = (await self.get_balance(user))
+
+        if author['passive']:
+            await ctx.reply("Hey! You're in passive mode! Turn that off if you want to share!")
+            return
+        if unlucky_guy['passive']:
+            await ctx.reply(f"Hey! {user.display_name} is in passive mode! leave them alone!")
+            return
+
         if unlucky_guy['purse'] <= 500:
             await ctx.reply(
                 f"Wtf are you doing? he has only {unlucky_guy['purse']} coins in his purse! leave that poor guy alone!")

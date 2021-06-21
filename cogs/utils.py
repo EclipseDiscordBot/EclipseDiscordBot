@@ -101,7 +101,9 @@ class Utility(commands.Cog, description="Small but useful commands"):
                     return
             result = eval(code, {"__builtins__": {}}, allowed_names)
             await msg.reply(result)
-        except BaseException:
+        except BaseException as e:
+            if isinstance(e, ZeroDivisionError):
+                await msg.reply("ayy! I'm not fool! Answer: INFINITY!")
             return
 
     @commands.command(name="ar", aliases=['autoresponse'], brief="Set various auto responders on or off")
