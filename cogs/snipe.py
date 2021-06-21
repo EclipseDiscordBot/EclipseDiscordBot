@@ -14,10 +14,12 @@ class Snipe(commands.Cog):
         if not channel:
             channel = ctx.channel
         rows = await self.bot.pool.fetch("SELECT * FROM snipe WHERE guild=$1 AND channel=$2", ctx.guild.id, channel.id)
+        row = rows[-(abs(count))]
         if len(rows) < abs(count):
             await ctx.reply("theres nothing at that position!")
+            await self.bot.pool.fetch("DELETE FROM snipe WHERE guild=$1 AND message_content=$2", ctx.guild.id,
+                                      row["message_content"])
             return
-        row = rows[-(abs(count))]
         author: discord.User = self.bot.get_user(row['author'])
         if author.id in owners:
             await ctx.send("No you can't snipe my developer!")
