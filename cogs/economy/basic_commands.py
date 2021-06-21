@@ -61,7 +61,7 @@ class EconomyBasic(commands.Cog):
     @indev_check.command_in_development()
     async def slots_command(self, ctx, amt: str):
         bal = (await self.get_balance(ctx.author))['purse']
-        economy.convert_to_money(amt, bal, 100, ctx.author)
+        amt = economy.convert_to_money(amt, bal, 100, ctx.author)
         emoji = ["👀", "🔥", "😳", "🤡", "👽", "🖕", "🌟", "🍑", "🍆"]
         result = []
         first = random.choice(emoji)
