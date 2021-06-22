@@ -2,7 +2,7 @@ import asyncio
 
 import discord
 from discord.ext import commands
-from classes import CustomBotClass, indev_check, economy, check_create_db_entries
+from classes import CustomBotClass, indev_check, economy, check_create_db_entries, paginator, chunks_based_on_size
 from constants import emojis
 from constants.economy import meme, loot_table, strid_to_id, basic
 import random
@@ -16,8 +16,9 @@ class EconomyBasic(commands.Cog):
 
         database table:
 
-         uid | purse | bank | inventory | work | sus
-        -----+-------+------+-----------+------+-----
+                uid         | purse  |  bank  | work | sus | passive |                             inventory                             | active_items | claimed_daily
+        --------------------+--------+--------+------+-----+---------+-------------------------------------------------------------------+--------------+---------------
+
 
 
         :param bot:
@@ -66,7 +67,7 @@ class EconomyBasic(commands.Cog):
         coins = (random.randint(0, 1000) if beg_successful else 0)
         new_bal = await self.modify(ctx.author, 'purse', "+" if beg_successful else "-", coins)
         e = discord.Embed(title=("Oh poor little beggar! take some coins!" if beg_successful else "Ew! a beggar!"),
-                          description=f"You got {str(coins)} coins!",
+                          description=f"You got {str(coins)} {basic.currency_emoji}!",
                           colour=(discord.Colour.green() if beg_successful else discord.Colour.red()))
         await ctx.reply(embed=e)
 
@@ -142,12 +143,12 @@ class EconomyBasic(commands.Cog):
             win_amt = amt
 
         if win == True:
-            coin_str = f"You won **{win_amt}** coins."
+            coin_str = f"You won **{win_amt}** {basic.currency_emoji}."
         else:
-            coin_str = f"You lost **{win_amt}** coins."
+            coin_str = f"You lost **{win_amt}** {basic.currency_emoji}."
 
         new_balance = await self.modify(ctx.author, 'purse', sign, int(win_amt))
-        embed.description = f"{coin_str}\n\nYou now have **{new_balance}** coins."
+        embed.description = f"{coin_str}\n\nYou now have **{new_balance}** {basic.currency_emoji}."
         outcome_str = f"{first} {second} {third}"
         embed.add_field(name="Outcome", value=f"**<** {outcome_str} **>**")
         await ctx.send(embed=embed)
@@ -158,19 +159,19 @@ class EconomyBasic(commands.Cog):
         member = member or ctx.author
         balance = await self.get_balance(member)
         embed = discord.Embed(title=f"{member}'s balance",
-                              description=f"Purse: **{balance['purse']}** coins\nBank: **{balance['bank']}** coins",
+                              description=f"Purse: **{balance['purse']}** {basic.currency_emoji}\nBank: **{balance['bank']}** {basic.currency_emoji}",
                               color=self.bot.color)
         embed.set_author(name=member, icon_url=member.avatar.url)
         await ctx.reply(embed=embed)
 
-    @commands.command(name="deposit", aliases=["dep"], brief="Deposits coins into your bank account")
+    @commands.command(name="deposit", aliases=["dep"], brief=f"Deposits {basic.currency_emoji} into your bank account")
     @indev_check.command_in_development()
     async def _deposit(self, ctx, amt: str):
         bal = (await self.get_balance(ctx.author))['purse']
         final_bal = economy.convert_to_money(amt, bal, 0, ctx.author)
         await self.modify(ctx.author, "purse", "-", final_bal)
         await self.modify(ctx.author, "bank", "+", final_bal)
-        await ctx.reply(f"Deposited {final_bal} coins, you now have {bal - final_bal} coins in your purse!")
+        await ctx.reply(f"Deposited {final_bal} {basic.currency_emoji}, you now have {bal - final_bal} {basic.currency_emoji} in your purse!")
 
     @commands.command(name="withdraw", aliases=["with"], brief="Withdraws money from your bank account")
     @indev_check.command_in_development()
@@ -179,7 +180,7 @@ class EconomyBasic(commands.Cog):
         final_bal = economy.convert_to_money(amt, bal, 0, ctx.author)
         await self.modify(ctx.author, "bank", "-", final_bal)
         await self.modify(ctx.author, "purse", "+", final_bal)
-        await ctx.reply(f"Withdrew {final_bal} coins, you now have {bal - final_bal} coins in your bank!")
+        await ctx.reply(f"Withdrew {final_bal} {basic.currency_emoji}, you now have {bal - final_bal} {basic.currency_emoji} in your bank!")
 
     @commands.command(name="rob", aliases=["steal"], brief="Stealing/robbing is bad!")
     @indev_check.command_in_development()
@@ -198,16 +199,16 @@ class EconomyBasic(commands.Cog):
 
         if unlucky_guy['purse'] <= 500:
             await ctx.reply(
-                f"Wtf are you doing? he has only {unlucky_guy['purse']} coins in his purse! leave that poor guy alone!")
+                f"Wtf are you doing? he has only {unlucky_guy['purse']} {basic.currency_emoji} in his purse! leave that poor guy alone!")
             return
         if author['purse'] <= 250:
             await ctx.reply(
-                f"You need at least 250 coins in your purse to steal!")
+                f"You need at least 250 {basic.currency_emoji} in your purse to steal!")
             return
         if strid_to_id.strid_id['padlock'] in unlucky_guy['active_items']:
             await self.modify(user, None, 'rr', strid_to_id.strid_id['padlock'])
             await ctx.reply(
-                f"You notice `{user.display_name}` has  **HUGE** padlock on his wallet, you were caught and had to pay 250 coins to the police!")
+                f"You notice `{user.display_name}` has  **HUGE** padlock on his wallet, you were caught and had to pay 250 {basic.currency_emoji} to the police!")
             await self.modify(ctx.author, "purse", "-", 250)
             return
         success = random.choice([True, False])
@@ -224,22 +225,22 @@ class EconomyBasic(commands.Cog):
 
         if success:
             if percentage <= 10:
-                await ctx.reply(f"{emojis.laughing} You stole just {amount} from `{user.display_name}`")
+                await ctx.reply(f"{emojis.laughing} You stole just {amount}{basic.currency_emoji} from `{user.display_name}`")
                 return
             if percentage <= 25:
-                await ctx.reply(f"{emojis.no_emotion} You stole {amount} from `{user.display_name}`")
+                await ctx.reply(f"{emojis.no_emotion} You stole {amount}{basic.currency_emoji} from `{user.display_name}`")
                 return
             if percentage <= 75:
                 await ctx.reply(
-                    f"{emojis.bag_o_cash} You stole a fair amount! you stole {amount} from `{user.display_name}`")
+                    f"{emojis.bag_o_cash} You stole a fair amount! you stole {amount}{basic.currency_emoji} from `{user.display_name}`")
                 return
             if percentage <= 100:
                 await ctx.reply(
-                    f"{emojis.money_in_mouth} YOU STOLE BASICALLY EVERYTHING LMFAO! You stole {amount} from `{user.display_name}`!")
+                    f"{emojis.money_in_mouth} YOU STOLE BASICALLY EVERYTHING LMFAO! You stole {amount}{basic.currency_emoji} from `{user.display_name}`!")
                 return
         else:
             await ctx.reply(
-                f'{emojis.laughing} You were caught stealing! you had to pay {amount} to the police {emojis.laughing}')
+                f'{emojis.laughing} You were caught stealing! you had to pay {amount}{basic.currency_emoji} to the police {emojis.laughing}')
 
     @commands.command(name="give", brief="gives the mentioned used a certain amount of money!")
     @indev_check.command_in_development()
@@ -263,7 +264,7 @@ class EconomyBasic(commands.Cog):
             return message.author.id == ctx.author.id
 
         if percentage > 50:
-            await ctx.reply(f"You want to give {amt} to {user.mention}? reply with yes or no")
+            await ctx.reply(f"You want to give {amt}{basic.currency_emoji} to {user.mention}? reply with yes or no")
             try:
                 msg = await self.bot.wait_for("message", check=check, timeout=60)
             except asyncio.TimeoutError:
@@ -334,7 +335,7 @@ class EconomyBasic(commands.Cog):
             percentage = quotient * 100
             leptop = 'laptop'
             if success:
-                await ctx.reply(f"{('Your Meme is **EXPLODING** online!' if percentage >= 75 else 'Your meme got a decent response.')} You earned {amount} {basic.currency_emoji} through the donations and ads. {f'A Fan of yours also sent you a {item}!' if item_success else ''}")
+                await ctx.reply(f"{('Your Meme is **EXPLODING** online!' if percentage >= 75 else 'Your meme got a decent response.')} You earned {amount}{basic.currency_emoji} {basic.currency_emoji} through the donations and ads. {f'A Fan of yours also sent you a {item}!' if item_success else ''}")
             else:
                 await ctx.reply(f"LOL Sucks to be you! Nobody likes your meme. {f'Also your laptop {strid_to_id.strid_id[leptop]} is now broken LMFAO' if laptop_destroy else ''}")
 
@@ -350,7 +351,7 @@ class EconomyBasic(commands.Cog):
         for loot in loot_table.daily_rewards:
             await self.modify(ctx.author, None, "ia", strid_to_id.strid_id[loot])
         await self.bot.pool.execute("UPDATE economy SET claimed_daily=$1 WHERE uid=$2", True, ctx.author.id)
-        e = discord.Embed(title="You just claimed your daily reward!", description=f'You got {amount}. ' + loot_table.daily_rewards_text.format(bank=strid_to_id.strid_id['bank_note'], bread=strid_to_id.strid_id['bread'], cookie=strid_to_id.strid_id['cookie']), colour=discord.Colour.random())
+        e = discord.Embed(title="You just claimed your daily reward!", description=f'You got {amount} {basic.currency_emoji}. ' + loot_table.daily_rewards_text.format(bank=strid_to_id.strid_id['bank_note'], bread=strid_to_id.strid_id['bread'], cookie=strid_to_id.strid_id['cookie']), colour=discord.Colour.random())
         e.set_footer(text="Dailies reset everyday at midnight UTC")
         await ctx.reply(embed=e)
 
@@ -372,11 +373,26 @@ class EconomyBasic(commands.Cog):
             if i in active_iterator:
                 continue
             active_iterator.append(i)
-        e = discord.Embed(title=f'{user.display_name}\'s inventory', colour=discord.Colour.random())
-        for item in inv_iterator:
-            e.add_field(name=strid_to_id.strid_id_inv[item], value=f"You have {inventory.count(item)} {item}", inline=False)
+        msg: discord.Message = await ctx.reply(f"Fetching data {emojis.loading}")
+        embed_list = []
+        for i in chunks_based_on_size.chunk_based_on_size(inv_iterator, 7):
+            e = discord.Embed(title=f'{user.display_name}\'s inventory', colour=discord.Colour.random())
+            for item in i:
+                if item is None:
+                    continue
+                e.add_field(name=strid_to_id.strid_id_inv[item], value=f"You have {inventory.count(item)} {item}", inline=False)
 
-        await ctx.reply(embed=e)
+            embed_list.append(e)
+        for i in chunks_based_on_size.chunk_based_on_size(active_iterator, 7):
+            e = discord.Embed(title=f'{user.display_name}\'s inventory', description="These are active items", colour=discord.Colour.random())
+            for item in i:
+                if item is None:
+                    continue
+                e.add_field(name=strid_to_id.strid_id_inv[item], value=f"You have {inventory.count(item)} {item} active", inline=False)
+
+            embed_list.append(e)
+        _paginator = paginator.Paginator(msg, embed_list, "Inventory Page")
+        await msg.edit(embed=embed_list[0], content="", view=_paginator)
 
 
 def setup(bot):
