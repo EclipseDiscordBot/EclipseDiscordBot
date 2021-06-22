@@ -10,7 +10,7 @@ class Snipe(commands.Cog):
         self.bot = bot
 
     @commands.command("snipe", brief="Gets a deleted message")
-    @commands.cooldown(1, 45, commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def _snipe(self, ctx: context.Context, count: int = 1, channel: discord.TextChannel = None):
         if not channel:
             channel = ctx.channel
