@@ -13,3 +13,5 @@ bot invite link: {bot_invite}
 support server: {support_server}
 
 """
+
+currency_emoji = "💵"

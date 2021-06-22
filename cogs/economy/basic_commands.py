@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from classes import CustomBotClass, indev_check, economy, check_create_db_entries
 from constants import emojis
-from constants.economy.ids import id_name, id_to_strid, strid_to_id
+from constants.economy import meme, loot_table, strid_to_id, basic
 import random
 
 
@@ -36,11 +36,20 @@ class EconomyBasic(commands.Cog):
         elif sign == "+":
             new_value = (await self.get_balance(member))[column] + amt
         elif sign == "rr":
-            await self.bot.pool.execute("UPDATE economy SET active_items=array_remove(active_items, $1) WHERE uid=$2", amt, member.id)
+            await self.bot.pool.execute("UPDATE economy SET active_items=array_remove(active_items, $1) WHERE uid=$2",
+                                        amt, member.id)
             return
         elif sign == "ar":
-            await self.bot.pool.execute("UPDATE economy SET active_items=array_append(active_items, $1) WHERE uid=$2", amt, member.id)
+            await self.bot.pool.execute("UPDATE economy SET active_items=array_append(active_items, $1) WHERE uid=$2",
+                                        amt, member.id)
             return
+        elif sign == "ia":
+            await self.bot.pool.execute("UPDATE economy SET inventory=array_append(inventory, $1) WHERE uid=$2",
+                                        amt, member.id)
+            return
+        elif sign == "ir":
+            await self.bot.pool.execute("UPDATE economy SET inventory=array_remove(inventory, $1) WHERE uid=$2",
+                                        amt, member.id)
         else:
             return
         if column == "purse":
@@ -69,6 +78,17 @@ class EconomyBasic(commands.Cog):
         except KeyError:
             await ctx.reply("No such item")
             return
+        await self.modify(ctx.author, None, "ia", item)
+        await ctx.reply("done")
+
+    @commands.command()
+    @indev_check.command_in_development()
+    async def item_a(self, ctx: commands.Context, item: str):
+        try:
+            item = strid_to_id.strid_id[item]
+        except KeyError:
+            await ctx.reply("No such item")
+            return
         await self.modify(ctx.author, None, "ar", item)
         await ctx.reply("done")
 
@@ -78,8 +98,8 @@ class EconomyBasic(commands.Cog):
     async def slots_command(self, ctx, amt: str):
         bal = (await self.get_balance(ctx.author))['purse']
         amt = economy.convert_to_money(amt, bal, 100, ctx.author)
-        emoji = ["👀", "🔥", "😳", "🤡", "👽", "🖕", "🌟", "🍑", "🍆"]
         result = []
+        emoji = loot_table.slots
         first = random.choice(emoji)
         second = random.choice(emoji)
         third = random.choice(emoji)
@@ -186,7 +206,8 @@ class EconomyBasic(commands.Cog):
             return
         if strid_to_id.strid_id['padlock'] in unlucky_guy['active_items']:
             await self.modify(user, None, 'rr', strid_to_id.strid_id['padlock'])
-            await ctx.reply(f"You notice `{user.display_name}` has  **HUGE** padlock on his wallet, you were caught and had to pay 250 coins to the police!")
+            await ctx.reply(
+                f"You notice `{user.display_name}` has  **HUGE** padlock on his wallet, you were caught and had to pay 250 coins to the police!")
             await self.modify(ctx.author, "purse", "-", 250)
             return
         success = random.choice([True, False])
@@ -277,6 +298,45 @@ class EconomyBasic(commands.Cog):
         await message.edit(content=f"Transfer done {emojis.white_check_mark}")
         return
 
+    @commands.command(name="postmeme", aliases=['pm', 'postm'], brief="Posts a mEmE")
+    @indev_check.command_in_development()
+    @commands.cooldown(1, 45, commands.BucketType.user)
+    async def _pm(self, ctx: commands.Context):
+
+        inventory = (await self.get_balance(ctx.author))
+        if not strid_to_id.strid_id['laptop'] in inventory['inventory']:
+            await ctx.reply("You need a laptop to post memes lol, go get one!")
+            return
+
+        msg_string = ""
+        for meme_type, meme_name in meme.meme_types.items():
+            msg_string = f'{msg_string}\n`{meme_type}`■ **{meme_name}**'
+        msg_string = f"{msg_string}\n\n __**Which one do you want to post?**__"
+        await ctx.reply(msg_string)
+
+        def check(msg):
+            return msg.content in meme.meme_types.keys() and ctx.author == msg.author
+
+        try:
+            msg = await self.bot.wait_for('message', check=check, timeout=10.0)
+        except asyncio.TimeoutError:
+            return
+        else:
+            success = random.choice([True, False])
+            amount = random.randint(100, 5000)
+            item_success = random.choice([True, False, False])
+            item = random.choice(loot_table.postmeme_emoji)
+            laptop_destroy = random.choice([False, False, False, False, True])
+            ((await self.modify(ctx.author, None, "ia", strid_to_id.strid_id[item])) if success and item_success else None)
+            ((await self.modify(ctx.author, 'purse', "+", amount)) if success else None)
+            ((await self.modify(ctx.author, None, "ir", 'laptop')) if laptop_destroy else None)
+            quotient = amount / 5000
+            percentage = quotient * 100
+            leptop = 'laptop'
+            if success:
+                await ctx.reply(f"{('Your Meme is **EXPLODING** online!' if percentage >= 75 else 'Your meme got a decent response.')} You earned {amount} {basic.currency_emoji} through the donations and ads. {f'A Fan of yours also sent you a {item}!' if item_success else ''}")
+            else:
+                await ctx.reply(f"LOL Sucks to be you! Nobody likes your meme. {f'Also your laptop {strid_to_id.strid_id[leptop]} is now broken LMFAO' if laptop_destroy else ''}")
 
 
 
