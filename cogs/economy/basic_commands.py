@@ -351,6 +351,31 @@ class EconomyBasic(commands.Cog):
             await self.modify(ctx.author, None, "ia", strid_to_id.strid_id[loot])
         await self.bot.pool.execute("UPDATE economy SET claimed_daily=$1 WHERE uid=$2", True, ctx.author.id)
         e = discord.Embed(title="You just claimed your daily reward!", description=f'You got {amount}. ' + loot_table.daily_rewards_text.format(bank=strid_to_id.strid_id['bank_note'], bread=strid_to_id.strid_id['bread'], cookie=strid_to_id.strid_id['cookie']), colour=discord.Colour.random())
+        e.set_footer(text="Dailies reset everyday at midnight UTC")
+        await ctx.reply(embed=e)
+
+    @commands.command("inventory", brief="Shows your inventory", aliases=['inv'])
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    @indev_check.command_in_development()
+    async def _inv(self, ctx: commands.Context, user: discord.Member=None):
+        if user is None:
+            user = ctx.author
+        inventory = (await self.get_balance(user))['inventory']
+        active_items = (await self.get_balance(user))['active_items']
+        inv_iterator = []
+        active_iterator = []
+        for i in inventory:
+            if i in inv_iterator:
+                continue
+            inv_iterator.append(i)
+        for i in active_items:
+            if i in active_iterator:
+                continue
+            active_iterator.append(i)
+        e = discord.Embed(title=f'{user.display_name}\'s inventory', colour=discord.Colour.random())
+        for item in inv_iterator:
+            e.add_field(name=strid_to_id.strid_id_inv[item], value=f"You have {inventory.count(item)} {item}", inline=False)
+
         await ctx.reply(embed=e)
 
 
