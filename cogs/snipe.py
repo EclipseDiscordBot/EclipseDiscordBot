@@ -1,7 +1,5 @@
 import discord
 from discord.ext import commands
-import jishaku
-from constants.basic import owners
 from classes import CustomBotClass, context
 
 

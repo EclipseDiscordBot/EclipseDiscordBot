@@ -338,6 +338,20 @@ class EconomyBasic(commands.Cog):
             else:
                 await ctx.reply(f"LOL Sucks to be you! Nobody likes your meme. {f'Also your laptop {strid_to_id.strid_id[leptop]} is now broken LMFAO' if laptop_destroy else ''}")
 
+    @commands.command("daily", brief="Claims your daily reward")
+    @indev_check.command_in_development()
+    async def _daily(self, ctx: commands.Context):
+        info = await self.get_balance(ctx.author)
+        if info['claimed_daily']:
+            await ctx.reply("Hey! you've already claimed your daily! don't try to trick me!")
+            return
+        amount = random.randint(30000, 50000)
+        await self.modify(ctx.author, "purse", "+", amount)
+        for loot in loot_table.daily_rewards:
+            await self.modify(ctx.author, None, "ia", strid_to_id.strid_id[loot])
+        await self.bot.pool.execute("UPDATE economy SET claimed_daily=$1 WHERE uid=$2", True, ctx.author.id)
+        e = discord.Embed(title="You just claimed your daily reward!", description=f'You got {amount}. ' + loot_table.daily_rewards_text.format(bank=strid_to_id.strid_id['bank_note'], bread=strid_to_id.strid_id['bread'], cookie=strid_to_id.strid_id['cookie']), colour=discord.Colour.random())
+        await ctx.reply(embed=e)
 
 
 def setup(bot):

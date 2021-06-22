@@ -1,0 +1,1 @@
+30 5 * * * PGPASSWORD=SorryButICan'tLeakThePassword! psql -h localhost -U postgres -d eclipse -c "UPDATE economy SET claimed_daily=FALSE"
