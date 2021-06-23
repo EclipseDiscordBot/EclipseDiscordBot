@@ -87,7 +87,10 @@ class Logging(commands.Cog):
                     f"Message Edited by {new_edited_msg_content.author}",
                     datetime.datetime.now().timestamp(), 1, 0, 0, new_edited_msg_content.content)
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
-                log_channel_id = log_channel_ids[0]['channel_id']
+                try:
+                    log_channel_id = log_channel_ids[0]['channel_id']
+                except IndexError:
+                    return
                 log_chnl = self.bot.get_guild(
                     msg.guild_id).get_channel(log_channel_id)
                 if log_chnl is None:
