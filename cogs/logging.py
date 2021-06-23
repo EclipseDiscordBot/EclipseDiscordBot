@@ -16,7 +16,10 @@ class Logging(commands.Cog):
                 log_channel_ids = await conn.fetch(
                     'SELECT * FROM logging WHERE server_id = $1', server_id
                 )
-                log_channel_id = log_channel_ids[0]['channel_id']
+                try:
+                    log_channel_id = log_channel_ids[0]['channel_id']
+                except IndexError:
+                    return
                 return log_channel_id
 
     @commands.command(name="log",
@@ -54,7 +57,10 @@ class Logging(commands.Cog):
                     datetime.datetime.now().timestamp(), 0, 0, 0,
                     (msg.cached_message.content if msg.cached_message else "Message not found in cache"))
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
-                log_channel_id = log_channel_ids[0]['channel_id']
+                try:
+                    log_channel_id = log_channel_ids[0]['channel_id']
+                except IndexError:
+                    return
                 log_chnl = self.bot.get_guild(
                     msg.guild_id).get_channel(log_channel_id)
                 if log_chnl is None:
