@@ -142,7 +142,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener("on_member_remove")
     async def member_leave(self, member):
-        joined = humanize.precisedelta(datetime.datetime.now() - member.joined_at)
+        joined = humanize.precisedelta(datetime.datetime.now() - member.joined_at.replace(tzinfo=None))
         embed = discord.Embed(
             title="Member left",
             color=discord.Colour.red(),
@@ -153,7 +153,7 @@ class Logging(commands.Cog):
         embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
-        if log_chnl == None:
+        if log_chnl is None:
             return
         await log_chnl.send(embed=embed)
 
