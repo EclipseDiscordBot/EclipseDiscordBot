@@ -138,6 +138,7 @@ class Fun(commands.Cog):
     @commands.command("hack", aliases=['hk', 'hax'], description="hax the specified person")
     @commands.cooldown(1, 45, commands.BucketType.user)
     async def _hack(self, ctx: commands.Context, user: discord.User):
+        success = random.choice([True, False])
         message: discord.Message = await ctx.reply(f"Initiating the hack on `{user.display_name}` {emojis.loading}")
         await asyncio.sleep(1)
         await message.edit(content=f"Trying to find `{user.display_name}`'s IP {emojis.loading}")
@@ -154,19 +155,22 @@ class Fun(commands.Cog):
         await asyncio.sleep(0.5)
         await message.edit(content=f"PAYLOAD INJECTION SUCCESSFUL! DROPPING INTO SHELL {emojis.loading}")
         await asyncio.sleep(2)
-        await message.edit(content=f"SHELL ACCESS DENIED, TRYING AGAIN, attempt 1 {emojis.loading}")
-        await asyncio.sleep(2)
-        await message.edit(content=f"SHELL ACCESS DENIED, TRYING AGAIN, attempt 2 {emojis.loading}")
-        await asyncio.sleep(2)
-        await message.edit(content=f"SHELL ACCESS DENIED, TRYING AGAIN, attempt 3 {emojis.loading}")
-        await asyncio.sleep(2)
+        shell_attempts = random.randint(3, 21)
+        for i in range(shell_attempts):
+            await message.edit(content=f"SHELL ACCESS DENIED, TRYING AGAIN, attempt {i} {emojis.loading}")
+            await asyncio.sleep(2)
+        if not success:
+            await message.edit(content=f"OH NO, PAYLOAD WAS DELETED BY ANTIVIRUS! `{user.display_name}` got lucky :unamused:")
+            return
         await message.edit(content=f"SHELL ACCESS GRANTED! {emojis.loading}")
         await asyncio.sleep(0.5)
         await message.edit(content=f"Trying to get into edge's cookies(wtf they use edge) {emojis.loading}")
         await asyncio.sleep(1)
         await message.edit(content=f"got session token, trying it out {emojis.loading}")
         await asyncio.sleep(1)
-        await message.edit(content=f"EMAIL HACK SUCCESSFUL! \nEmail: `{user.display_name}@hotmail.com` \nPassword: `Ilikecyberpunk2077`")
+        random_number = random.randint(0, 10000)
+        random_number2 = random.randint(0, 10000)
+        await message.edit(content=f"EMAIL HACK SUCCESSFUL! \nEmail: `{user.display_name}{random_number}@hotmail.com` \nPassword: `Ilikecyberpunk2077cuz{random_number2}`")
 
 
 def setup(bot):
