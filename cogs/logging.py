@@ -272,7 +272,7 @@ class Logging(commands.Cog):
                 name="After:",
                 value=after.afk_channel
             )
-        elif before.banner_url != after.banner_url:
+        elif before.banner.url != after.banner.url:
             embed = discord.Embed(
                 title="Server Banner Changed",
                 description=f"Before Banner: {before.banner_url}\nAfter Banner: {after.banner_url}"

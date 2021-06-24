@@ -18,7 +18,7 @@ def command_in_development():
         if ctx.author.id in owners:
             return True
         elif ctx.author.id in beta_testers:
-            await ctx.reply("hey! this command is still in development! report any bugs you find and leave feedback in <@605364556465963018>'s DMs")
+            await ctx.reply("hey! this command is still in development! report any bugs you find and leave feedback in `! Satyamedh#2579`'s DMs")
             return True
         else:
             raise CommandInDevException(ctx.command.name)

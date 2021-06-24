@@ -351,7 +351,7 @@ class EconomyBasic(commands.Cog):
         for loot in loot_table.daily_rewards:
             await self.modify(ctx.author, None, "ia", strid_to_id.strid_id[loot])
         await self.bot.pool.execute("UPDATE economy SET claimed_daily=$1 WHERE uid=$2", True, ctx.author.id)
-        e = discord.Embed(title="You just claimed your daily reward!", description=f'You got {amount} {basic.currency_emoji}. ' + loot_table.daily_rewards_text.format(bank=strid_to_id.strid_id['bank_note'], bread=strid_to_id.strid_id['bread'], cookie=strid_to_id.strid_id['cookie']), colour=discord.Colour.random())
+        e = discord.Embed(title="You just claimed your daily reward!", description=f'You got {amount} {basic.currency_emoji}. ' + loot_table.daily_rewards_text.format(bank=strid_to_id.strid_id['banknote'], bread=strid_to_id.strid_id['bread'], cookie=strid_to_id.strid_id['cookie']), colour=discord.Colour.random())
         e.set_footer(text="Dailies reset everyday at midnight UTC")
         await ctx.reply(embed=e)
 

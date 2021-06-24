@@ -6,7 +6,7 @@ strid_id = {
     "chocolate": '🍫',
     "baguette": '🥖',
     "bread": '🍞',
-    "bank_note": '🧾',
+    "banknote": '🧾',
 }
 strid_id_short = {
     "lock": '🔒',
@@ -26,7 +26,7 @@ strid_id_inv = {
     "🍫": "chocolate",
     "🥖": "baguette",
     "🍞": "bread",
-    "🧾": "bank_note",
+    "🧾": "banknote",
 }
 
 strid_id_short_inv = {
