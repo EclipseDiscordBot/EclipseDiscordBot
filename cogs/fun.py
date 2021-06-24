@@ -139,6 +139,7 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 45, commands.BucketType.user)
     async def _hack(self, ctx: commands.Context, user: discord.User):
         success = random.choice([True, False])
+        linux_chance = random.choice([True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False])
         message: discord.Message = await ctx.reply(f"Initiating the hack on `{user.display_name}` {emojis.loading}")
         await asyncio.sleep(1)
         await message.edit(content=f"Trying to find `{user.display_name}`'s IP {emojis.loading}")
@@ -153,6 +154,9 @@ class Fun(commands.Cog):
         await asyncio.sleep(2)
         await message.edit(content=f"Trying to inject payload {emojis.loading}")
         await asyncio.sleep(0.5)
+        if linux_chance:
+            await message.edit(content=f"Wait WTF! HE USES LINUX! I AM NOT HACKING A FELLOW LINUX USER!!!!!!! `{user.display_name}` Nice! you use linux even if you actually do!")
+            return
         await message.edit(content=f"PAYLOAD INJECTION SUCCESSFUL! DROPPING INTO SHELL {emojis.loading}")
         await asyncio.sleep(2)
         shell_attempts = random.randint(3, 21)
