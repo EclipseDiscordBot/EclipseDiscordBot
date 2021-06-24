@@ -155,7 +155,7 @@ class Fun(commands.Cog):
         await message.edit(content=f"Trying to inject payload {emojis.loading}")
         await asyncio.sleep(0.5)
         if linux_chance:
-            await message.edit(content=f"Wait WTF! HE USES LINUX! I AM NOT HACKING A FELLOW LINUX USER!!!!!!! `{user.display_name}` Nice! you use linux even if you actually do!")
+            await message.edit(content=f"Wait WTF! HE USES LINUX! I AM NOT HACKING A FELLOW LINUX USER!!!!!!! `{user.display_name}` Nice! you use linux even if you actually don't!")
             return
         await message.edit(content=f"PAYLOAD INJECTION SUCCESSFUL! DROPPING INTO SHELL {emojis.loading}")
         await asyncio.sleep(2)
