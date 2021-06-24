@@ -2,12 +2,9 @@ import asyncio
 import random
 from classes import CustomBotClass
 import aiohttp
-from prsaw import RandomStuff
 from discord.ext import commands
 import discord
-
-rs = RandomStuff()
-
+from constants import emojis
 
 class Fun(commands.Cog):
 
@@ -137,6 +134,39 @@ class Fun(commands.Cog):
                     return "Something went wrong while accessing the BrainShop API."
                 js = await resp.json()
                 return js["cnt"]
+
+    @commands.command("hack", aliases=['hk', 'hax'], description="hax the specified person")
+    @commands.cooldown(1, 45, commands.BucketType.user)
+    async def _hack(self, ctx: commands.Context, user: discord.User):
+        message: discord.Message = await ctx.reply(f"Initiating the hack on `{user.display_name}` {emojis.loading}")
+        await asyncio.sleep(1)
+        await message.edit(content=f"Trying to find `{user.display_name}`'s IP {emojis.loading}")
+        await asyncio.sleep(2)
+        await message.edit(content=f"Got it! 136.185.129.212! {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await message.edit(content=f"Trying to find open ports! {emojis.loading}")
+        await asyncio.sleep(2)
+        await message.edit(content=f"Found open ports! `80`, `443`, `25565` {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await message.edit(content=f"Trying to create payload with msfvenom {emojis.loading}")
+        await asyncio.sleep(2)
+        await message.edit(content=f"Trying to inject payload {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await message.edit(content=f"PAYLOAD INJECTION SUCCESSFUL! DROPPING INTO SHELL {emojis.loading}")
+        await asyncio.sleep(2)
+        await message.edit(content=f"SHELL ACCESS DENIED, TRYING AGAIN, attempt 1 {emojis.loading}")
+        await asyncio.sleep(2)
+        await message.edit(content=f"SHELL ACCESS DENIED, TRYING AGAIN, attempt 2 {emojis.loading}")
+        await asyncio.sleep(2)
+        await message.edit(content=f"SHELL ACCESS DENIED, TRYING AGAIN, attempt 3 {emojis.loading}")
+        await asyncio.sleep(2)
+        await message.edit(content=f"SHELL ACCESS GRANTED! {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await message.edit(content=f"Trying to get into edge's cookies(wtf they use edge) {emojis.loading}")
+        await asyncio.sleep(1)
+        await message.edit(content=f"got session token, trying it out {emojis.loading}")
+        await asyncio.sleep(1)
+        await message.edit(content=f"EMAIL HACK SUCCESSFUL! \nEmail: `{user.display_name}@hotmail.com` \nPassword: `Ilikecyberpunk2077`")
 
 
 def setup(bot):
