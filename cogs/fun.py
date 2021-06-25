@@ -4,7 +4,9 @@ from classes import CustomBotClass
 import aiohttp
 from discord.ext import commands
 import discord
+
 from constants import emojis
+
 
 class Fun(commands.Cog):
 
@@ -139,7 +141,9 @@ class Fun(commands.Cog):
     @commands.cooldown(1, 45, commands.BucketType.user)
     async def _hack(self, ctx: commands.Context, user: discord.User):
         success = random.choice([True, False])
-        linux_chance = random.choice([True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False])
+        linux_chance = random.choice(
+            [True, False, False, False, False, False, False, False, False, False, False, False, False, False, False,
+             False, False, False, False, False, False, False, False, False, False])
         message: discord.Message = await ctx.reply(f"Initiating the hack on `{user.display_name}` {emojis.loading}")
         await asyncio.sleep(1)
         await message.edit(content=f"Trying to find `{user.display_name}`'s IP {emojis.loading}")
@@ -155,7 +159,8 @@ class Fun(commands.Cog):
         await message.edit(content=f"Trying to inject payload {emojis.loading}")
         await asyncio.sleep(0.5)
         if linux_chance:
-            await message.edit(content=f"Wait WTF! HE USES LINUX! I AM NOT HACKING A FELLOW LINUX USER!!!!!!! `{user.display_name}` Nice! you use linux even if you actually don't!")
+            await message.edit(
+                content=f"Wait WTF! HE USES LINUX! I AM NOT HACKING A FELLOW LINUX USER!!!!!!! `{user.display_name}` Nice! you use linux even if you actually don't!")
             return
         await message.edit(content=f"PAYLOAD INJECTION SUCCESSFUL! DROPPING INTO SHELL {emojis.loading}")
         await asyncio.sleep(2)
@@ -164,7 +169,8 @@ class Fun(commands.Cog):
             await message.edit(content=f"SHELL ACCESS DENIED, TRYING AGAIN, attempt {i} {emojis.loading}")
             await asyncio.sleep(2)
         if not success:
-            await message.edit(content=f"OH NO, PAYLOAD WAS DELETED BY ANTIVIRUS! `{user.display_name}` got lucky :unamused:")
+            await message.edit(
+                content=f"OH NO, PAYLOAD WAS DELETED BY ANTIVIRUS! `{user.display_name}` got lucky :unamused:")
             return
         await message.edit(content=f"SHELL ACCESS GRANTED! {emojis.loading}")
         await asyncio.sleep(0.5)
@@ -174,7 +180,8 @@ class Fun(commands.Cog):
         await asyncio.sleep(1)
         random_number = random.randint(0, 10000)
         random_number2 = random.randint(0, 10000)
-        await message.edit(content=f"EMAIL HACK SUCCESSFUL! \nEmail: `{user.display_name}{random_number}@hotmail.com` \nPassword: `Ilikecyberpunk2077cuz{random_number2}`")
+        await message.edit(
+            content=f"EMAIL HACK SUCCESSFUL! \nEmail: `{user.display_name}{random_number}@hotmail.com` \nPassword: `Ilikecyberpunk2077cuz{random_number2}`")
 
 
 def setup(bot):

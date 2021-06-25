@@ -8,7 +8,7 @@ class EconomyException(Exception):
 class NotEnoughMoneyError(EconomyException):
     def __init__(self, user):
         super().__init__()
-        self.string = f"Sorry {user.mention}, you don't have enough money!"
+        self.string = f"Sorry {user.mention}, you don't have enough money or you're exceeding the limit!"
 
     def __str__(self):
         return self.string

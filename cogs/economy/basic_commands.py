@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from classes import CustomBotClass, indev_check, economy, check_create_db_entries, paginator, chunks_based_on_size
 from constants import emojis
-from constants.economy import meme, loot_table, strid_to_id, basic
+from constants.economy import meme, loot_table, strid_to_id, basic, consume_functions
 import random
 
 
@@ -168,7 +168,10 @@ class EconomyBasic(commands.Cog):
     @indev_check.command_in_development()
     async def _deposit(self, ctx, amt: str):
         bal = (await self.get_balance(ctx.author))['purse']
-        final_bal = economy.convert_to_money(amt, bal, 0, ctx.author)
+        max_amount = (await self.get_balance(ctx.author))['bank_limit']
+        current_bank_bal = (await self.get_balance(ctx.author))['bank']
+        space_left = max_amount - current_bank_bal
+        final_bal = economy.convert_to_money(amt, space_left, 0, ctx.author)
         await self.modify(ctx.author, "purse", "-", final_bal)
         await self.modify(ctx.author, "bank", "+", final_bal)
         await ctx.reply(f"Deposited {final_bal} {basic.currency_emoji}, you now have {bal - final_bal} {basic.currency_emoji} in your purse!")
@@ -393,6 +396,19 @@ class EconomyBasic(commands.Cog):
             embed_list.append(e)
         _paginator = paginator.Paginator(msg, embed_list, "Inventory Page")
         await msg.edit(embed=embed_list[0], content="", view=_paginator)
+
+    @commands.command("use", brief="Uses the provided item, if possible")
+    @indev_check.command_in_development()
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def _use(self, ctx: commands.Context, item: str):
+        try:
+            item = strid_to_id.strid_id_short[item]
+        except KeyError:
+            pass
+        try:
+            await ctx.reply(await consume_functions.consume_funcs[item](self.bot.pool, ctx.author.id))
+        except KeyError:
+            await ctx.reply("Ey! That item no exists or it isn't usable")
 
 
 def setup(bot):
