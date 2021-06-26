@@ -1,4 +1,5 @@
 from constants import emojis
+from constants.economy import basic
 
 
 class EconomyException(Exception):
@@ -26,7 +27,7 @@ class NegativeMoneyException(EconomyException):
 class InvalidMoneyException(EconomyException):
     def __init__(self, user):
         super().__init__()
-        self.string = f"{emojis.laughing} {user.mention}, That's a invalid amount of $$$"
+        self.string = f"{emojis.laughing} {user.mention}, That's a invalid amount of {basic.currency_emoji}"
 
     def __str__(self):
         return self.string
