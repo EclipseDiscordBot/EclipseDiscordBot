@@ -1,8 +1,8 @@
 import random
 from typing import List
 import discord
-from discord.ext import commands, tasks
-from classes import CustomBotClass, proccessname_setter, stats_webhook
+from discord.ext import commands
+from classes import CustomBotClass, proccessname_setter
 from constants import basic
 from flask import Flask
 from threading import Thread
@@ -123,14 +123,15 @@ async def channels():
         response_json = response_templates['failure'].copy()
         response_json['reason'] = 'unknown_guild'
         return response_json
-    channels = guild.channels
-    if channels is None:
+    channels0 = guild.channels
+    if channels0 is None:
         response_json = response_templates['failure'].copy()
         response_json['reason'] = 'no_channels_in_guild'
         return response_json
     final_channels = []
-    for channel in channels:
-        if not isinstance(channel, discord.TextChannel): continue
+    for channel in channels0:
+        if not isinstance(channel, discord.TextChannel):
+            continue
         channel: discord.TextChannel
         channel_json = {
             "name": channel.name,
@@ -237,7 +238,7 @@ async def gen_code():
             "check_id": check_id,
             "scope": str(scope)
         }
-    except discord.Forbidden or discord.HTTPException as e:
+    except discord.Forbidden or discord.HTTPException:
         response_json = response_templates['failure'].copy()
         response_json['reason'] = "dms_not_open"
         return response_json
