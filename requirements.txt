@@ -61,7 +61,7 @@ sniffio==1.2.0
 typing-extensions
 update-checker==0.18.0
 urllib3==1.26.6
-Werkzeug==2.0.0
+Werkzeug==2.0.1
 yarl==1.6.3
 youtube-dl==2021.4.26
 zipp==3.4.1
