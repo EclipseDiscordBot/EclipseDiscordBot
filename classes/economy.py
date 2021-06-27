@@ -53,6 +53,7 @@ def convert_to_money(input_cash, balance, minimum, user):
     elif input_cash < minimum:
         raise NegativeMoneyException(user)
     try:
-        return int(input_cash)
+        input_cash = int(input_cash)
     except ValueError:
         raise InvalidMoneyException(user)
+    return input_cash
