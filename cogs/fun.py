@@ -5,7 +5,7 @@ import aiohttp
 from discord.ext import commands
 import discord
 
-from constants import emojis
+from constants import emojis, basic
 
 
 class Fun(commands.Cog):
@@ -140,15 +140,20 @@ class Fun(commands.Cog):
     @commands.command("hack", aliases=['hk', 'hax'], description="hax the specified person")
     @commands.cooldown(1, 45, commands.BucketType.user)
     async def _hack(self, ctx: commands.Context, user: discord.User):
-        success = random.choice([True, False])
+        success = random.choice([True, False, False, False, False, False, False, False])
         linux_chance = random.choice(
             [True, False, False, False, False, False, False, False, False, False, False, False, False, False, False,
-             False, False, False, False, False, False, False, False, False, False])
+             False, False, False, False, False, False, False, False, False, False, False, False, False, False, False])
+        ip = f'{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}'
+        if user.id in basic.owners:
+            await ctx.reply("Hey! you're not hacking my devs :unamused:, the hack has been reversed onto **YOU**")
+            user = ctx.author
+            await asyncio.sleep(1)
         message: discord.Message = await ctx.reply(f"Initiating the hack on `{user.display_name}` {emojis.loading}")
         await asyncio.sleep(1)
         await message.edit(content=f"Trying to find `{user.display_name}`'s IP {emojis.loading}")
         await asyncio.sleep(2)
-        await message.edit(content=f"Got it! 136.185.129.212! {emojis.loading}")
+        await message.edit(content=f"Got it! {ip}! {emojis.loading}")
         await asyncio.sleep(0.5)
         await message.edit(content=f"Trying to find open ports! {emojis.loading}")
         await asyncio.sleep(2)
