@@ -10,6 +10,7 @@ from discord.ext import commands
 
 
 class ImageGeneration(commands.Cog):
+    """Image Generation commands"""
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
@@ -73,6 +74,10 @@ class ImageGeneration(commands.Cog):
             file = discord.File(open(f'data/amongus.{rand}.gif', 'rb'))
             await ctx.reply(file=file)
         # os.system(f"rm data/amongus.{rand}.gif")
+        
+    @commands.command(name="fakemsg", brief="Shows a fake discord message provided an author and the message")
+    async def fake_message(self, ctx, member:discord.Member, *, message):
+        pass # will do in a few mins
 
 
 def setup(bot):

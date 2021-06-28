@@ -38,6 +38,7 @@ class CustomBot(commands.Bot):
         self.brain_id = f['brain_id']
         self.brain_api = f['brain_api']
         self.token = f["discord"]
+        self.dagpi = f["dagpi"]
         self.sra_api = f['some_random_api']
         self.launch_time = datetime.datetime.utcnow()
         self.gameboy = False
