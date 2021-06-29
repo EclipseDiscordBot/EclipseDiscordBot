@@ -42,6 +42,7 @@ class CustomBot(commands.Bot):
         self.sra_api = f['some_random_api']
         self.launch_time = datetime.datetime.utcnow()
         self.gameboy = False
+        self.gameboy_inst = None
         self.color = discord.Color.from_rgb(156, 7, 241)
         with open("config/config.json", "r") as read_file:
             data = json.load(read_file)

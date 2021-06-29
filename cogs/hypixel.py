@@ -149,7 +149,7 @@ class Hypixel(commands.Cog):
 
     @commands.command("stats", brief="Gets the hypixel stats of a person")
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def _stats(self, ctx: commands.Context, uname: str=None):
+    async def _stats(self, ctx: commands.Context, uname: str=None, sb_profile_number: int=1):
         if uname is None:
             await ctx.reply("ey! You didn't provide a username! I'm not gonna accept empty usernames :unamused:")
             return
@@ -192,11 +192,22 @@ class Hypixel(commands.Cog):
             duels_e.add_field(name="Wins", value=all_stats['stats']['Duels']['wins'])
             duels_e.add_field(name="Deaths", value=all_stats['stats']['Duels']['deaths'])
             duels_e.add_field(name="Total Bridge Goals", value=all_stats['stats']['Duels']['goals'])
-            duels_e.add_field(name="Ping Preference", value=all_stats['stats']['Duels']['pingPreference'])
             # Skyblock
             skyblock_e = discord.Embed(title=f'Skyblock', colour=random_color)
-            skyblock_e.add_field(name="Profile name(First profile)", value=list(all_stats['stats']['SkyBlock']['profiles'].values())[0]['cute_name'])
-            prof_id =   list(all_stats['stats']['SkyBlock']['profiles'].values())[0]['profile_id']
+            try:
+                skyblock_e.add_field(name="Profile name", value=list(all_stats['stats']['SkyBlock']['profiles'].values())[sb_profile_number-1]['cute_name'])
+            except IndexError:
+                await ctx.reply("Invalid Profile Index, Try again :/")
+                return
+            prof_id = list(all_stats['stats']['SkyBlock']['profiles'].values())[sb_profile_number-1]['profile_id']
+            skyblock_inst = json.loads((await self.hypixel.profile(prof_id)).json())
+            skyblock_info_root = skyblock_inst['members'][uuid]
+            skyblock_e.add_field(name="Purse", value=f"{round(skyblock_info_root['coin_purse']):,}")
+            skyblock_e.add_field(name="Bank", value=f"{((round(skyblock_inst['raw']['banking']['balance'])) if 'banking' in skyblock_inst['raw'] else 0):,}")
+            skyblock_e.add_field(name="Highest Damage Dealt", value=f"{((round(skyblock_info_root['stats']['highest_critical_damage'])) if 'highest_critical_damage' in skyblock_info_root['stats'] else 0):,}")
+            skills_root = all_stats['achievements']
+            skills_string = f"(First profile only){emojis.pick}`{skills_root['skyblock_excavator']}` {emojis.hoe}`{skills_root['skyblock_harvester']}` {emojis.sapling}`{skills_root['skyblock_gatherer']}` {emojis.enchanting_table}`{skills_root['skyblock_augmentation']}` {emojis.fishing_rod}`{skills_root['skyblock_angler']}` {emojis.brewing_stand}`{skills_root['skyblock_concoctor']}` {emojis.sword}`{skills_root['skyblock_combat']}` {emojis.spawn_egg}`{skills_root['skyblock_domesticator']}` "
+            skyblock_e.add_field(name="Skills", value=skills_string)
             message = await ctx.reply(f"Fetching data {emojis.loading}")
             _paginator = SpecialPaginator(message, [bedwars_e, skywars_e, duels_e, skyblock_e])
             await message.edit(view=_paginator, embed=bedwars_e, content=f"Here are `{uname}`'s stats")
