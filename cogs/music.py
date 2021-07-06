@@ -1,8 +1,9 @@
 import asyncio
+from typing import Dict, List, Union
 
 import discord
 import wavelink
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 
 class Music(commands.Cog):
@@ -14,6 +15,8 @@ class Music(commands.Cog):
             self.bot.wavelink = wavelink.Client(bot=self.bot)
 
         self.bot.loop.create_task(self.start_nodes())
+        self.queue: Dict[wavelink.Player, List[wavelink.Track]] = {}
+        # self.loop: Dict[wavelink.Player, Dict[str, Union[int, bool]]] = {}
 
     async def start_nodes(self):
         await self.bot.wait_until_ready()
@@ -24,6 +27,7 @@ class Music(commands.Cog):
                                               password=self.bot.lavalink_passwd,
                                               identifier='TEST',
                                               region='us_central')
+        self.next_song.start()
 
     @commands.command(name='connect', brief="Connects to your VC")
     async def connect_(self, ctx, *, channel: discord.VoiceChannel = None):
@@ -44,18 +48,21 @@ class Music(commands.Cog):
         if not tracks:
             return await ctx.send('Could not find any songs with that query.')
 
-        player = self.bot.wavelink.get_player(ctx.guild.id)
+        player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
         if not player.is_connected:
             await ctx.invoke(self.connect_)
 
-        await ctx.send(f'Added {str(tracks[0])} to the queue.')
-        await player.play(tracks[0])
+        if player not in list(self.queue.values()):
+            self.queue[player] = []
+        self.queue[player].append(tracks[0])
+        await ctx.send(f'Added `{str(tracks[0])}` to the queue.')
 
     @commands.command(aliases=['end'], name="stop", brief="Stops playing songs")
     async def stop(self, ctx):
         player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
         await ctx.reply("Stopped")
         await player.stop()
+        self.queue[player] = []
 
     @commands.command(aliases=['w8', 'wait'], name="pause", brief="Pauses music")
     async def pause(self, ctx):
@@ -69,11 +76,30 @@ class Music(commands.Cog):
         await ctx.reply("Resumed")
         await player.set_pause(False)
 
-    @commands.command(aliases=['l'], name="leave", brief="Leaves the VC")
+    @commands.command(aliases=['l', 'disconnect'], name="leave", brief="Leaves the VC")
     async def leave(self, ctx):
         player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
         await ctx.reply("Bye!")
         await player.disconnect()
+
+    @commands.command(aliases=['s', 'ski'], name="skip", brief="Skips the current song")
+    async def skip(self, ctx):
+        player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
+        queue = self.queue[player]
+        await ctx.reply(f"Skipping")
+        await player.stop()
+
+        if not len(queue) == 0:
+            await player.play(queue[0])
+            queue.pop(0)
+
+    @tasks.loop(seconds=2.5)
+    async def next_song(self):
+        for player, queue in self.queue.items():
+            if not player.is_playing:
+                if not len(queue) == 0:
+                    await player.play(queue[0])
+                    queue.pop(0)
 
 
 def setup(bot):
