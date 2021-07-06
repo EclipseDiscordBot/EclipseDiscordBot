@@ -18,7 +18,7 @@ class ErrorHandler(commands.Cog):
     async def on_command_error(self, ctx: commands.Context, error):
         """
         Handles errors. Ignores if the command isn't found, or when the user is not an owner of the bot, but tried to use a owner only command
-        :param ctx:
+        :param c
         :param error:
         :return:
         """
@@ -29,6 +29,7 @@ class ErrorHandler(commands.Cog):
                 k=15))
         if hasattr(ctx.command, 'on_error'):
             return
+        
 
         cog = ctx.cog
         if cog and cog._get_overridden_method(

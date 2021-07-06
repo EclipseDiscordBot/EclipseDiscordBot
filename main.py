@@ -7,6 +7,7 @@ from constants import basic
 from flask import Flask
 from threading import Thread
 from flask import request
+import subprocess
 
 intents = discord.Intents.all()
 
@@ -39,7 +40,6 @@ bot = CustomBotClass.CustomBot(
     allowed_mentions=mentions,
     case_insensitive=True,
     strip_after_prefix=True)
-
 
 app = Flask(__name__)
 
@@ -248,9 +248,16 @@ def begin_flask():
     app.run(port=8076, host="0.0.0.0")
 
 
+def begin_lavalink():
+    subprocess.call(['java', '-jar', 'Lavalink.jar'])
+
+
 if __name__ == "__main__":
     proccessname_setter.try_set_process_name("eclipse_booting")
     thr = bot.flask_thread = Thread(target=begin_flask)
+    thr.daemon = True
+    thr.start()
+    thr = bot.flask_thread = Thread(target=begin_lavalink)
     thr.daemon = True
     thr.start()
     bot.flask_instance = app

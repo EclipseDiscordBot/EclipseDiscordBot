@@ -4,8 +4,6 @@ import json
 import multiprocessing
 import os
 import pickle
-from threading import Thread
-
 import asyncpraw as apraw
 import asyncpg
 import discord
@@ -44,6 +42,7 @@ class CustomBot(commands.Bot):
         self.gameboy = False
         self.gameboy_inst = None
         self.color = discord.Color.from_rgb(156, 7, 241)
+        self.lavalink_passwd = f['lavalink']
         with open("config/config.json", "r") as read_file:
             data = json.load(read_file)
             self.config = data
