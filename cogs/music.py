@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 import wavelink
 from discord.ext import commands
@@ -15,6 +17,7 @@ class Music(commands.Cog):
 
     async def start_nodes(self):
         await self.bot.wait_until_ready()
+        await asyncio.sleep(10)
         await self.bot.wavelink.initiate_node(host='127.0.0.1',
                                               port=2333,
                                               rest_uri='http://127.0.0.1:2333',
