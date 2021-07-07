@@ -93,7 +93,7 @@ class Music(commands.Cog):
             await player.play(queue[0])
             queue.pop(0)
 
-    @tasks.loop(seconds=1)
+    @tasks.loop(seconds=10)
     async def next_song(self):
         for player, queue in self.queue.items():
             if not player.is_playing:
@@ -114,6 +114,19 @@ class Music(commands.Cog):
 
         await player.set_volume(volume)
         await ctx.reply(f"Done! The volume is now {player.volume}")
+
+    @commands.command(name="seek", brief="Seeks to a given position of the song")
+    async def _seek(self, ctx: commands.Context, position: str):
+        split = position.split(":")
+        if len(split) != 2:
+            await ctx.reply("Wrong format, examples: `5:12`, `8:21` etc, ")
+            return
+        final_seconds = ((int(split[0]) * 60) + int(split[1])) * 1000
+        print(final_seconds)
+        player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
+        await player.seek(final_seconds)
+        await ctx.reply(f"Done, now at {position}")
+
 
 def setup(bot):
     bot.add_cog(Music(bot))

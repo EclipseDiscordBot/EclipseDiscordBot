@@ -1,6 +1,8 @@
 import random
 import string
 import discord
+from wavelink import ZeroConnectedNodes
+
 from classes import CustomBotClass
 import traceback
 from discord.ext import commands
@@ -94,6 +96,9 @@ class ErrorHandler(commands.Cog):
                 color=discord.Color.random())
             await ctx.reply(embed=embed)
             return
+
+        elif isinstance(error, ZeroConnectedNodes):
+            await ctx.reply("Please wait! the music services are still loading!")
 
         elif isinstance(error, commands.MemberNotFound):
             title = "Member not found"
