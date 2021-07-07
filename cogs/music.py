@@ -64,7 +64,7 @@ class Music(commands.Cog):
         await player.stop()
         self.queue[player] = []
 
-    @commands.command(aliases=['w8', 'wait'], name="pause", brief="Pauses music")
+    @commands.command(aliases=['w8', 'wait', 'p'], name="pause", brief="Pauses music")
     async def pause(self, ctx):
         player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
         await ctx.reply("Paused")
@@ -93,7 +93,7 @@ class Music(commands.Cog):
             await player.play(queue[0])
             queue.pop(0)
 
-    @tasks.loop(seconds=2.5)
+    @tasks.loop(seconds=1)
     async def next_song(self):
         for player, queue in self.queue.items():
             if not player.is_playing:
@@ -101,6 +101,19 @@ class Music(commands.Cog):
                     await player.play(queue[0])
                     queue.pop(0)
 
+    @commands.command(name="volume", aliases=['vol'], brief="Changes the volume")
+    async def _volume(self, ctx: commands.Context, volume: int=None):
+        player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
+        if volume is None:
+            await ctx.reply(f'Current volume is {player.volume}')
+            return
+
+        if volume < 0 or volume > 1000:
+            await ctx.reply("Invalid volume, keep it between 0 and 1000")
+            return
+
+        await player.set_volume(volume)
+        await ctx.reply(f"Done! The volume is now {player.volume}")
 
 def setup(bot):
     bot.add_cog(Music(bot))
