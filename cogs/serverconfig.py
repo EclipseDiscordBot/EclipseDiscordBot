@@ -5,6 +5,8 @@ class ServerConfig(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.cooldown(2, 30, commands.BucketType.user)
+    @commands.has_permissions(manage_guild=True)
     @commands.group(invoke_without_command=True)
     async def chatbot(self, ctx):
         async with self.bot.pool.acquire() as conn:
@@ -18,7 +20,7 @@ class ServerConfig(commands.Cog):
                 await ctx.reply(embed=e)
                 return
 
-
+    @commands.cooldown(2, 30, commands.BucketType.user)
     @chatbot.command()
     async def set(self, ctx, channel:discord.TextChannel=None):
         if not channel:
@@ -39,6 +41,7 @@ class ServerConfig(commands.Cog):
                 await channel.edit(slowmode_delay=5)
                 await ctx.reply(f"The chatbot channel has been set to {channel.mention}!\nNow you can chat with me there.")
 
+    @commands.cooldown(2, 30, commands.BucketType.user)
     @chatbot.command()
     async def disable(self, ctx):
         async with self.bot.pool.acquire() as conn:
