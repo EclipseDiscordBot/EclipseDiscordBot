@@ -7,7 +7,17 @@ class ServerConfig(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def chatbot(self, ctx):
-        pass
+        async with self.bot.pool.acquire() as conn:
+            async with conn.transaction():
+                data = await conn.fetchrow('SELECT * FROM chatbot WHERE guild_id = $1', ctx.guild.id)
+                if data:
+                    channel = f"<#{data['channel_id']}>"
+                else:
+                    channel = "Disabled"
+                e = discord.Embed(title=":robot: Chatbot", description=f"The chatbot is currently {'set to' if data else ''} **{channel}**\n\n**Here are all the commands that you can use to configure them:**\n\n-`{ctx.prefix}chatbot channel <#channel>` - To enable/update chatbot.\n-`{ctx.prefix}chatbot disable` - To disable chatbot", color=discord.Colour.random())
+                await ctx.reply(embed=e)
+                return
+
 
     @chatbot.command()
     async def set(self, ctx, channel:discord.TextChannel=None):
