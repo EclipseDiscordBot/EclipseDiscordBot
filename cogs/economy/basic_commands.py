@@ -56,9 +56,12 @@ class EconomyBasic(commands.Cog):
         beg_successful = random.choice([True, False])
         coins = (random.randint(0, 1000) if beg_successful else 0)
         new_bal = await self.modify(ctx.author, 'purse', "+" if beg_successful else "-", coins)
-        e = discord.Embed(title=("Oh poor little beggar! take some coins!" if beg_successful else "Ew! a beggar!"),
-                          description=f"You got {str(coins)} coins!",
-                          colour=(discord.Colour.green() if beg_successful else discord.Colour.red()))
+        e = discord.Embed(
+            title=(
+                "Oh poor little beggar! take some coins!" if beg_successful else "Ew! a beggar!"),
+            description=f"You got {str(coins)} coins!",
+            colour=(
+                discord.Colour.green() if beg_successful else discord.Colour.red()))
         await ctx.reply(embed=e)
 
     @commands.command(name='slots', brief="Gambling is bad!")
@@ -76,7 +79,8 @@ class EconomyBasic(commands.Cog):
         result.append(second)
         result.append(third)
 
-        embed = discord.Embed(title=f"{ctx.author.display_name}'s slots machine")
+        embed = discord.Embed(
+            title=f"{ctx.author.display_name}'s slots machine")
         win_amt = 0
         win = False
 
@@ -93,13 +97,13 @@ class EconomyBasic(commands.Cog):
                 win = True
                 break
 
-        if win == True:
+        if win:
             embed.color = discord.Color.green()
         else:
             embed.color = discord.Color.red()
             embed.set_footer(text="sucks to suck")
 
-        if win == True:
+        if win:
             if first == second == third:
                 sign = "+"
                 win_amt = 100 * amt
@@ -110,7 +114,7 @@ class EconomyBasic(commands.Cog):
             sign = "-"
             win_amt = amt
 
-        if win == True:
+        if win:
             coin_str = f"You won **{win_amt}** coins."
         else:
             coin_str = f"You lost **{win_amt}** coins."
@@ -121,18 +125,23 @@ class EconomyBasic(commands.Cog):
         embed.add_field(name="Outcome", value=f"**<** {outcome_str} **>**")
         await ctx.send(embed=embed)
 
-    @commands.command(name="balance", aliases=["bal"], brief="Gets the balance of a member")
+    @commands.command(name="balance",
+                      aliases=["bal"],
+                      brief="Gets the balance of a member")
     @indev_check.command_in_development()
     async def balance_command(self, ctx, member: discord.Member = None):
         member = member or ctx.author
         balance = await self.get_balance(member)
-        embed = discord.Embed(title=f"{member}'s balance",
-                              description=f"Purse: **{balance['purse']}** coins\nBank: **{balance['bank']}** coins",
-                              color=self.bot.color)
+        embed = discord.Embed(
+            title=f"{member}'s balance",
+            description=f"Purse: **{balance['purse']}** coins\nBank: **{balance['bank']}** coins",
+            color=self.bot.color)
         embed.set_author(name=member, icon_url=member.avatar.url)
         await ctx.reply(embed=embed)
 
-    @commands.command(name="deposit", aliases=["dep"], brief="Deposits coins into your bank account")
+    @commands.command(name="deposit",
+                      aliases=["dep"],
+                      brief="Deposits coins into your bank account")
     @indev_check.command_in_development()
     async def _deposit(self, ctx, amt: str):
         bal = (await self.get_balance(ctx.author))['purse']
@@ -141,7 +150,9 @@ class EconomyBasic(commands.Cog):
         await self.modify(ctx.author, "bank", "+", final_bal)
         await ctx.reply(f"Deposited {final_bal} coins, you now have {bal - final_bal} coins in your purse!")
 
-    @commands.command(name="withdraw", aliases=["with"], brief="Withdraws money from your bank account")
+    @commands.command(name="withdraw",
+                      aliases=["with"],
+                      brief="Withdraws money from your bank account")
     @indev_check.command_in_development()
     async def _withdraw(self, ctx, amt: str):
         bal = (await self.get_balance(ctx.author))['bank']
@@ -150,7 +161,9 @@ class EconomyBasic(commands.Cog):
         await self.modify(ctx.author, "purse", "+", final_bal)
         await ctx.reply(f"Withdrew {final_bal} coins, you now have {bal - final_bal} coins in your bank!")
 
-    @commands.command(name="rob", aliases=["steal"], brief="Stealing/robbing is bad!")
+    @commands.command(name="rob",
+                      aliases=["steal"],
+                      brief="Stealing/robbing is bad!")
     @indev_check.command_in_development()
     @commands.guild_only()
     @commands.cooldown(1, 45, commands.BucketType.user)
@@ -201,7 +214,8 @@ class EconomyBasic(commands.Cog):
             await ctx.reply(
                 f'{emojis.laughing} You were caught stealing! you had to pay {amount} to the police {emojis.laughing}')
 
-    @commands.command(name="give", brief="gives the mentioned used a certain amount of money!")
+    @commands.command(name="give",
+                      brief="gives the mentioned used a certain amount of money!")
     @indev_check.command_in_development()
     @commands.cooldown(1, 10, commands.BucketType.user)
     @commands.guild_only()
@@ -257,8 +271,6 @@ class EconomyBasic(commands.Cog):
         await self.modify(user, "purse", "+", amt)
         await message.edit(content=f"Transfer done {emojis.white_check_mark}")
         return
-
-
 
 
 def setup(bot):

@@ -24,9 +24,11 @@ class Backup(commands.Cog):
         for channel in channels:
             channel_dict = {
                 "name": channel.name,
-                "permissions": [get_permissions_overwrites.get_overwrites(role, member) for role, member in
-                                channel.overwrites.items()]
-            }
+                "permissions": [
+                    get_permissions_overwrites.get_overwrites(
+                        role,
+                        member) for role,
+                    member in channel.overwrites.items()]}
             print(channel_dict)
 
 

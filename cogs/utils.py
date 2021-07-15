@@ -50,10 +50,15 @@ class Utility(commands.Cog, description="Small but useful commands"):
         seconds_str = str(seconds)
         final = abs(int(seconds_str))
         embed = discord.Embed(title=final, color=self.bot.color)
-        embed.add_field(name=str(id1), value=f"**Created time:** {humanize.naturaltime(one_time)}")
-        embed.add_field(name=str(id2), value=f"**Created time:** {humanize.naturaltime(two_time)}")
+        embed.add_field(
+            name=str(id1),
+            value=f"**Created time:** {humanize.naturaltime(one_time)}")
+        embed.add_field(
+            name=str(id2),
+            value=f"**Created time:** {humanize.naturaltime(two_time)}")
 
-    @commands.command(name="suggest", brief="Suggest a command/feature to the developers")
+    @commands.command(name="suggest",
+                      brief="Suggest a command/feature to the developers")
     @commands.cooldown(1, 900, discord.ext.commands.BucketType.user)
     async def suggest(self, ctx: commands.Context, *, suggestion):
         """
@@ -104,7 +109,9 @@ class Utility(commands.Cog, description="Small but useful commands"):
         except BaseException:
             return
 
-    @commands.command(name="ar", aliases=['autoresponse'], brief="Set various auto responders on or off")
+    @commands.command(name="ar",
+                      aliases=['autoresponse'],
+                      brief="Set various auto responders on or off")
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     async def ar(self, ctx, option: str, toggle: bool):
@@ -127,7 +134,8 @@ class Utility(commands.Cog, description="Small but useful commands"):
                     return
         await ctx.reply("done!")
 
-    @commands.command(name="poll", brief="Create a poll with different options")
+    @commands.command(name="poll",
+                      brief="Create a poll with different options")
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def poll(self, ctx, *, question):
         """
@@ -165,14 +173,18 @@ class Utility(commands.Cog, description="Small but useful commands"):
 
         answer = "\n".join(
             f"{keycap}: {content}" for keycap,
-                                       content in answers)
-        embed = discord.Embed(title=question, color=self.bot.color, description=answer)
+            content in answers)
+        embed = discord.Embed(
+            title=question,
+            color=self.bot.color,
+            description=answer)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         actual_poll = await ctx.send(embed=embed)
         for emoji, _ in answers:
             await actual_poll.add_reaction(emoji)
 
-    @commands.command(name="quickpoll", brief="Quickly create a poll with a single command")
+    @commands.command(name="quickpoll",
+                      brief="Quickly create a poll with a single command")
     async def quickpoll(self, ctx, *questions_and_choices: str):
         """
         Quickly create a poll with a single command
@@ -198,7 +210,10 @@ class Utility(commands.Cog, description="Small but useful commands"):
             pass
 
         body = "\n".join(f"{key}: {c}" for key, c in choices)
-        embed = discord.Embed(title=question, color=self.bot.color, description=body)
+        embed = discord.Embed(
+            title=question,
+            color=self.bot.color,
+            description=body)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         actual_poll = await ctx.send(embed=embed)
         for emoji, _ in choices:
@@ -229,7 +244,7 @@ class Utility(commands.Cog, description="Small but useful commands"):
             await message.add_reaction(emojis.heave_plus_sign)
 
         allowed_emojis = [emojis.heave_plus_sign] + \
-                         list(emojis.numbers.values())
+            list(emojis.numbers.values())
 
         def check(reactions, users):
             return users == ctx.author and str(
@@ -326,30 +341,62 @@ class Utility(commands.Cog, description="Small but useful commands"):
     async def userinfo(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        embed = discord.Embed(title=f"Information on {member}", description=member.mention, color=self.bot.color)
+        embed = discord.Embed(
+            title=f"Information on {member}",
+            description=member.mention,
+            color=self.bot.color)
         perms_list = []
         for permission, value in member.guild_permissions:
             if value:
                 perms_list.append(permission.replace("_", " ").title())
         for perm in perms_list:
-            ignored_perms = ["Add Reactions", "Priority Speaker", "Stream", "Embed Links", "Read Message History",
-                             "External Emojis", "Connect", "Speak", "Mute Members", "Deafen Members", "Move Members",
-                             "Use Voice Activation", "Change Nickname", "Manage Webhooks", "Request To Speak"]
+            ignored_perms = [
+                "Add Reactions",
+                "Priority Speaker",
+                "Stream",
+                "Embed Links",
+                "Read Message History",
+                "External Emojis",
+                "Connect",
+                "Speak",
+                "Mute Members",
+                "Deafen Members",
+                "Move Members",
+                "Use Voice Activation",
+                "Change Nickname",
+                "Manage Webhooks",
+                "Request To Speak"]
             if perm in ignored_perms:
                 perms_list.pop(perms_list.index(perm))
         permissions_str = ", ".join(perm for perm in perms_list)
-        joined = humanize.precisedelta(datetime.datetime.utcnow() - member.joined_at.replace(tzinfo=None))
-        created = humanize.precisedelta(datetime.datetime.utcnow() - member.created_at.replace(tzinfo=None))
+        joined = humanize.precisedelta(
+            datetime.datetime.utcnow() -
+            member.joined_at.replace(
+                tzinfo=None))
+        created = humanize.precisedelta(
+            datetime.datetime.utcnow() -
+            member.created_at.replace(
+                tzinfo=None))
         embed.add_field(name=f"Joined {ctx.guild.name} on", value=joined)
         embed.add_field(name="Created account on", value=created)
         embed.add_field(name="Permissions", value=permissions_str)
-        embed.add_field(name="Status",
-                        value=str(member.status).replace("dnd", "DND <:status_dnd:844215897206947930>").replace(
-                            "do_not_disturb", "<:status_dnd:844215897206947930> DND").replace("online",
-                                                                                              "Online <:status_online:844215865951911968>").replace(
-                            "idle", "Idle <:status_idle:844216072265531452>").replace("offline",
-                                                                                      "Offline <:status_offline:844216076543721523>"))
-        embed.add_field(name=f"Roles [{len(member.roles)}]", value=member.top_role.mention)
+        embed.add_field(
+            name="Status",
+            value=str(
+                member.status).replace(
+                "dnd",
+                "DND <:status_dnd:844215897206947930>").replace(
+                "do_not_disturb",
+                "<:status_dnd:844215897206947930> DND").replace(
+                    "online",
+                    "Online <:status_online:844215865951911968>").replace(
+                        "idle",
+                        "Idle <:status_idle:844216072265531452>").replace(
+                            "offline",
+                "Offline <:status_offline:844216076543721523>"))
+        embed.add_field(
+            name=f"Roles [{len(member.roles)}]",
+            value=member.top_role.mention)
         await ctx.send(embed=embed)
 
 

@@ -99,7 +99,8 @@ BUTTON_MAP: list[list[Optional[Button]]] = [
 class UIButton(discord.ui.Button["GameBoyView"]):
     def __init__(self, button: Button, group: int):
         self.button = button
-        super().__init__(style=BUTTON_COLOR[self.button], label=BUTTON_TEXT[self.button], group=group)
+        super().__init__(
+            style=BUTTON_COLOR[self.button], label=BUTTON_TEXT[self.button], group=group)
 
     async def callback(self, interaction: discord.Interaction):
         async with self.view.lock:
@@ -141,7 +142,11 @@ class PowerButton(UIButton):
 
 class UIBlank(discord.ui.Button["GameBoyView"]):
     def __init__(self, group: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label="\u200b", disabled=True, group=group)
+        super().__init__(
+            style=discord.ButtonStyle.secondary,
+            label="\u200b",
+            disabled=True,
+            group=group)
 
 
 class GameBoyView(discord.ui.View):
@@ -181,10 +186,10 @@ class GameBoyView(discord.ui.View):
     @property
     def embed(self) -> discord.Embed:
         return (
-            discord.Embed()
-            .set_author(name=f"{self.user}'s Gameboy", icon_url=self.user.avatar.url)
-            .set_footer(text=f"Playing {self.game.cartridge_title()}")
-        )
+            discord.Embed() .set_author(
+                name=f"{self.user}'s Gameboy",
+                icon_url=self.user.avatar.url) .set_footer(
+                text=f"Playing {self.game.cartridge_title()}"))
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if self.lock.locked():
@@ -199,7 +204,9 @@ class GameBoyView(discord.ui.View):
     async def press(self, button: Button):
         self.game.send_input(button.value)
         await self.tick(HOLD_DURATION)
-        self.game.send_input(INVERSE_BUTTON.get(button, pyboy.WindowEvent.PASS))
+        self.game.send_input(
+            INVERSE_BUTTON.get(
+                button, pyboy.WindowEvent.PASS))
 
     async def tick(self, n: int = TICKS):
         def run_game():
@@ -214,7 +221,12 @@ class GameBoyView(discord.ui.View):
 
         frame = io.BytesIO()
         screen = self.game.botsupport_manager().screen()
-        screen.screen_image().resize((160 * 4, 144 * 4), resample=Image.LANCZOS).save(frame, "PNG")
+        screen.screen_image().resize(
+            (160 * 4,
+             144 * 4),
+            resample=Image.LANCZOS).save(
+            frame,
+            "PNG")
         frame.seek(0)
 
         self.prev_message = await COG_CONFIG.RENDER_CHANNEL.send(file=discord.File(frame, "frame.png"))
@@ -240,7 +252,8 @@ class GameBoy(Cog):
         async with ctx.typing():
             self.game = GameBoyView(self, str(game), ctx.author)
             image_url = await self.game.render()
-            await ctx.send(embed=self.game.embed.set_image(url=image_url), view=self.game)  # type: ignore
+            # type: ignore
+            await ctx.send(embed=self.game.embed.set_image(url=image_url), view=self.game)
 
 
 def setup(bot: BotBase) -> None:

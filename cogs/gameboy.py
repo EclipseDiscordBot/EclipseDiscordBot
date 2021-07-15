@@ -21,23 +21,28 @@ class GameBoy(commands.Cog):
         bot.gameboy = True
         message: discord.Message = ctx.message
         if not message.attachments:
-            e = discord.Embed(title="Oops! you have not attached any ROM files to your message!",
-                              description=" we can't tell you where to get it... Nintendo is here! RUN FOR YOUR LIVES",
-                              colour=discord.Color.red())
+            e = discord.Embed(
+                title="Oops! you have not attached any ROM files to your message!",
+                description=" we can't tell you where to get it... Nintendo is here! RUN FOR YOUR LIVES",
+                colour=discord.Color.red())
             await ctx.reply(embed=e)
             return
         rom: discord.Attachment = message.attachments[0]
         if not (rom.filename.split(".")[-1] == "gb"):
-            e = discord.Embed(title="Oops! the file you attached is NOT a gameboy ROM file. it should have a `.gb` extension!", description=" we can't tell you where to get it... Nintendo is here! RUN FOR YOUR LIVES", colour=discord.Color.red())
+            e = discord.Embed(
+                title="Oops! the file you attached is NOT a gameboy ROM file. it should have a `.gb` extension!",
+                description=" we can't tell you where to get it... Nintendo is here! RUN FOR YOUR LIVES",
+                colour=discord.Color.red())
             await ctx.reply(embed=e)
             return
         await rom.save(f"data/gameboy/{ctx.author.id}.{rom.filename}")
-        instance = gameboy.GameBoy(f"data/gameboy/{ctx.author.id}.{rom.filename}", ctx.channel, ctx.author, bot.loop)
+        instance = gameboy.GameBoy(
+            f"data/gameboy/{ctx.author.id}.{rom.filename}",
+            ctx.channel,
+            ctx.author,
+            bot.loop)
         await instance.start_emulator(ctx)
         self.bot = False
-
-
-
 
 
 def setup(bot):
