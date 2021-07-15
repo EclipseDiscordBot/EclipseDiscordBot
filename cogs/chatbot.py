@@ -21,7 +21,7 @@ class Chatbot(commands.Cog):
                 if message.channel.id != int(data['channel_id'])
                     return
                 async with aiohttp.ClientSession() as session:
-                    async with session.get(f"http://api.brainshop.ai/get?bid={self.bot.brain_id}&key={self.bot.brain_api}&uid={uid}&msg={msg}") as resp:
+                    async with session.get(f"http://api.brainshop.ai/get?bid={self.bot.brain_id}&key={self.bot.brain_api}&uid={message.author.id}&msg={message.content}") as resp:
                         if resp.status != 200:
                             return await message.reply("Sorry something went wrong while accessing the BrainShop API! It has been reported immediately!",
                             mention_author=False)
