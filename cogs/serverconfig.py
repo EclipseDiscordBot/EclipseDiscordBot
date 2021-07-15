@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+
 class ServerConfig(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -16,19 +17,22 @@ class ServerConfig(commands.Cog):
                     channel = f"<#{data['channel_id']}>"
                 else:
                     channel = "Disabled"
-                e = discord.Embed(title=":robot: Chatbot", description=f"The chatbot is currently {'set to' if data else ''} **{channel}**\n\n**Here are all the commands that you can use to configure them:**\n\n-`{ctx.prefix}chatbot channel <#channel>` - To enable/update chatbot.\n-`{ctx.prefix}chatbot disable` - To disable chatbot", color=discord.Colour.random())
+                e = discord.Embed(
+                    title=":robot: Chatbot",
+                    description=f"The chatbot is currently {'set to' if data else ''} **{channel}**\n\n**Here are all the commands that you can use to configure them:**\n\n-`{ctx.prefix}chatbot channel <#channel>` - To enable/update chatbot.\n-`{ctx.prefix}chatbot disable` - To disable chatbot",
+                    color=discord.Colour.random())
                 await ctx.reply(embed=e)
                 return
 
     @commands.cooldown(2, 30, commands.BucketType.user)
     @chatbot.command()
-    async def set(self, ctx, channel:discord.TextChannel=None):
+    async def set(self, ctx, channel: discord.TextChannel = None):
         if not channel:
             return await ctx.reply(
-                embed = discord.Embed(
-                    title = f"No Channel!",
-                    description = "Please provide a channel for me to set.",
-                    color = discord.Colour.red()
+                embed=discord.Embed(
+                    title=f"No Channel!",
+                    description="Please provide a channel for me to set.",
+                    color=discord.Colour.red()
                 )
             )
         async with self.bot.pool.acquire() as conn:
@@ -51,6 +55,7 @@ class ServerConfig(commands.Cog):
                     return await ctx.reply("The chatbot for this server is already disabled!")
                 await conn.execute('DELETE FROM chatbot WHERE guild_id = $1', ctx.guild.id)
                 await ctx.reply("I have disabled the chatbot for this server!")
+
 
 def setup(bot):
     bot.add_cog(ServerConfig(bot))

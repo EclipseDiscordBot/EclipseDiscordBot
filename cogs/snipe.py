@@ -25,7 +25,9 @@ class Snipe(commands.Cog):
         else:
             author_name = author.display_name
             author_pfp = author.avatar.url
-        e = discord.Embed(description=(row["message_content"] if row["message_content"] else None))
+        e = discord.Embed(
+            description=(
+                row["message_content"] if row["message_content"] else None))
         e.set_author(name=author_name, icon_url=author_pfp)
         await ctx.reply(row["attachment"], embed=e)
         await self.bot.pool.fetch("DELETE FROM snipe WHERE guild=$1 AND message_content=$2", ctx.guild.id, row["message_content"])
@@ -36,7 +38,6 @@ class Snipe(commands.Cog):
             async with conn.transaction():
                 await conn.execute("INSERT INTO snipe(guild,channel,message_content,attachment,author) VALUES($1,$2,$3,$4,$5)", payload.guild.id, payload.channel.id, payload.content, ("\n".join(a.url for a in payload.attachments)), payload.author.id)
 
+
 def setup(bot):
     bot.add_cog(Snipe(bot))
-
-

@@ -15,7 +15,7 @@ class AutoMeme(commands.Cog, name="Auto Meme Cog"):
     @commands.has_permissions(manage_guild=True)
     @commands.guild_only()
     @commands.cooldown(1, 3600, discord.ext.commands.BucketType.member)
-    async def automeme(self, ctx, channel:discord.TextChannel, toggle):
+    async def automeme(self, ctx, channel: discord.TextChannel, toggle):
         """
         Setup a channel for the bot to send a meme every 5 minutes in.
         :param ctx:
@@ -26,9 +26,9 @@ class AutoMeme(commands.Cog, name="Auto Meme Cog"):
         positive = ["yes", "true", "1"]
         negative = ["no", "false", "0"]
         if toggle in positive:
-                    bool_toggle = True
+            bool_toggle = True
         elif toggle in negative:
-                    bool_toggle = False
+            bool_toggle = False
         async with self.bot.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("UPDATE automeme SET channel_id=$1,enabled=$2 WHERE server_id=$3",
