@@ -25,6 +25,7 @@ class Chatbot(commands.Cog):
                         if resp.status != 200:
                             return await message.reply("Sorry something went wrong while accessing the BrainShop API! It has been reported immediately!",
                             mention_author=False)
+                        js = await resp.json()
                         await message.reply(js["cnt"], mention_author=False)
 
 
