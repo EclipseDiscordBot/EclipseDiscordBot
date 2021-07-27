@@ -12,6 +12,7 @@ application.yml
 
 *.log
 
+
 # config
 config/*
 

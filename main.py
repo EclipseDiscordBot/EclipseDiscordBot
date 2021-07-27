@@ -22,7 +22,7 @@ async def get_prefix(eclipse, message):
         return base
     async with eclipse.pool.acquire() as conn:
         async with conn.transaction():
-            prefixes = await conn.fetch("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
+            prefixes = await conn.fetch("SELECT prefix FROM prefixes WHERE guild_id=$1", message.guild.id)
             for prefix in prefixes:
                 base.append(prefix['prefix'])
     return commands.when_mentioned_or(*base)(bot, message)
@@ -254,11 +254,11 @@ def begin_lavalink():
 
 if __name__ == "__main__":
     proccessname_setter.try_set_process_name("eclipse_booting")
-    thr = bot.flask_thread = Thread(target=begin_flask)
-    thr.daemon = True
-    thr.start()
-    thr = bot.flask_thread = Thread(target=begin_lavalink)
-    thr.daemon = True
-    thr.start()
+    thr_flask = bot.flask_thread = Thread(target=begin_flask)
+    thr_flask.daemon = True
+    thr_flask.start()
+    thr_lavalink = bot.flask_thread = Thread(target=begin_lavalink)
+    thr_lavalink.daemon = True
+    thr_lavalink.start()
     bot.flask_instance = app
     bot.run(bot.token)

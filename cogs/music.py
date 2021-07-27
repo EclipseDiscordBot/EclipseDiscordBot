@@ -1,6 +1,5 @@
 import asyncio
-from typing import Dict, List, Union
-
+from typing import Dict, List
 import discord
 import wavelink
 from discord.ext import commands, tasks
@@ -20,7 +19,7 @@ class Music(commands.Cog):
 
     async def start_nodes(self):
         await self.bot.wait_until_ready()
-        await asyncio.sleep(10)
+        await asyncio.sleep(5)
         await self.bot.wavelink.initiate_node(host='127.0.0.1',
                                               port=2333,
                                               rest_uri='http://127.0.0.1:2333',
@@ -102,8 +101,9 @@ class Music(commands.Cog):
                     queue.pop(0)
 
     @commands.command(name="volume", aliases=['vol'], brief="Changes the volume")
-    async def _volume(self, ctx: commands.Context, volume: int=None):
+    async def _volume(self, ctx: commands.Context, volume: int = None):
         player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
+        ctx.guild: discord.Guild .members
         if volume is None:
             await ctx.reply(f'Current volume is {player.volume}')
             return

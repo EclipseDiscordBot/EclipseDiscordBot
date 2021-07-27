@@ -20,7 +20,7 @@ class ErrorHandler(commands.Cog):
     async def on_command_error(self, ctx: commands.Context, error):
         """
         Handles errors. Ignores if the command isn't found, or when the user is not an owner of the bot, but tried to use a owner only command
-        :param c
+        :param ctx:
         :param error:
         :return:
         """
@@ -128,8 +128,8 @@ class ErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.MissingPermissions):
             title = "Missing Permissions"
-            if len(error.missing_perms) == 1:
-                perm = error.missing_perms[0]
+            if len(error.missing_permissions) == 1:
+                perm = error.missing_permissions[0]
                 dsc = f"You are missing {perm} permission to run `{ctx.command}`"
                 embed = discord.Embed(
                     title=title,
