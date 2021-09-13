@@ -34,13 +34,15 @@ class Music(commands.Cog):
             try:
                 channel = ctx.author.voice.channel
             except AttributeError:
-                raise discord.DiscordException('No channel to join. Please either specify a valid channel or join one.')
+                raise discord.DiscordException(
+                    'No channel to join. Please either specify a valid channel or join one.')
 
         player = self.bot.wavelink.get_player(ctx.guild.id)
         await ctx.send(f'Connecting to **`{channel.name}`**')
         await player.connect(channel.id)
 
-    @commands.command(aliases=['queue', 'pl'], name="play", brief="searches and plays a song")
+    @commands.command(aliases=['queue', 'pl'],
+                      name="play", brief="searches and plays a song")
     async def play(self, ctx, *, query: str):
         tracks = await self.bot.wavelink.get_tracks(f'ytsearch:{query}')
 
@@ -56,14 +58,16 @@ class Music(commands.Cog):
         self.queue[player].append(tracks[0])
         await ctx.send(f'Added `{str(tracks[0])}` to the queue.')
 
-    @commands.command(aliases=['end'], name="stop", brief="Stops playing songs")
+    @commands.command(aliases=['end'], name="stop",
+                      brief="Stops playing songs")
     async def stop(self, ctx):
         player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
         await ctx.reply("Stopped")
         await player.stop()
         self.queue[player] = []
 
-    @commands.command(aliases=['w8', 'wait', 'p'], name="pause", brief="Pauses music")
+    @commands.command(aliases=['w8', 'wait', 'p'],
+                      name="pause", brief="Pauses music")
     async def pause(self, ctx):
         player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
         await ctx.reply("Paused")
@@ -75,13 +79,15 @@ class Music(commands.Cog):
         await ctx.reply("Resumed")
         await player.set_pause(False)
 
-    @commands.command(aliases=['l', 'disconnect'], name="leave", brief="Leaves the VC")
+    @commands.command(aliases=['l', 'disconnect'],
+                      name="leave", brief="Leaves the VC")
     async def leave(self, ctx):
         player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
         await ctx.reply("Bye!")
         await player.disconnect()
 
-    @commands.command(aliases=['s', 'ski'], name="skip", brief="Skips the current song")
+    @commands.command(aliases=['s', 'ski'], name="skip",
+                      brief="Skips the current song")
     async def skip(self, ctx):
         player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
         queue = self.queue[player]
@@ -100,7 +106,9 @@ class Music(commands.Cog):
                     await player.play(queue[0])
                     queue.pop(0)
 
-    @commands.command(name="volume", aliases=['vol'], brief="Changes the volume")
+    @commands.command(name="volume",
+                      aliases=['vol'],
+                      brief="Changes the volume")
     async def _volume(self, ctx: commands.Context, volume: int = None):
         player: wavelink.Player = self.bot.wavelink.get_player(ctx.guild.id)
         ctx.guild: discord.Guild .members
@@ -115,7 +123,8 @@ class Music(commands.Cog):
         await player.set_volume(volume)
         await ctx.reply(f"Done! The volume is now {player.volume}")
 
-    @commands.command(name="seek", brief="Seeks to a given position of the song")
+    @commands.command(name="seek",
+                      brief="Seeks to a given position of the song")
     async def _seek(self, ctx: commands.Context, position: str):
         split = position.split(":")
         if len(split) != 2:
