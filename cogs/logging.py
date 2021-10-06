@@ -16,7 +16,10 @@ class Logging(commands.Cog):
                 log_channel_ids = await conn.fetch(
                     'SELECT * FROM logging WHERE server_id = $1', server_id
                 )
-                log_channel_id = log_channel_ids[0]['channel_id']
+                try:
+                    log_channel_id = log_channel_ids[0]['channel_id']
+                except IndexError:
+                    return
                 return log_channel_id
 
     @commands.command(name="log",
@@ -54,7 +57,10 @@ class Logging(commands.Cog):
                     datetime.datetime.now().timestamp(), 0, 0, 0,
                     (msg.cached_message.content if msg.cached_message else "Message not found in cache"))
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
-                log_channel_id = log_channel_ids[0]['channel_id']
+                try:
+                    log_channel_id = log_channel_ids[0]['channel_id']
+                except IndexError:
+                    return
                 log_chnl = self.bot.get_guild(
                     msg.guild_id).get_channel(log_channel_id)
                 if log_chnl is None:
@@ -84,10 +90,15 @@ class Logging(commands.Cog):
                 await conn.execute(
                     "INSERT INTO logs(server_id,channel_id,msg_id,reason,timestamp,type,mod_id,punished_id,msg)"
                     "VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)", msg.guild_id, msg.channel_id, msg.message_id,
-                    f"Message Edited by {new_edited_msg_content.author}",
-                    datetime.datetime.now().timestamp(), 1, 0, 0, new_edited_msg_content.content)
+                    f"Message Edited by {new_edited_msg_content.author if not isinstance(new_edited_msg_content, str) else 'Unknown author'}",
+                    datetime.datetime.now().timestamp(), 1, 0, 0, (new_edited_msg_content.content if not isinstance(
+                        new_edited_msg_content,
+                        str) else new_edited_msg_content))
                 log_channel_ids = await conn.fetch("SELECT * FROM logging WHERE server_id=$1", msg.guild_id)
-                log_channel_id = log_channel_ids[0]['channel_id']
+                try:
+                    log_channel_id = log_channel_ids[0]['channel_id']
+                except IndexError:
+                    return
                 log_chnl = self.bot.get_guild(
                     msg.guild_id).get_channel(log_channel_id)
                 if log_chnl is None:
@@ -100,7 +111,7 @@ class Logging(commands.Cog):
     @commands.Cog.listener("on_member_join")
     async def member_join(self, member: discord.Member):
         created = list(
-            str(datetime.datetime.utcnow() - member.created_at)[:-7])
+            str(datetime.datetime.utcnow() - member.created_at.replace(tzinfo=None))[:-7])
 
         x = 0
         for char in created:
@@ -127,14 +138,13 @@ class Logging(commands.Cog):
         embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
-        if log_chnl == None:
-
+        if log_chnl is None:
             return
         await log_chnl.send(embed=embed)
 
     @commands.Cog.listener("on_member_remove")
     async def member_leave(self, member):
-        joined = humanize.precisedelta(datetime.datetime.now() - member.joined_at)
+        joined = humanize.precisedelta(datetime.datetime.now() - member.joined_at.replace(tzinfo=None))
         embed = discord.Embed(
             title="Member left",
             color=discord.Colour.red(),
@@ -145,7 +155,7 @@ class Logging(commands.Cog):
         embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
-        if log_chnl == None:
+        if log_chnl is None:
             return
         await log_chnl.send(embed=embed)
 
@@ -231,7 +241,7 @@ class Logging(commands.Cog):
         log_channel_id = await self.get_log_channel(after.guild.id)
         log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
         embed.timestamp = datetime.datetime.utcnow()
-        if log_chnl == None:
+        if log_chnl is None:
             return
         await log_chnl.send(embed=embed)
 
@@ -264,7 +274,7 @@ class Logging(commands.Cog):
                 name="After:",
                 value=after.afk_channel
             )
-        elif before.banner_url != after.banner_url:
+        elif before.banner.url != after.banner.url:
             embed = discord.Embed(
                 title="Server Banner Changed",
                 description=f"Before Banner: {before.banner_url}\nAfter Banner: {after.banner_url}"
@@ -282,21 +292,20 @@ class Logging(commands.Cog):
         embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(after.guild.id)
         log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
-        if log_chnl == None:
+        if log_chnl is None:
             return
         await log_chnl.send(embed=embed)
 
-
     @commands.Cog.listener("on_voice_state_update")
     async def voice_state_update(self, member, before, after):
-        if before.channel == None:
+        if before.channel is None:
             embed = discord.Embed(
                 title="Member joined voice channel",
                 description=f"**{member}** joined `#{after.channel.name}`",
                 color=discord.Colour.green(),
                 timestamp=datetime.datetime.utcnow()
             )
-        elif after.channel == None:
+        elif after.channel is None:
             embed = discord.Embed(
                 title="Member left voice channel",
                 description=f"**{member}** left `#{before.channel.name}`",
@@ -317,7 +326,7 @@ class Logging(commands.Cog):
                 color=discord.Colour.purple(),
                 timestamp=datetime.datetime.utcnow()
             )
-        elif before.self_stream and after.self_stream == False:
+        elif before.self_stream and not after.self_stream:
             embed = discord.Embed(
                 title="Member stopped streaming",
                 description=f"**{member}** stopped streaming in `#{before.channel.name}`",
@@ -332,10 +341,9 @@ class Logging(commands.Cog):
         log_channel_id = await self.get_log_channel(member.guild.id)
         log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
 
-        if log_chnl == None:
+        if log_chnl is None:
             return
         await log_chnl.send(embed=embed)
-
 
     @commands.Cog.listener("on_member_update")
     async def member_update(self, before, after):
@@ -379,9 +387,10 @@ class Logging(commands.Cog):
         embed.set_footer(text=f"ID: {member.id}")
         log_channel_id = await self.get_log_channel(after.guild.id)
         log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
-        if log_chnl == None:
+        if log_chnl is None:
             return
         await log_chnl.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Logging(bot))

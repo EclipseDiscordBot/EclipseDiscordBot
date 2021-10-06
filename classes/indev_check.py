@@ -1,5 +1,5 @@
 from discord.ext import commands
-from constants.basic import owners
+from constants.basic import owners, beta_testers
 from discord.ext import commands
 import discord.ext
 
@@ -16,6 +16,9 @@ class CommandInDevException(discord.ext.commands.CheckFailure):
 def command_in_development():
     async def predicate(ctx: commands.Context):
         if ctx.author.id in owners:
+            return True
+        elif ctx.author.id in beta_testers:
+            await ctx.reply("hey! this command is still in development! report any bugs you find and leave feedback in `! Satyamedh#2579`'s DMs")
             return True
         else:
             raise CommandInDevException(ctx.command.name)

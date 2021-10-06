@@ -7,9 +7,16 @@ __pycache__/
 *.so
 
 connectToServer.sh
+Lavalink.jar
+application.yml
+
+*.log
+
 
 # config
 config/*
+
+rebuild_pickle.py
 
 # Distribution / packaging
 .Python

@@ -10,6 +10,7 @@ from discord.ext import commands
 
 
 class ImageGeneration(commands.Cog):
+    """Image Generation commands"""
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
 
@@ -24,7 +25,7 @@ class ImageGeneration(commands.Cog):
         if len(comment) > 999:
             await ctx.reply("comment cant be more than 1000 chars long")
             return
-        url = (ctx.author.avatar_url if not user else user.avatar_url)
+        url = (ctx.author.avatar.url if not user else user.avatar.url)
         await ctx.reply(
             f"https://some-random-api.ml/canvas/youtube-comment?avatar={url}&username={uname}&comment={comment}")
 
@@ -54,9 +55,9 @@ class ImageGeneration(commands.Cog):
             uname = urllib.parse.quote(
                 (str(ctx.author) if not user else str(user)))
             av = (
-                ctx.author.avatar_url_as(
-                    format='png') if not user else user.avatar_url_as(
-                    format='png'))
+                ctx.author.avatar.with_format(
+                    format='png').url if not user else user.avatar.with_format(
+                    format='png').url)
             impostor = ('true' if impostor else 'false')
             rand = random.randint(0, 10000)
             async with aiohttp.ClientSession() as session:
@@ -73,6 +74,10 @@ class ImageGeneration(commands.Cog):
             file = discord.File(open(f'data/amongus.{rand}.gif', 'rb'))
             await ctx.reply(file=file)
         # os.system(f"rm data/amongus.{rand}.gif")
+        
+    @commands.command(name="fakemsg", brief="Shows a fake discord message provided an author and the message")
+    async def fake_message(self, ctx, member:discord.Member, *, message):
+        pass # will do in a few mins
 
 
 def setup(bot):

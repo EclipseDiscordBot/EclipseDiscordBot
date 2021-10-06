@@ -3,6 +3,7 @@ from discord.ext import commands
 import datetime
 import humanize
 import random
+from matplotlib import pyplot as plt
 
 
 class Giveaways(commands.Cog):
@@ -69,8 +70,8 @@ class Giveaways(commands.Cog):
         await self.bot.pool.execute("INSERT INTO giveaways (msg_id, ch_id, g_id, end_timestamp, host_id, prize, winners) VALUES ($1, $2, $3, $4, $5, $6, $7)", msg.id, ctx.channel.id, ctx.guild.id,
                                     end_timestamp, ctx.author.id, prize, winners)
         while datetime.datetime.now() < end_time:
-            new_emb = msg.embeds[0].copy(
-            ).description = f"React with 🎉 to enter!\nTime Remaining: {humanize.precisedelta(datetime.datetime.now() - end_time)}Hosted by: {ctx.author.mention}"
+            new_emb: discord.Embed = msg.embeds[0].copy()
+            new_emb.description = f"React with 🎉 to enter!\nTime Remaining: {humanize.precisedelta(datetime.datetime.now() - end_time)}Hosted by: {ctx.author.mention}"
             await msg.edit(embed=new_emb)
 
     @commands.command()
@@ -87,6 +88,45 @@ class Giveaways(commands.Cog):
                 await ctx.send("I couldn't find any recent giveaways!")
                 return
         await self.force_end(id)
+
+    @commands.command()
+    async def lucky_draw(self, ctx: commands.Context):
+        members_bots = ctx.guild.members
+        members = []
+        for member in members_bots:
+            if member.bot:
+                continue
+            members.append(member)
+        rando_user = random.choice(members)
+        await ctx.reply(f"GGs {rando_user.mention} HAS WON THE LUCKY DRAW")
+
+    @commands.command()
+    async def luck(self, ctx: commands.Context, iterations: int):
+        if iterations > 10000:
+            await ctx.reply("NONONONONO I DONT WANNA CRASH")
+            return
+        members_bots = ctx.guild.members
+        members = []
+        for member in members_bots:
+            if member.bot:
+                continue
+            members.append(member)
+        luck_list = []
+        for i in range(iterations):
+            rando_user: discord.Member = random.choice(members)
+            luck_list.append(rando_user)
+        final_str = ""
+        biggest_no = -1
+        biggest_user = ""
+        for member in members:
+            final_str = f'{final_str}\n`{member.display_name}`: {luck_list.count(member)}'
+            if luck_list.count(member) > biggest_no:
+                biggest_no = luck_list.count(member)
+                biggest_user = member
+        final_str = f'{final_str}\n`{biggest_user.display_name}` has the highest luck, with {biggest_no} choices in {iterations}'
+        await ctx.reply(final_str)
+
+
 
 
 def setup(bot):

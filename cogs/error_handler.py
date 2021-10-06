@@ -1,10 +1,12 @@
 import random
 import string
 import discord
+from wavelink import ZeroConnectedNodes
+
 from classes import CustomBotClass
 import traceback
 from discord.ext import commands
-from classes import indev_check, testexception
+from classes import indev_check, testexception, economy
 import datetime
 import humanize
 
@@ -29,6 +31,7 @@ class ErrorHandler(commands.Cog):
                 k=15))
         if hasattr(ctx.command, 'on_error'):
             return
+        
 
         cog = ctx.cog
         if cog and cog._get_overridden_method(
@@ -94,6 +97,9 @@ class ErrorHandler(commands.Cog):
             await ctx.reply(embed=embed)
             return
 
+        elif isinstance(error, ZeroConnectedNodes):
+            await ctx.reply("Please wait! the music services are still loading!")
+
         elif isinstance(error, commands.MemberNotFound):
             title = "Member not found"
             dsc = f"I couldn't find member {error.argument} in this server!"
@@ -122,8 +128,8 @@ class ErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.MissingPermissions):
             title = "Missing Permissions"
-            if len(error.missing_perms) == 1:
-                perm = error.missing_perms[0]
+            if len(error.missing_permissions) == 1:
+                perm = error.missing_permissions[0]
                 dsc = f"You are missing {perm} permission to run `{ctx.command}`"
                 embed = discord.Embed(
                     title=title,
@@ -176,7 +182,9 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, indev_check.CommandInDevException):
             await ctx.reply(str(error))
             return
-
+        elif isinstance(error, economy.EconomyException):
+            await ctx.reply(str(error))
+            return
         else:
             title = "Unknown exception"
             dsc = "Sorry, the bot has run into an unknown Exception, it has been reported and is soon to be fixed!"

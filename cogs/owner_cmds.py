@@ -1,7 +1,7 @@
 import json
 import os
 import discord
-from classes import CustomBotClass, proccessname_setter, testexception
+from classes import CustomBotClass, proccessname_setter, testexception, check_create_db_entries
 import pickle
 from discord.ext import commands
 from constants.basic import owners
@@ -95,7 +95,10 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
             if json['load_cogs']:
                 try:
                     if json['cogs'][cog]:
-                        bot.reload_extension(cog)
+                        try:
+                            bot.reload_extension(cog)
+                        except Exception:
+                            bot.load_extension(cog)
                     else:
                         raise CogDisabledException(cog)
                 except KeyError:
@@ -105,6 +108,9 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
         exceptions = ""
         counter = 0
         failed_counter = 0
+        with open("config/config.json", "r") as read_file:
+            data = json.load(read_file)
+            self.bot.config = data
         for file in os.listdir("./cogs"):
             if file.endswith('.py'):
                 try:
@@ -171,6 +177,22 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
         if aspect == "error" or aspect == "exception":
             await ctx.reply("ok, testing!")
             raise testexception.TestException("TESTTTTTTT")
+
+    @commands.Cog.listener("on_command")
+    async def command_listener(self, ctx):
+        await check_create_db_entries.check_create_db(self.bot, ctx.author)
+
+    @commands.command("cleanup")
+    @commands.is_owner()
+    async def cleanup_command(self, ctx, amt: int = 20):
+        await ctx.message.delete()
+
+        def check(m):
+            return (m.author == ctx.author) or (m.author == self.bot.user)
+
+        msgs = await ctx.channel.purge(limit=amt, check=check)
+        await ctx.send(f"Cleaned up {len(msgs)} messages.", delete_after=5)
+
 
 
 def setup(bot):

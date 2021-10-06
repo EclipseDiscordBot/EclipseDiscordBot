@@ -1,13 +1,13 @@
 import random
 from typing import List
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 from classes import CustomBotClass, proccessname_setter
 from constants import basic
 from flask import Flask
 from threading import Thread
 from flask import request
-from scripts.python_scripts import stats_webhook
+import subprocess
 
 intents = discord.Intents.all()
 
@@ -22,7 +22,7 @@ async def get_prefix(eclipse, message):
         return base
     async with eclipse.pool.acquire() as conn:
         async with conn.transaction():
-            prefixes = await conn.fetch("SELECT prefix FROM prefixes WHERE guild_id = $1", message.guild.id)
+            prefixes = await conn.fetch("SELECT prefix FROM prefixes WHERE guild_id=$1", message.guild.id)
             for prefix in prefixes:
                 base.append(prefix['prefix'])
     return commands.when_mentioned_or(*base)(bot, message)
@@ -31,7 +31,7 @@ async def get_prefix(eclipse, message):
 mentions = discord.AllowedMentions(
     everyone=False,
     users=True,
-    replied_user=False,
+    replied_user=True,
     roles=True)
 
 bot = CustomBotClass.CustomBot(
@@ -40,12 +40,6 @@ bot = CustomBotClass.CustomBot(
     allowed_mentions=mentions,
     case_insensitive=True,
     strip_after_prefix=True)
-
-
-@tasks.loop(minutes=1)
-async def update_stats_loop():
-    await stats_webhook.update_stats(bot)
-
 
 app = Flask(__name__)
 
@@ -129,14 +123,15 @@ async def channels():
         response_json = response_templates['failure'].copy()
         response_json['reason'] = 'unknown_guild'
         return response_json
-    channels = guild.channels
-    if channels is None:
+    channels0 = guild.channels
+    if channels0 is None:
         response_json = response_templates['failure'].copy()
         response_json['reason'] = 'no_channels_in_guild'
         return response_json
     final_channels = []
-    for channel in channels:
-        if not isinstance(channel, discord.TextChannel): continue
+    for channel in channels0:
+        if not isinstance(channel, discord.TextChannel):
+            continue
         channel: discord.TextChannel
         channel_json = {
             "name": channel.name,
@@ -243,7 +238,7 @@ async def gen_code():
             "check_id": check_id,
             "scope": str(scope)
         }
-    except discord.Forbidden or discord.HTTPException as e:
+    except discord.Forbidden or discord.HTTPException:
         response_json = response_templates['failure'].copy()
         response_json['reason'] = "dms_not_open"
         return response_json
@@ -253,11 +248,17 @@ def begin_flask():
     app.run(port=8076, host="0.0.0.0")
 
 
+def begin_lavalink():
+    subprocess.call(['java', '-jar', 'Lavalink.jar'])
+
+
 if __name__ == "__main__":
     proccessname_setter.try_set_process_name("eclipse_booting")
-    thr = bot.flask_thread = Thread(target=begin_flask)
-    thr.daemon = True
-    thr.start()
+    thr_flask = bot.flask_thread = Thread(target=begin_flask)
+    thr_flask.daemon = True
+    thr_flask.start()
+    thr_lavalink = bot.flask_thread = Thread(target=begin_lavalink)
+    thr_lavalink.daemon = True
+    thr_lavalink.start()
     bot.flask_instance = app
-    update_stats_loop.start()
     bot.run(bot.token)

@@ -4,14 +4,12 @@ import json
 import multiprocessing
 import os
 import pickle
-from threading import Thread
-
 import asyncpraw as apraw
 import asyncpg
 import discord
 from flask import Flask
-from discord.ext import commands
-from classes import proccessname_setter, context
+from discord.ext import commands, tasks
+from classes import proccessname_setter, context, stats_webhook
 from classes.LoadCog import load_extension
 
 
@@ -38,10 +36,13 @@ class CustomBot(commands.Bot):
         self.brain_id = f['brain_id']
         self.brain_api = f['brain_api']
         self.token = f["discord"]
+        self.dagpi = f["dagpi"]
         self.sra_api = f['some_random_api']
         self.launch_time = datetime.datetime.utcnow()
         self.gameboy = False
+        self.gameboy_inst = None
         self.color = discord.Color.from_rgb(156, 7, 241)
+        self.lavalink_passwd = f['lavalink']
         with open("config/config.json", "r") as read_file:
             data = json.load(read_file)
             self.config = data
@@ -72,6 +73,17 @@ class CustomBot(commands.Bot):
                 else:
                     exceptions += f"+ {file} loaded successfully\n"
 
+        for file in os.listdir("./cogs/economy/"):
+            if file.endswith('.py'):
+                try:
+                    load_extension(
+                        self, f'cogs.economy.{file[:-3]}', self.config)
+                    print(f"loaded cogs.economy.{file[:-3]}")
+                except Exception as e:
+                    exceptions += f"- {file} failed to load [{e}]\n"
+                else:
+                    exceptions += f"+ {file} loaded successfully\n"
+
         embed = discord.Embed(
             title="Bot ready!",
             description=f"Cogs status: \n ```diff\n{exceptions}```",
@@ -81,6 +93,12 @@ class CustomBot(commands.Bot):
         c = self.get_channel(840528237846331432)
         proccessname_setter.try_set_process_name("eclipse_online")
         await c.send(embed=embed)
+        await self.pool.execute("DELETE FROM snipe;")
+        self.update_stats_loop.start()
+
+    @tasks.loop(minutes=1)
+    async def update_stats_loop(self):
+        await stats_webhook.update_stats(self)
 
     async def on_message(self, message):
         if f"<@{self.user.id}>" in message.content:
@@ -96,7 +114,6 @@ class CustomBot(commands.Bot):
         await self.process_commands(message)
 
     async def process_commands(self, message):
-
         ctx = await self.get_context(message, cls=context.Context)
         await self.invoke(ctx)
 
@@ -112,4 +129,3 @@ class CustomBot(commands.Bot):
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("UPDATE logging SET channel_id=$2 WHERE server_id=$1", guild.id, channel.id)
-

@@ -2,11 +2,11 @@ import asyncio
 import random
 from classes import CustomBotClass
 import aiohttp
-from prsaw import RandomStuff
 from discord.ext import commands
 import discord
 
-rs = RandomStuff()
+from constants import emojis, basic
+
 
 class Fun(commands.Cog):
 
@@ -73,7 +73,7 @@ class Fun(commands.Cog):
                 else:
                     return False
 
-            raw_reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout = 60)
+            raw_reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=60)
             if str(raw_reaction) == "\U0001faa8":
                 user_choice = "Rock"
             elif str(raw_reaction) == "\U0001f4f0":
@@ -101,39 +101,60 @@ class Fun(commands.Cog):
             embed.description += f"\n{reply}"
             await msg.edit(embed=embed)
 
-    # TODO make a configuration of chatbot. Example: [p]chatbot <#channel> to talk with the chatbot forever in that channel @Mr Potato#3773 will do it
-    @commands.command(name="chatbot",
-                      aliases=['chat', 'chatb', 'cb'],
-                      brief="Start a talking session with the bot!")
-    @commands.cooldown(1, 30, commands.BucketType.user)
-    async def _chatbot(self, ctx):
-        session = True
-        await ctx.send("The talking session between you and me started! Why not say something like `hi`\nIf you want to end this talking session, type `Cancel`")
-
-        while session is True:
-            try:
-                message = await self.bot.wait_for('message', timeout = 30, check = lambda m : (ctx.author == m.author and ctx.channel == m.channel))
-            except asyncio.TimeoutError:
-                session = False
-                await ctx.send("Timed out! Talking session with me has automatically ended!")
-            else:
-                if message.content.lower() == "cancel":
-                    session = False
-                    await ctx.send("Talking session with me has ended!")
-                else:
-                    async with ctx.channel.typing():
-
-                        response = await self._get_response(ctx.author.id, message.content)
-                        await message.reply(response, mention_author=False)
 
 
-    async def _get_response(self, uid, msg):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://api.brainshop.ai/get?bid={self.bot.brain_id}&key={self.bot.brain_api}&uid={uid}&msg={msg}") as resp:
-                if resp.status != 200:
-                    return "Something went wrong while accessing the BrainShop API."
-                js = await resp.json()
-                return js["cnt"]
+
+    @commands.command("hack", aliases=['hk', 'hax'], description="hax the specified person")
+    @commands.cooldown(1, 45, commands.BucketType.user)
+    async def _hack(self, ctx: commands.Context, user: discord.User):
+        success = random.choice([True, False, False, False, False, False, False, False])
+        linux_chance = random.choice(
+            [True, False, False, False, False, False, False, False, False, False, False, False, False, False, False,
+             False, False, False, False, False, False, False, False, False, False, False, False, False, False, False])
+        ip = f'{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}'
+        if user.id in basic.owners:
+            await ctx.reply("Hey! you're not hacking my devs :unamused:, the hack has been reversed onto **YOU**")
+            user = ctx.author
+            await asyncio.sleep(1)
+        message: discord.Message = await ctx.reply(f"Initiating the hack on `{user.display_name}` {emojis.loading}")
+        await asyncio.sleep(1)
+        await message.edit(content=f"Trying to find `{user.display_name}`'s IP {emojis.loading}")
+        await asyncio.sleep(2)
+        await message.edit(content=f"Got it! {ip}! {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await message.edit(content=f"Trying to find open ports! {emojis.loading}")
+        await asyncio.sleep(2)
+        await message.edit(content=f"Found open ports! `80`, `443`, `25565` {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await message.edit(content=f"Trying to create payload with msfvenom {emojis.loading}")
+        await asyncio.sleep(2)
+        await message.edit(content=f"Trying to inject payload {emojis.loading}")
+        await asyncio.sleep(0.5)
+        if linux_chance:
+            await message.edit(
+                content=f"Wait WTF! HE USES LINUX! I AM NOT HACKING A FELLOW LINUX USER!!!!!!! `{user.display_name}` Nice! you use linux even if you actually don't!")
+            return
+        await message.edit(content=f"PAYLOAD INJECTION SUCCESSFUL! DROPPING INTO SHELL {emojis.loading}")
+        await asyncio.sleep(2)
+        shell_attempts = random.randint(3, 21)
+        for i in range(shell_attempts):
+            await message.edit(content=f"SHELL ACCESS DENIED, TRYING AGAIN, attempt {i} {emojis.loading}")
+            await asyncio.sleep(2)
+        if not success:
+            await message.edit(
+                content=f"OH NO, PAYLOAD WAS DELETED BY ANTIVIRUS! `{user.display_name}` got lucky :unamused:")
+            return
+        await message.edit(content=f"SHELL ACCESS GRANTED! {emojis.loading}")
+        await asyncio.sleep(0.5)
+        await message.edit(content=f"Trying to get into edge's cookies(wtf they use edge) {emojis.loading}")
+        await asyncio.sleep(1)
+        await message.edit(content=f"got session token, trying it out {emojis.loading}")
+        await asyncio.sleep(1)
+        random_number = random.randint(0, 10000)
+        random_number2 = random.randint(0, 10000)
+        await message.edit(
+            content=f"EMAIL HACK SUCCESSFUL! \nEmail: `{user.display_name}{random_number}@hotmail.com` \nPassword: `Ilikecyberpunk2077cuz{random_number2}`")
+
 
 def setup(bot):
     bot.add_cog(Fun(bot))

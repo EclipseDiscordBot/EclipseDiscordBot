@@ -1,3 +1,5 @@
+import re
+
 import discord
 from discord.ext import commands, flags
 from classes import indev_check
@@ -18,6 +20,7 @@ def text_to_emoji(count):
 class Utility(commands.Cog, description="Small but useful commands"):
     def __init__(self, bot: CustomBotClass.CustomBot):
         self.bot = bot
+        self.uno_pattern = re.compile(r'(uno\sreverse\s(card)?)')
 
     @commands.command(aliases=['av'],
                       brief="Gives the avatar of the user mentioned")
@@ -101,8 +104,36 @@ class Utility(commands.Cog, description="Small but useful commands"):
                     return
             result = eval(code, {"__builtins__": {}}, allowed_names)
             await msg.reply(result)
-        except BaseException:
+        except BaseException as e:
+            if isinstance(e, ZeroDivisionError):
+                await msg.reply("ayy! I'm not fool! Answer: INFINITY!")
             return
+
+    # @commands.Cog.listener("on_message")
+    # async def on_msg(self, msg: discord.message):
+    #     """
+    #     The Auto Responder for Math Problems
+    #     :param msg:
+    #     :return:
+    #     """
+    #     if not msg.guild:
+    #         return
+    #     async with self.bot.pool.acquire() as conn:
+    #         async with conn.transaction():
+    #             data = await conn.fetch("SELECT * FROM config WHERE server_id=$1", msg.guild.id)
+    #             if not data:
+    #                 return
+    #             if not data[0]['uno']:
+    #                 return
+    #
+    #     if msg.author == self.bot.user:
+    #         return
+    #     msg: discord.Message
+    #     matched = False
+    #     if self.uno_pattern.match(msg.content):
+    #         matched = True
+    #     if matched:
+    #         await msg.reply("https://satyamedh.ml/images/uno_reverse.png")
 
     @commands.command(name="ar", aliases=['autoresponse'], brief="Set various auto responders on or off")
     @commands.guild_only()
@@ -122,13 +153,14 @@ class Utility(commands.Cog, description="Small but useful commands"):
             async with conn.transaction():
                 if option == "math":
                     await conn.execute("UPDATE config SET math=$1 WHERE server_id=$2", toggle, ctx.guild.id)
+                elif option == "reverse" or option == "uno":
+                    await conn.execute("UPDATE config SET uno=$1 WHERE server_id=$2", toggle, ctx.guild.id)
                 else:
                     await ctx.reply("unknown cmd!")
                     return
         await ctx.reply("done!")
 
     @commands.command(name="poll", brief="Create a poll with different options")
-    @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def poll(self, ctx, *, question):
         """
@@ -174,7 +206,6 @@ class Utility(commands.Cog, description="Small but useful commands"):
             await actual_poll.add_reaction(emoji)
 
     @commands.command(name="quickpoll", brief="Quickly create a poll with a single command")
-    @commands.has_permissions(manage_messages=True)
     async def quickpoll(self, ctx, *questions_and_choices: str):
         """
         Quickly create a poll with a single command
@@ -340,8 +371,8 @@ class Utility(commands.Cog, description="Small but useful commands"):
             if perm in ignored_perms:
                 perms_list.pop(perms_list.index(perm))
         permissions_str = ", ".join(perm for perm in perms_list)
-        joined = humanize.precisedelta(datetime.datetime.now() - member.joined_at)
-        created = humanize.precisedelta(datetime.datetime.now() - member.created_at)
+        joined = humanize.precisedelta(datetime.datetime.utcnow() - member.joined_at.replace(tzinfo=None))
+        created = humanize.precisedelta(datetime.datetime.utcnow() - member.created_at.replace(tzinfo=None))
         embed.add_field(name=f"Joined {ctx.guild.name} on", value=joined)
         embed.add_field(name="Created account on", value=created)
         embed.add_field(name="Permissions", value=permissions_str)

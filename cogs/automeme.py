@@ -51,10 +51,13 @@ class AutoMeme(commands.Cog, name="Auto Meme Cog"):
                 data = await conn.fetch("SELECT * FROM automeme")
                 for row in data:
                     if row['enabled']:
-                        guild: discord.Guild = self.bot.get_guild(
-                            id=row['server_id'])
-                        channel: discord.TextChannel = guild.get_channel(
-                            row['channel_id'])
+                        try:
+                            guild: discord.Guild = self.bot.get_guild(
+                                id=row['server_id'])
+                            channel: discord.TextChannel = guild.get_channel(
+                                row['channel_id'])
+                        except AttributeError:
+                            continue
                         try:
                             await channel.send(embed=random_post)
                         except AttributeError:

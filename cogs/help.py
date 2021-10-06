@@ -12,7 +12,8 @@ class BaseHelpView(discord.ui.View):
 
 
 class BaseButton(discord.ui.Button):
-    def __init__(self, label, embed: discord.Embed = None, ctx: commands.Context = None, custom_view:discord.ui.View=None):
+    def __init__(self, label, embed: discord.Embed = None, ctx: commands.Context = None,
+                 custom_view: discord.ui.View = None):
         super().__init__(style=discord.ButtonStyle.blurple, label=re.sub("([A-Z])", " \\1", label).strip())
         self.embed = embed
         self.custom_view = custom_view
@@ -25,8 +26,8 @@ class BaseButton(discord.ui.Button):
             if self.custom_view is None:
                 await interaction.message.edit(embed=self.embed)
         else:
-            await interaction.response.send_message(f"Hey, that button can only be used by {ctx.author}! "
-                                                    f"Do {ctx.prefix}help if you want help!", ephemeral=True)
+            await interaction.response.send_message(f"Hey, that button can only be used by {self.ctx.author}! "
+                                                    f"Do {self.ctx.prefix}help if you want help!", ephemeral=True)
 
 
 class EclipseHelpCommand(commands.Cog):
@@ -48,6 +49,7 @@ class EclipseHelpCommand(commands.Cog):
             embed = await self.get_command_help(ctx, command)
             button = BaseButton(label=command.qualified_name, embed=embed, ctx=ctx)
             cog_buttons.append(button)
+
         return BaseHelpView(cog_buttons)
 
     async def get_bot_help(self, ctx):
@@ -86,6 +88,10 @@ class EclipseHelpCommand(commands.Cog):
                 view = await self.get_cog_view(ctx, cog_name)
                 button = BaseButton(label=cog_name, embed=embed, ctx=ctx, custom_view=view)
                 base_buttons.append(button)
+            support_button = discord.ui.Button(label="Support Server", style=discord.ButtonStyle.link, url="https://discord.gg/XCDhUknkwD")
+            site_button = discord.ui.Button(label="Website", style=discord.ButtonStyle.link, url="https://satyamedh.ml")
+            base_buttons.append(support_button)
+            base_buttons.append(site_button)
             await ctx.send(embed=act_embed, view=BaseHelpView(base_buttons))
             return
 

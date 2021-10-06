@@ -3,5 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/discord.py" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/gpt-2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tensorflow" vcs="Git" />
   </component>
 </project>
