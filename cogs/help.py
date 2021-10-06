@@ -12,9 +12,18 @@ class BaseHelpView(discord.ui.View):
 
 
 class BaseButton(discord.ui.Button):
-    def __init__(self, label, embed: discord.Embed = None, ctx: commands.Context = None,
-                 custom_view: discord.ui.View = None):
-        super().__init__(style=discord.ButtonStyle.blurple, label=re.sub("([A-Z])", " \\1", label).strip())
+    def __init__(
+            self,
+            label,
+            embed: discord.Embed = None,
+            ctx: commands.Context = None,
+            custom_view: discord.ui.View = None):
+        super().__init__(
+            style=discord.ButtonStyle.blurple,
+            label=re.sub(
+                "([A-Z])",
+                " \\1",
+                label).strip())
         self.embed = embed
         self.custom_view = custom_view
         self.ctx = ctx
@@ -47,7 +56,10 @@ class EclipseHelpCommand(commands.Cog):
         cog_buttons = []
         for command in cog.get_commands():
             embed = await self.get_command_help(ctx, command)
-            button = BaseButton(label=command.qualified_name, embed=embed, ctx=ctx)
+            button = BaseButton(
+                label=command.qualified_name,
+                embed=embed,
+                ctx=ctx)
             cog_buttons.append(button)
 
         return BaseHelpView(cog_buttons)
@@ -62,11 +74,17 @@ class EclipseHelpCommand(commands.Cog):
         return embed
 
     async def get_command_help(self, ctx, command):  # yes
-        embed = discord.Embed(title=command.qualified_name, description=command.brief, color=ctx.bot.color)
-        embed.add_field(name="Usage", value=f"```yaml\n{ctx.prefix}{command.qualified_name} {command.signature}```")
+        embed = discord.Embed(
+            title=command.qualified_name,
+            description=command.brief,
+            color=ctx.bot.color)
+        embed.add_field(
+            name="Usage",
+            value=f"```yaml\n{ctx.prefix}{command.qualified_name} {command.signature}```")
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         if command.aliases:
-            embed.add_field(name="Aliases", value=" ".join(f"`{alias}`" for alias in command.aliases))
+            embed.add_field(name="Aliases", value=" ".join(
+                f"`{alias}`" for alias in command.aliases))
         return embed
 
     async def get_cog_help(self, ctx, cog_name):
@@ -74,7 +92,8 @@ class EclipseHelpCommand(commands.Cog):
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar.url)
         bot = ctx.bot
         cog = bot.get_cog(cog_name)
-        embed.description = "\n\n".join(f"`{ctx.prefix}{command.qualified_name}`" for command in cog.get_commands())
+        embed.description = "\n\n".join(
+            f"`{ctx.prefix}{command.qualified_name}`" for command in cog.get_commands())
         return embed
 
     @commands.command(name="help", brief="Shows this message")
@@ -86,10 +105,20 @@ class EclipseHelpCommand(commands.Cog):
             for cog_name in bot.cogs:
                 embed = await self.get_cog_help(ctx, cog_name)
                 view = await self.get_cog_view(ctx, cog_name)
-                button = BaseButton(label=cog_name, embed=embed, ctx=ctx, custom_view=view)
+                button = BaseButton(
+                    label=cog_name,
+                    embed=embed,
+                    ctx=ctx,
+                    custom_view=view)
                 base_buttons.append(button)
-            support_button = discord.ui.Button(label="Support Server", style=discord.ButtonStyle.link, url="https://discord.gg/XCDhUknkwD")
-            site_button = discord.ui.Button(label="Website", style=discord.ButtonStyle.link, url="https://satyamedh.ml")
+            support_button = discord.ui.Button(
+                label="Support Server",
+                style=discord.ButtonStyle.link,
+                url="https://discord.gg/XCDhUknkwD")
+            site_button = discord.ui.Button(
+                label="Website",
+                style=discord.ButtonStyle.link,
+                url="https://satyamedh.ml")
             base_buttons.append(support_button)
             base_buttons.append(site_button)
             await ctx.send(embed=act_embed, view=BaseHelpView(base_buttons))

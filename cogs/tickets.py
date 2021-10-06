@@ -10,15 +10,19 @@ class TicketingSystem(commands.Cog):
         self.bot = bot
 
     @commands.has_permissions(administrator=True)
-    @commands.command(name="tsetup", brief="Set up ticketing system in your server")
+    @commands.command(name="tsetup",
+                      brief="Set up ticketing system in your server")
     @indev_check.command_in_development()
     async def tsetup(self, ctx):
         def check(message):
             return message.author == ctx.author and message.channel == ctx.channel
 
-        embed = discord.Embed(title="Ticketing Panel Setup", color=self.bot.color)
+        embed = discord.Embed(
+            title="Ticketing Panel Setup",
+            color=self.bot.color)
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        embed.set_footer(text="Type 'cancel' instead of input to cancel setup!")
+        embed.set_footer(
+            text="Type 'cancel' instead of input to cancel setup!")
         embed.description = "Alright! Now mention the channel where the 'panel' or where people should react to open a " \
                             "ticket must be"
         emb_msg = await ctx.send(embed=embed)
@@ -52,8 +56,11 @@ class TicketingSystem(commands.Cog):
             embed.description = "Cancelled!"
             await emb_msg.edit(embed=embed)
             return
-        embed.add_field(name="Panel Embed Description", value=panel_msg_content_msg.content)
+        embed.add_field(
+            name="Panel Embed Description",
+            value=panel_msg_content_msg.content)
         embed.description = "Okay the setup is almost finished! "
+
 
 def setup(bot: CustomBotClass.CustomBot):
     bot.add_cog(TicketingSystem(bot))

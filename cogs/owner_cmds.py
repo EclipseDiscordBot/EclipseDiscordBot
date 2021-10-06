@@ -104,7 +104,8 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
                 except KeyError:
                     raise CogDisabledException(cog)
 
-        os.system("git pull 'https://github.com/EclipseDiscordBot/EclipseDiscordBot.git' --allow-unrelated-histories")
+        os.system(
+            "git pull 'https://github.com/EclipseDiscordBot/EclipseDiscordBot.git' --allow-unrelated-histories")
         exceptions = ""
         counter = 0
         failed_counter = 0
@@ -114,7 +115,8 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
         for file in os.listdir("./cogs"):
             if file.endswith('.py'):
                 try:
-                    reload_extension(self.bot, f'cogs.{file[:-3]}', self.bot.config)
+                    reload_extension(
+                        self.bot, f'cogs.{file[:-3]}', self.bot.config)
                     counter += 1
                     print(f"loaded cogs.{file[:-3]}")
                 except Exception as e:
@@ -124,7 +126,10 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
                         exceptions += f"- Error while loading {file} [{e}]\n"
         f_exceptions = f"+ {counter} cogs loaded successfully\n" \
                        f"- {failed_counter} cogs were not loaded due to config\n{exceptions} "
-        embed = discord.Embed(title="Restarted", description=f"```diff\n{f_exceptions}```", color=self.bot.color)
+        embed = discord.Embed(
+            title="Restarted",
+            description=f"```diff\n{f_exceptions}```",
+            color=self.bot.color)
         await ctx.send(embed=embed)
 
     @commands.command(hidden=True, name="updatesra",
@@ -192,7 +197,6 @@ class OwnerOnlyCommands(commands.Cog, name="DeveloperCommands"):
 
         msgs = await ctx.channel.purge(limit=amt, check=check)
         await ctx.send(f"Cleaned up {len(msgs)} messages.", delete_after=5)
-
 
 
 def setup(bot):

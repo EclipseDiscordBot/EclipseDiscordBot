@@ -9,7 +9,7 @@ I hope you enjoy using Eclipse as your bot!
 
 Links:
 
-**My Invite Link:** {bot_invite} 
+**My Invite Link:** {bot_invite}
 **Support Server:** {support_server}
 
 """

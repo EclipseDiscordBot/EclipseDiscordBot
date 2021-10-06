@@ -4,7 +4,10 @@ import discord
 
 class Website(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.link, label="Website", url="https://satyamedh.ml")
+        super().__init__(
+            style=discord.ButtonStyle.link,
+            label="Website",
+            url="https://satyamedh.ml")
 
 
 class Invite(discord.ui.Button):

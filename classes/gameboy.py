@@ -5,8 +5,15 @@ from discord.ext import commands
 
 
 class Btn(discord.ui.Button):
-    def __init__(self, *, label: str, style: ButtonStyle, GB_inst: pyboy.PyBoy, press_key: pyboy.WindowEvent,
-                 release_key: pyboy.WindowEvent, author: discord.User):
+    def __init__(
+            self,
+            *,
+            label: str,
+            style: ButtonStyle,
+            GB_inst: pyboy.PyBoy,
+            press_key: pyboy.WindowEvent,
+            release_key: pyboy.WindowEvent,
+            author: discord.User):
         super().__init__(label=label, style=style)
         self.gb_inst = GB_inst
         self.press_key = press_key
@@ -31,8 +38,14 @@ class EmptyBtn(discord.ui.Button):
 
 
 class SpecialBtn(discord.ui.Button):
-    def __init__(self, *, label: str, style: ButtonStyle, GB_inst: pyboy.PyBoy, press_key: pyboy.WindowEvent,
-                 author: discord.User):
+    def __init__(
+            self,
+            *,
+            label: str,
+            style: ButtonStyle,
+            GB_inst: pyboy.PyBoy,
+            press_key: pyboy.WindowEvent,
+            author: discord.User):
         super().__init__(label=label, style=style)
         self.gb_inst = GB_inst
         self.press_key = press_key

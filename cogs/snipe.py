@@ -24,7 +24,9 @@ class Snipe(commands.Cog):
         else:
             author_name = author.display_name
             author_pfp = author.avatar.url
-        e = discord.Embed(description=(row["message_content"] if row["message_content"] else None))
+        e = discord.Embed(
+            description=(
+                row["message_content"] if row["message_content"] else None))
         e.set_author(name=author_name, icon_url=author_pfp)
         await ctx.reply(row["attachment"], embed=e)
         await self.bot.pool.fetch("DELETE FROM snipe WHERE guild=$1 AND message_content=$2", ctx.guild.id,
@@ -62,11 +64,13 @@ class Snipe(commands.Cog):
         else:
             author_name = author.display_name
             author_pfp = author.avatar.url
-        e = discord.Embed(description=f"**BEFORE:**\n{row['old_msg_content']}\n\n**AFTER:**\n{row['new_msg_content']}")
+        e = discord.Embed(
+            description=f"**BEFORE:**\n{row['old_msg_content']}\n\n**AFTER:**\n{row['new_msg_content']}")
         e.set_author(name=author_name, icon_url=author_pfp)
         await ctx.reply(embed=e)
         await self.bot.pool.fetch("DELETE FROM esnipe WHERE guild=$1 AND new_msg_content=$2", ctx.guild.id,
                                   row["new_msg_content"])
+
 
 def setup(bot):
     bot.add_cog(Snipe(bot))

@@ -8,19 +8,23 @@ class StickyRoles(commands.Cog):
         self.bot = bot
 
     async def send_sr_details(self, ctx):
-        embed = discord.Embed(title="Sticky Roles",
-                              description="**Sticky roles** are roles which can be configured to be added when a user"
-                                          " with the role leaves the server and rejoins.",
-                              color=self.bot.color)
+        embed = discord.Embed(
+            title="Sticky Roles",
+            description="**Sticky roles** are roles which can be configured to be added when a user"
+            " with the role leaves the server and rejoins.",
+            color=self.bot.color)
         res = await self.bot.pool.fetch("SELECT * FROM stickyroles WHERE guild_id = $1", ctx.guild.id)
-        # CREATE TABLE stickyroles (guild_id BIGINT, role_id BIGINT, index BIGINT, enabled TEXT)
+        # CREATE TABLE stickyroles (guild_id BIGINT, role_id BIGINT, index
+        # BIGINT, enabled TEXT)
         for row in res:
             try:
                 role_name = (ctx.guild.get_role(row["role_id"])).name
             except Exception:
                 role_name = "Unknown Role"
             enabled = "🟢 Yes" if (row["enabled"] == "True") else "🔴 No"
-            embed.add_field(name=role_name, value=f"**ID:** {row['index']}\n**Enabled:** {enabled}")
+            embed.add_field(
+                name=role_name,
+                value=f"**ID:** {row['index']}\n**Enabled:** {enabled}")
         await ctx.send(embed=embed)
 
     @commands.group(invoke_without_command=True)
@@ -62,7 +66,8 @@ class StickyRoles(commands.Cog):
         await self.bot.pool.execute("DELETE FROM stickyroles WHERE role_id=$1", role["role_id"])
         await self.send_sr_details(ctx)
 
-    @stickyroles.command(name="enable", brief="Enables a sticky role which is already configured")
+    @stickyroles.command(name="enable",
+                         brief="Enables a sticky role which is already configured")
     @commands.has_permissions(manage_roles=True)
     async def enable(self, ctx, index):
         res = await self.bot.pool.fetch("SELECT * FROM stickyroles WHERE guild_id=$1", ctx.guild.id)
@@ -75,7 +80,8 @@ class StickyRoles(commands.Cog):
             await self.bot.pool.execute("UPDATE stickyroles SET enabled=$1 WHERE role_id=$1", "True", role.id)
             await self.send_sr_details(ctx)
 
-    @stickyroles.command(name="disable", brief="Disables a sticky role which is already configured")
+    @stickyroles.command(name="disable",
+                         brief="Disables a sticky role which is already configured")
     @commands.has_permissions(manage_roles=True)
     async def disable(self, ctx, index):
         res = await self.bot.pool.fetch("SELECT * FROM stickyroles WHERE guild_id=$1", ctx.guild.id)
@@ -88,9 +94,8 @@ class StickyRoles(commands.Cog):
             await self.bot.pool.execute("UPDATE stickyroles SET enabled=$1 WHERE role_id=$1", "False", role.id)
             await self.send_sr_details(ctx)
 
-
     @commands.Cog.listener("on_member_leave")
-    async def add_to_db(self, member:discord.Member):
+    async def add_to_db(self, member: discord.Member):
         res = await self.bot.pool.fetch("SELECT * FROM stickyroles WHERE (guild_id=$1 AND enabled=$2)", member.guild.id,
                                         "True")
         if not res:
@@ -98,12 +103,13 @@ class StickyRoles(commands.Cog):
 
         else:
             for row in res:
-                # CREATE TABLE stickyroleslog (member_id BIGINT, role_id BIGINT)
+                # CREATE TABLE stickyroleslog (member_id BIGINT, role_id
+                # BIGINT)
                 await self.bot.pool.execute("INSERT INTO stickyroleslog (guild_id, member_id, role_id) VALUES ($1, $2)",
                                             member.guild.id, member.id, row["role_id"])
 
     @commands.Cog.listener("on_member_join")
-    async def remove_from_db(self, member:discord.Member):
+    async def remove_from_db(self, member: discord.Member):
         to_be_added = await self.bot.pool.fetch("SELECT * FROM stickyroleslog WHERE (member_id=$1 AND guild_id=$2)",
                                                 member.id, member.guild.id)
         for row in to_be_added:
@@ -117,9 +123,5 @@ class StickyRoles(commands.Cog):
                                         member.id, role.id)
 
 
-
-
-
 def setup(bot):
     bot.add_cog(StickyRoles(bot))
-
