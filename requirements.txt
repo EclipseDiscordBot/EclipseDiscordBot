@@ -93,7 +93,7 @@ rfc3986==1.5.0
 rsa==4.7.2
 save-thread-result==0.0.6
 schedule==1.1.0
-scipy==1.6.3
+scipy==1.7.1
 setproctitle==1.2.2
 six==1.16.0
 sniffio==1.2.0
