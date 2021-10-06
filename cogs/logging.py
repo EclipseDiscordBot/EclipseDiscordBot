@@ -110,8 +110,8 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener("on_member_join")
     async def member_join(self, member: discord.Member):
-        created = list(
-            str(datetime.datetime.utcnow() - member.created_at.replace(tzinfo=None))[:-7])
+        created = list(str(datetime.datetime.utcnow() -
+                           member.created_at.replace(tzinfo=None))[:-7])
 
         x = 0
         for char in created:
@@ -137,14 +137,18 @@ class Logging(commands.Cog):
         embed.set_footer(text=f"ID: {member.id}")
         embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(member.guild.id)
-        log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
+        log_chnl = self.bot.get_guild(
+            member.guild.id).get_channel(log_channel_id)
         if log_chnl is None:
             return
         await log_chnl.send(embed=embed)
 
     @commands.Cog.listener("on_member_remove")
     async def member_leave(self, member):
-        joined = humanize.precisedelta(datetime.datetime.now() - member.joined_at.replace(tzinfo=None))
+        joined = humanize.precisedelta(
+            datetime.datetime.now() -
+            member.joined_at.replace(
+                tzinfo=None))
         embed = discord.Embed(
             title="Member left",
             color=discord.Colour.red(),
@@ -154,7 +158,8 @@ class Logging(commands.Cog):
         embed.set_footer(text=f"ID: {member.id}")
         embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(member.guild.id)
-        log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
+        log_chnl = self.bot.get_guild(
+            member.guild.id).get_channel(log_channel_id)
         if log_chnl is None:
             return
         await log_chnl.send(embed=embed)
@@ -239,7 +244,8 @@ class Logging(commands.Cog):
         else:
             return
         log_channel_id = await self.get_log_channel(after.guild.id)
-        log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
+        log_chnl = self.bot.get_guild(
+            after.guild.id).get_channel(log_channel_id)
         embed.timestamp = datetime.datetime.utcnow()
         if log_chnl is None:
             return
@@ -277,8 +283,7 @@ class Logging(commands.Cog):
         elif before.banner.url != after.banner.url:
             embed = discord.Embed(
                 title="Server Banner Changed",
-                description=f"Before Banner: {before.banner_url}\nAfter Banner: {after.banner_url}"
-            )
+                description=f"Before Banner: {before.banner_url}\nAfter Banner: {after.banner_url}")
             embed.add_field(
                 name="Before:",
                 value=before.banner_url
@@ -291,7 +296,8 @@ class Logging(commands.Cog):
             return
         embed.timestamp = datetime.datetime.utcnow()
         log_channel_id = await self.get_log_channel(after.guild.id)
-        log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
+        log_chnl = self.bot.get_guild(
+            after.guild.id).get_channel(log_channel_id)
         if log_chnl is None:
             return
         await log_chnl.send(embed=embed)
@@ -317,29 +323,27 @@ class Logging(commands.Cog):
                 title="Member switched voice channel",
                 description=f"**{member}** switched `#{before.channel.name}` --> `#{after.channel.name}`",
                 color=discord.Colour.blue(),
-                timestamp=datetime.datetime.utcnow()
-            )
+                timestamp=datetime.datetime.utcnow())
         elif after.self_stream:
             embed = discord.Embed(
                 title="Member started streaming",
                 description=f"**{member}** started streaming in `#{before.channel.name}`",
                 color=discord.Colour.purple(),
-                timestamp=datetime.datetime.utcnow()
-            )
+                timestamp=datetime.datetime.utcnow())
         elif before.self_stream and not after.self_stream:
             embed = discord.Embed(
                 title="Member stopped streaming",
                 description=f"**{member}** stopped streaming in `#{before.channel.name}`",
                 color=discord.Colour.purple(),
-                timestamp=datetime.datetime.utcnow()
-            )
+                timestamp=datetime.datetime.utcnow())
         else:
             return
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_author(name=member, icon_url=member.avatar.url)
         embed.set_footer(text=f"ID: {member.id}")
         log_channel_id = await self.get_log_channel(member.guild.id)
-        log_chnl = self.bot.get_guild(member.guild.id).get_channel(log_channel_id)
+        log_chnl = self.bot.get_guild(
+            member.guild.id).get_channel(log_channel_id)
 
         if log_chnl is None:
             return
@@ -386,7 +390,8 @@ class Logging(commands.Cog):
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_footer(text=f"ID: {member.id}")
         log_channel_id = await self.get_log_channel(after.guild.id)
-        log_chnl = self.bot.get_guild(after.guild.id).get_channel(log_channel_id)
+        log_chnl = self.bot.get_guild(
+            after.guild.id).get_channel(log_channel_id)
         if log_chnl is None:
             return
         await log_chnl.send(embed=embed)

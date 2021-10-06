@@ -43,7 +43,8 @@ class Fun(commands.Cog):
                 await asyncio.sleep(2)
                 await ctx.reply("lol thats a fake bot token :P")
 
-    @commands.command(name="rps", brief="Play rock paper scissors with the bot or with someone else")
+    @commands.command(name="rps",
+                      brief="Play rock paper scissors with the bot or with someone else")
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def rps(self, ctx, member: discord.Member = None):
         if member is None:
@@ -53,10 +54,13 @@ class Fun(commands.Cog):
                 "Scissors": "✂"
             }
             bot_choice = random.choice(list(emoji_name_dict.keys()))
-            embed = discord.Embed(title="Rock Paper Scissors", description="**React below to choose!**"
-                                                                           "Rock: 🪨"
-                                                                           "Paper: 📰"
-                                                                           "Scissors: ✂", color=self.bot.color)
+            embed = discord.Embed(
+                title="Rock Paper Scissors",
+                description="**React below to choose!**"
+                "Rock: 🪨"
+                "Paper: 📰"
+                "Scissors: ✂",
+                color=self.bot.color)
             msg = await ctx.send(embed=embed)
             for emo in list(emoji_name_dict.values()):
                 await msg.add_reaction(emo)
@@ -101,16 +105,42 @@ class Fun(commands.Cog):
             embed.description += f"\n{reply}"
             await msg.edit(embed=embed)
 
-
-
-
-    @commands.command("hack", aliases=['hk', 'hax'], description="hax the specified person")
+    @commands.command("hack", aliases=['hk', 'hax'],
+                      description="hax the specified person")
     @commands.cooldown(1, 45, commands.BucketType.user)
     async def _hack(self, ctx: commands.Context, user: discord.User):
-        success = random.choice([True, False, False, False, False, False, False, False])
-        linux_chance = random.choice(
-            [True, False, False, False, False, False, False, False, False, False, False, False, False, False, False,
-             False, False, False, False, False, False, False, False, False, False, False, False, False, False, False])
+        success = random.choice(
+            [True, False, False, False, False, False, False, False])
+        linux_chance = random.choice([True,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False,
+                                      False])
         ip = f'{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}'
         if user.id in basic.owners:
             await ctx.reply("Hey! you're not hacking my devs :unamused:, the hack has been reversed onto **YOU**")

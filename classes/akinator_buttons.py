@@ -103,6 +103,7 @@ class NotRight(discord.ui.Button):
         await self.callback_command(False)
         return
 
+
 class Back(discord.ui.Button):
     def __init__(self, author: discord.User, callback):
         super().__init__(style=discord.ButtonStyle.blurple, label="Back!")
