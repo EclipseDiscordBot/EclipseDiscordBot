@@ -61,7 +61,7 @@ pandas==1.2.5
 parsedatetime==2.6
 Pillow==8.2.0
 praw==5.4.0
-prawcore==0.14.0
+prawcore==2.3.0
 protobuf==3.17.3
 prsaw==0.3.1
 psutil==5.8.0
