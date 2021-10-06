@@ -46,7 +46,7 @@ instant-api-client==0.1.2
 itsdangerous==2.0.0
 Jinja2==3.0.0
 jishaku @ git+https://github.com/Gorialis/jishaku
-kiwisolver==1.3.1
+kiwisolver==1.3.2
 MarkupSafe==2.0.0
 matplotlib==3.4.2
 MojangAPI==0.0.5
